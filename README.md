@@ -4,6 +4,8 @@ Stop dragging new water and food ranks to your action bars every few levels.
 
 Consumable Connoisseur is a lightweight, "set it and forget it" addon that automatically manages your consumable buttons. It scans your inventory and updates specific macros to always use the best possible item available to you based on your character's level, current zone, and item count.
 
+<img width="500" alt="image" src="https://github.com/user-attachments/assets/a399f0f5-73c2-4e6e-b912-12fc0315d88e" />
+
 ## How It Works
 
 The addon automatically creates and maintains the following macros in your General or Character specific macro tab:
