@@ -1,4 +1,4 @@
-# Consumable-Connoisseur
+# Consumable Connoisseur
 
 Stop dragging new water and food ranks to your action bars every few levels.
 
