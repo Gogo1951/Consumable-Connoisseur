@@ -10,11 +10,11 @@ Consumable Connoisseur is a lightweight, "set it and forget it" addon that autom
 
 The addon automatically creates and maintains the following macros in your General or Character specific macro tab:
 
-*  Food & Water: Picks the food & water that will return the most health or mana, prioritizing conjured items if you have them.
-*  Health Potion: Uses the highest healing potion or injector.
-*  Mana Potion: Uses the highest mana potion, injector, or gem.
-*  Bandage: Uses the best bandage, including zone-specific Battleground bandages (e.g., Warsong Gulch Silk Bandage, or Bottled Nethergon Energy).
-*  Healthstone: Uses the best Healthstone and accurately shows the right tooltip, no matter the talent rank.
+*  **Food & Water** : Picks the food & water that will return the most health or mana, prioritizing conjured items if you have them.
+*  **Health Potions** : Uses the highest healing potion or injector.
+*  **Mana Potions** : Uses the highest mana potion, injector, or gem.
+*  **Bandages** : Uses the best bandage, including zone-specific Battleground bandages (e.g., Warsong Gulch Silk Bandage, or Bottled Nethergon Energy).
+*  **Healthstones** : Uses the best Healthstone and accurately shows the right tooltip, no matter the talent rank.
 
 Easy Setup: Just drag these macros to your action bar once. As you loot new items, level up, or enter a Battleground, the addon updates the macro in the background.
 
