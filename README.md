@@ -10,17 +10,17 @@ Consumable Connoisseur is a lightweight, "set it and forget it" addon that autom
 
 The addon automatically creates and maintains the following macros in your General or Character specific macro tab:
 
-*  Food & Water: Picks the food & drink that will return the most health or mana, prioritizing conjured items if you have them.
+*  Food & Water: Picks the food & water that will return the most health or mana, prioritizing conjured items if you have them.
 *  Health Potion: Uses the highest healing potion or injector.
 *  Mana Potion: Uses the highest mana potion, injector, or gem.
 *  Bandage: Uses the best bandage, including zone-specific Battleground bandages (e.g., Warsong Gulch Silk Bandage, or Bottled Nethergon Energy).
-*  Healthstone: Uses the best Healthstone and accurately shows the right tooltip, no matter how many talents they put in.
+*  Healthstone: Uses the best Healthstone and accurately shows the right tooltip, no matter the talent rank.
 
-Easy Setup: Just ust drag these macros to your action bar once. As you loot new items, level up, or enter a Battleground, the addon updates the macro in the background.
+Easy Setup: Just drag these macros to your action bar once. As you loot new items, level up, or enter a Battleground, the addon updates the macro in the background.
 
 ## Features
 
-Smart Detection: Checks IsUsableItem to ensure you never get a "You can't use that yet" error.
+Smart Detection: Checks `IsUsableItem` to ensure you never get a "You can't use that yet" error.
 
 Zone Aware: Prioritizes Battleground-specific consumables (like Arathi Basin Runecloth Bandages) when you are in the correct zone.
 
@@ -28,19 +28,16 @@ Contextual Tooltips: The macro icon and tooltip update in real-time to show exac
 
 Zero Configuration: No options menu required. Just install and play.
 
-Performance Optimized: Only updates when inventory changes or combat ends; zero CPU impact during raids or PVP combat.
+Performance Optimized: Only updates when inventory changes or combat ends; zero CPU impact during raids or PvP combat.
 
 ## Installation
 
-Install the addon.
-
-Log in.
-
-Open your Macro window (/macro).
-
-Look for macros named `- Food`, `- Water`, etc.
-
-Drag them to your bars!
+1. Install the addon.
+2. Log in.
+3. Open your Macro window (`/macro` or `/m`).
+4. Look for macros named `- Food`, `- Water`, etc.
+5. Drag them to your bars.
+6. Done, never think about consumables again. (=
 
 Note: If you run out of a specific item, the macro will default to a fallback icon and print a message if clicked.
 
