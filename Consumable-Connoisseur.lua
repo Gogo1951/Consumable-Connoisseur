@@ -20,63 +20,204 @@ local itemCategories = {
     -- https://www.wowhead.com/tbc/npc=6929/innkeeper-gryshka
 
     ["- Food"] = {
-        34062, -- (7500+) Conjured Manna Biscuit
-        22019, -- (7500) Conjured Croissant
-        34780, -- (7500) Naaru Ration
-        19301, -- (4410) Alterac Manna Biscuit
-        22895, -- (4320) Conjured Cinnamon Roll
-        27859, -- (4320) Mag'har Grainbread
-        27855, -- (4320) Telaari Grapes
-        27854, -- (4320) Smoked Talbuk Venison
-        8076, -- (2148) Conjured Sweet Roll
-        13724, -- (2148) Enriched Manna Biscuit        
-        27858, -- (2148) Crusty Flatbread
-        27857, -- (2148) Skethyl Berries
-        8952, -- (2148) Roasted Quail
-        8075, -- (1392) Conjured Sourdough
-        8950, -- (1344) Homemade Cherry Pie
-        8953, -- (1344) Deep Fried Plantains
-        4599, -- (1344) Cured Ham Steak
-        1487, -- (874) Conjured Pumpernickel
-        4601, -- (874) Soft Banana Bread
-        4602, -- (874) Moon Harvest Pumpkin
-        4593, -- (874) Wild Hog Shank
-        1114, -- (552) Conjured Rye
-        4608, -- (552) Moist Cornbread
-        4544, -- (552) Shiny Red Apple
-        4594, -- (552) Mutton Chop
-        1113, -- (243) Conjured Bread
-        4541, -- (243) Freshly Baked Bread
-        4542, -- (243) Tel'Abim Banana
-        2287, -- (243) Haunch of Meat
-        5349, -- (61) Conjured Muffin
-        4540, -- (61) Tough Hunk of Bread
-        4539, -- (61) Goldenbark Apple
-        117, -- (61) Tough Jerky
+        34062, -- Conjured Manna Biscuit
+        34780, -- Naaru Ration
+        22019, -- Conjured Croissant
+        29449, -- Bladespire Bagel
+        29451, -- Clefthoof Ribs
+        33254, -- Forest Strider Drumstick
+        35285, -- Giant Sunfish
+        30355, -- Grilled Shadowmoon Tuber
+        29394, -- Lyribread
+        29448, -- Mag'har Mild Cheese
+        32685, -- Ogri'la Chicken Fingers
+        38428, -- Rock-Salted Pretzel
+        29453, -- Sporeggar Mushroom
+        33048, -- Stewed Trout
+        29450, -- Telaari Grapes
+        29452, -- Zangar Trout
+        19301, -- Alterac Manna Biscuit
+        22895, -- Conjured Cinnamon Roll
+        27661, -- Blackened Trout
+        29393, -- Diamond Berries
+        24408, -- Edible Stalks
+        33246, -- Funnel Cake
+        27857, -- Garadar Sharp
+        29412, -- Jessen's Special Slop
+        27855, -- Mag'har Grainbread
+        28486, -- Moser's Magnificent Muffin
+        38427, -- Pickled Egg
+        27856, -- Skethyl Berries
+        30610, -- Smoked Black Bear Meat
+        27854, -- Smoked Talbuk Venison
+        30458, -- Stromgarde Muenster
+        27858, -- Sunspring Carp
+        27859, -- Zangar Caps
+        8076, -- Conjured Sweet Roll
+        13724, -- Enriched Manna Biscuit
+        8932, -- Alterac Swiss
+        13935, -- Baked Salmon
+        21031, -- Cabbage Kimchi
+        19225, -- Deep Fried Candybar
+        8953, -- Deep Fried Plantains
+        8948, -- Dried King Bolete
+        11444, -- Grim Guzzler Boar
+        24338, -- Hellfire Spineleaf
+        8950, -- Homemade Cherry Pie
+        13933, -- Lobster Stew
+        11415, -- Mixed Berries
+        21033, -- Radish Kimchi
+        8952, -- Roasted Quail
+        16171, -- Shinsollo
+        8957, -- Spinefin Halibut
+        12763, -- Un'Goro Etherfruit
+        22324, -- Winter Kimchi
+        8075, -- Conjured Sourdough
+        18635, -- Bellara's Nutterbar
+        13546, -- Bloodbelly Fish
+        19306, -- Crunchy Frog
+        4599, -- Cured Ham Steak
+        13888, -- Darkclaw Lobster
+        21030, -- Darnassus Kimchi Pie
+        13930, -- Filet of Redgill
+        3927, -- Fine Aged Cheddar
+        9681, -- Grilled King Crawler Legs
+        16168, -- Heaven Peach
+        13893, -- Large Raw Mightfish
+        4602, -- Moon Harvest Pumpkin
+        4608, -- Raw Black Truffle
+        8959, -- Raw Spinefin Halibut
+        13889, -- Raw Whitescale Salmon
+        18255, -- Runn Tum Tuber
+        4601, -- Soft Banana Bread
+        17408, -- Spicy Beefstick
+        6887, -- Spotted Yellowtail
+        21552, -- Striped Yellowtail
+        16766, -- Undermine Clam Chowder
+        1487, -- Conjured Pumpernickel
+        4607, -- Delicious Cave Mold
+        6807, -- Frog Leg Stew
+        4539, -- Goldenbark Apple
+        17407, -- Graccu's Homemade Meat Pie
+        8364, -- Mithril Head Trout
+        18632, -- Moonbrook Riot Taffy
+        4544, -- Mulgore Spice Bread
+        13754, -- Raw Glossy Mightfish
+        13759, -- Raw Nightfin Snapper
+        13758, -- Raw Redgill
+        4603, -- Raw Spotted Yellowtail
+        13756, -- Raw Summer Bass
+        13760, -- Raw Sunscale Salmon
+        19224, -- Red Hot Wings
+        4594, -- Rockscale Cod
+        1707, -- Stormwind Brie
+        8543, -- Underwater Mushroom Cap
+        3771, -- Wild Hog Shank
+        16169, -- Wild Ricecake
+        13755, -- Winter Squid
+        1114, -- Conjured Rye
+        1119, -- Bottled Spirits
+        4593, -- Bristle Whisker Catfish
+        5526, -- Clam Chowder
+        5478, -- Dig Rat Stew
+        422, -- Dwarven Mild
+        5845, -- Flank of Meat
+        4542, -- Moist Cornbread
+        3770, -- Mutton Chop
+        19305, -- Pickled Kodo Foot
+        8365, -- Raw Mithril Head Trout
+        6362, -- Raw Rockscale Cod
+        4538, -- Snapvine Watermelon
+        4606, -- Spongy Morel
+        16170, -- Steamed Mandu
+        2685, -- Succulent Pork Ribs
+        7228, -- Tigule's Strawberry Ice Cream
+        733, -- Westfall Stew
+        1113, -- Conjured Bread
+        414, -- Dalaran Sharp
+        12238, -- Darkshore Grouper
+        17119, -- Deeprun Rat Kabob
+        5066, -- Fissure Plant
+        4541, -- Freshly Baked Bread
+        2287, -- Haunch of Meat
+        17406, -- Holiday Cheesewheel
+        6316, -- Loch Frenzy Delight
+        4592, -- Longjaw Mud Snapper
+        5095, -- Rainbow Fin Albacore
+        6308, -- Raw Bristle Whisker Catfish
+        4605, -- Red-speckled Mushroom
+        24072, -- Sand Pear Pie
+        1326, -- Sauteed Sunfish
+        6890, -- Smoked Bear Meat
+        19304, -- Spiced Beef Jerky
+        18633, -- Styleen's Sour Suckerpop
+        4537, -- Tel'Abim Banana
+        16167, -- Versicolor Treat
+        5349, -- Conjured Muffin
+        16166, -- Bean Soup
+        6290, -- Brilliant Smallfish
+        17344, -- Candy Cane
+        2679, -- Charred Wolf Meat
+        19223, -- Darkmoon Dog
+        2070, -- Darnassian Bleu
+        4604, -- Forest Mushroom Cap
+        961, -- Healing Herb
+        20857, -- Honey Bread
+        7097, -- Leg Meat
+        6458, -- Oil Covered Fish
+        6317, -- Raw Loch Frenzy
+        6289, -- Raw Longjaw Mud Snapper
+        6361, -- Raw Rainbow Fin Albacore
+        5057, -- Ripe Watermelon
+        2681, -- Roasted Boar Meat
+        4536, -- Shiny Red Apple
+        787, -- Slitherskin Mackerel
+        4656, -- Small Pumpkin
+        30816, -- Spice Bread
+        23495, -- Springpaw Appetizer
+        4540, -- Tough Hunk of Bread
+        117, -- Tough Jerky
     },
     ["- Water"] = {
-        34062, -- (7200+) Conjured Manna Biscuit
-        22018, -- (7200) Conjured Glacier Water
-        34780, -- (7200) Naaru Ration
-        30703, -- (5100) Conjured Mountain Spring Water
-        27860, -- (5100) Purified Draenic Water
-        8079, -- (4200) Conjured Crystal Water
-        19301, -- (4410) Alterac Manna Biscuit
-        13724, -- (4410) Enriched Manna Biscuit     
-        28399, -- (4200) Filtered Draenic Water
-        8078, -- (2934) Conjured Sparkling Water
-        8766, -- (2934) Morning Glory Dew
-        29395, -- (2934) Sparkling Oasis Water
-        8077, -- (1992) Conjured Mineral Water
-        1645, -- (1992) Moonberry Juice
-        3772, -- (1345) Conjured Spring Water
-        1708, -- (1344) Sweet Nectar
-        2136, -- (835) Conjured Purified Water
-        1205, -- (835) Melon Juice
-        2288, -- (437) Conjured Fresh Water
-        1179, -- (436) Ice Cold Milk
-        5350, -- (151) Conjured Water
-        159, -- (151) Refreshing Spring Water
+        34062, -- Conjured Manna Biscuit
+        34780, -- Naaru Ration
+        22018, -- Conjured Glacier Water
+        33042, -- Black Coffee
+        38431, -- Blackrock Fortified Water
+        32668, -- Dos Ogris
+        29395, -- Ethermead
+        30457, -- Gilneas Sparkling Water
+        27860, -- Purified Draenic Water
+        29401, -- Sparkling Southshore Cider
+        32453, -- Star's Tears
+        30703, -- Conjured Mountain Spring Water
+        38430, -- Blackrock Mineral Water
+        28399, -- Filtered Draenic Water
+        33236, -- Fizzy Faire Drink "Classic"
+        29454, -- Silverwine
+        19301, -- Alterac Manna Biscuit
+        13724, -- Enriched Manna Biscuit
+        8078, -- Conjured Sparkling Water
+        23585, -- Stouthammer Lite
+        38429, -- Blackrock Spring Water
+        8766, -- Morning Glory Dew
+        8077, -- Conjured Mineral Water
+        19300, -- Bottled Winterspring Water
+        1645, -- Moonberry Juice
+        3772, -- Conjured Spring Water
+        4791, -- Enchanted Water
+        10841, -- Goldthorn Tea
+        17405, -- Green Garden Tea
+        1708, -- Sweet Nectar
+        2136, -- Conjured Purified Water
+        9451, -- Bubbling Water
+        19299, -- Fizzy Faire Drink
+        1205, -- Melon Juice
+        2288, -- Conjured Fresh Water
+        17404, -- Blended Bean Brew
+        1179, -- Ice Cold Milk
+        5350, -- Conjured Water
+        159, -- Refreshing Spring Water
     },
     ["- Health Potion"] = {
         -- https://www.wowhead.com/tbc/item=929/healing-potion#shared-cooldown;q=heal
@@ -119,24 +260,24 @@ local itemCategories = {
     },
     ["- Healthstone"] = {
         -- https://www.wowhead.com/tbc/item=5509/healthstone#shared-cooldown;q=healthstone
-        22105, -- (2496) Master Healthstone
-        22104, -- (2288) Master Healthstone
-        22103, -- (2080) Master Healthstone
-        19013, -- (1440) Major Healthstone
-        19012, -- (1320) Major Healthstone
-        9421, -- (1200) Major Healthstone
-        19009, -- (960) Greater Healthstone
-        19008, -- (880) Greater Healthstone
-        5512, -- (800) Greater Healthstone
-        19007, -- (600) Healthstone
-        19006, -- (550) Healthstone
-        5511, -- (500) Healthstone
-        19005, -- (300) Lesser Healthstone
-        19004, -- (275) Lesser Healthstone
-        5510, -- (250) Lesser Healthstone
-        19003, -- (120) Minor Healthstone
-        19002, -- (110) Minor Healthstone
-        5509, -- (100) Minor Healthstone
+        22105, -- Master Healthstone (2496)
+        22104, -- Master Healthstone (2288)
+        22103, -- Master Healthstone (2080)
+        19013, -- Major Healthstone (1440)
+        19012, -- Major Healthstone (1320)
+        9421, -- Major Healthstone (1200)
+        19011, -- Greater Healthstone (960)
+        19010, -- Greater Healthstone (880)
+        5510, -- Greater Healthstone (800)
+        19009, -- Healthstone (600)
+        19008, -- Healthstone (550)
+        5509, -- Healthstone (500)
+        19007, -- Lesser Healthstone (300)
+        19006, -- Lesser Healthstone (275)
+        5511, -- Lesser Healthstone (250)
+        19005, -- Minor Healthstone (120)
+        19004, -- Minor Healthstone (110)
+        5512, -- Minor Healthstone (100)
     },
     ["- Bandage"] = {
         -- https://www.wowhead.com/tbc/item=14530/heavy-runecloth-bandage#shared-cooldown;0-3+1-2;q=bandage
