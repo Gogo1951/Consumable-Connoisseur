@@ -6,6 +6,14 @@ Consumable Connoisseur is a lightweight, "set it and forget it" addon that autom
 
 ![Consumable-Connoisseur](https://github.com/user-attachments/assets/326eb93f-329f-4967-b750-909011a05b01)
 
+## Features
+
+🧠 **Zone Aware** : Prioritizes Battleground-specific consumables (like Arathi Basin Runecloth Bandages) when you are in the correct zone.
+
+💬 **Accurate Tooltips** : The macro icon and tooltip update in real-time to show exactly which item will be used next.
+
+⏩ **Performance Optimized** : Only updates when inventory changes or combat ends; zero CPU impact during raids or PvP combat.
+
 ## How It Works
 
 The addon automatically creates and maintains the following macros in your General or Character specific macro tab:
@@ -17,14 +25,6 @@ The addon automatically creates and maintains the following macros in your Gener
 *  **Healthstones** : Uses the best Healthstone and accurately shows the right tooltip, no matter the talent rank.
 
 Easy Setup: Just drag these macros to your action bar once. As you loot new items, level up, or enter a Battleground, the addon updates the macro in the background.
-
-## Features
-
-🧠 **Zone Aware** : Prioritizes Battleground-specific consumables (like Arathi Basin Runecloth Bandages) when you are in the correct zone.
-
-💬 **Accurate Tooltips** : The macro icon and tooltip update in real-time to show exactly which item will be used next.
-
-⏩ **Performance Optimized** : Only updates when inventory changes or combat ends; zero CPU impact during raids or PvP combat.
 
 ## Setup
 
