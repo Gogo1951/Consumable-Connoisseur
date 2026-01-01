@@ -231,7 +231,6 @@ ns.PriorityLists = {
         4596, -- Discolored Healing Potion
         858, -- Lesser Healing Potion
         118, -- Minor Healing Potion
-        9144, -- Wildvine Potion
     },
     ["- Mana Potion"] = {
         -- https://www.wowhead.com/tbc/item=929/healing-potion#shared-cooldown;q=mana
