@@ -206,42 +206,65 @@ ns.FoodWaterDB = {
 ns.PriorityLists = {
     ["- Health Potion"] = {
         -- https://www.wowhead.com/tbc/item=929/healing-potion#shared-cooldown;q=heal
-        33092, -- (2500) Healing Potion Injector
-        31838, -- (2500) Major Combat Healing Potion
-        32948, -- (2500) Major Healing Draught
-        32947, -- (2500) Auchenai Healing Potion
-        32909, -- (2500) Crystal Healing Potion
-        32904, -- (2500) Cenarion Healing Salve
-        32905, -- (2500) Bottled Nethergon Vapor
-        22829, -- (2500) Super Healing Potion
-        17351, -- (1750) Superior Healing Draught
-        18839, -- (1500) Combat Healing Potion
-        13446, -- (1750) Major Healing Potion
-        3928, -- (900) Superior Healing Potion
-        1710, -- (585) Greater Healing Potion
-        929, -- (360) Healing Potion
-        858, -- (180) Lesser Healing Potion
-        118, -- (90) Minor Healing Potion
+        23822, -- Healing Potion Injector
+        33092, -- Healing Potion Injector
+        32905, -- Bottled Nethergon Vapor
+        32904, -- Cenarion Healing Salve
+        32947, -- Auchenai Healing Potion
+        33934, -- Crystal Healing Potion
+        32763, -- Rulkster's Secret Sauce
+        22829, -- Super Healing Potion
+        32784, -- Red Ogre Brew
+        32910, -- Red Ogre Brew Special
+        31838, -- Major Combat Healing Potion
+        31839, -- Major Combat Healing Potion
+        31852, -- Major Combat Healing Potion
+        31853, -- Major Combat Healing Potion
+        13446, -- Major Healing Potion
+        23579, -- The McWeaksauce Classic
+        28100, -- Volatile Healing Potion
+        17348, -- Major Healing Draught
+        18839, -- Combat Healing Potion
+        3928, -- Superior Healing Potion
+        17349, -- Superior Healing Draught
+        1710, -- Greater Healing Potion
+        4596, -- Discolored Healing Potion
+        858, -- Lesser Healing Potion
+        118, -- Minor Healing Potion
+        9144, -- Wildvine Potion
     },
     ["- Mana Potion"] = {
         -- https://www.wowhead.com/tbc/item=929/healing-potion#shared-cooldown;q=mana
-        33093, -- (3000) Mana Potion Injector
-        32902, -- (3000) Bottled Nethergon Energy
-        32903, -- (3000) Cenarion Mana Salve
-        32904, -- (3000) Auchenai Mana Potion
-        32905, -- (3000) Crystal Mana Potion
-        22832, -- (3000) Super Mana Potion
-        32948, -- (2250) Major Mana Draught
-        31840, -- (2250) Major Combat Mana Potion
-        32906, -- (2250) Unstable Mana Potion
-        13444, -- (2250) Major Mana Potion
-        18841, -- (1500) Combat Mana Potion
-        17352, -- (1500) Superior Mana Draught
-        13443, -- (1500) Superior Mana Potion
-        6149, -- (900) Greater Mana Potion
-        3827, -- (585) Mana Potion
-        3385, -- (360) Lesser Mana Potion
-        2455, -- (180) Minor Mana Potion
+        23823, -- Mana Potion Injector
+        33093, -- Mana Potion Injector
+        32783, -- Blue Ogre Brew
+        32909, -- Blue Ogre Brew Special
+        32902, -- Bottled Nethergon Energy
+        32903, -- Cenarion Mana Salve
+        32948, -- Auchenai Mana Potion
+        33935, -- Crystal Mana Potion
+        32762, -- Rulkster's Brain Juice
+        22832, -- Super Mana Potion
+        34440, -- Mad Alchemist's Potion
+        22850, -- Super Rejuvenation Potion
+        18253, -- Major Rejuvenation Potion
+        13444, -- Major Mana Potion
+        23578, -- Diet McWeaksauce
+        31840, -- Major Combat Mana Potion
+        31841, -- Major Combat Mana Potion
+        31854, -- Major Combat Mana Potion
+        31855, -- Major Combat Mana Potion
+        28101, -- Unstable Mana Potion
+        17351, -- Major Mana Draught
+        18841, -- Combat Mana Potion
+        13443, -- Superior Mana Potion
+        6149, -- Greater Mana Potion
+        17352, -- Superior Mana Draught
+        3827, -- Mana Potion
+        1072, -- Full Moonshine
+        3385, -- Lesser Mana Potion
+        2455, -- Minor Mana Potion
+        3087, -- Mug of Shimmer Stout
     },
     ["- Healthstone"] = {
         -- https://www.wowhead.com/tbc/item=5509/healthstone#shared-cooldown;q=healthstone
