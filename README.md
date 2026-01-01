@@ -2,7 +2,7 @@
 
 This is a smart macro manager for World of Warcraft Classic & TBC. It automatically scans your bags and updates your action bar macros with the absolute best item available for your current situation.
 
-Whether you just leveled up, looted a stack of conjured water, picked up a stange healthstone from a new warlock, or walked into Arathi Basin, your buttons will always work.
+Whether you just leveled up, looted a stack of conjured water, picked up a strange healthstone from a new warlock, or walked into Arathi Basin, your buttons will always work.
 
 ![Consumable-Connoisseur](https://github.com/user-attachments/assets/326eb93f-329f-4967-b750-909011a05b01)
 
