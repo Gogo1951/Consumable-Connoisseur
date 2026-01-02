@@ -11,7 +11,6 @@
 ## X-Curse-Project-ID: 1416865
 
 # Consumable Connoisseur
-Database\Consumables.lua
 Consumable-Connoisseur.lua
 
 # Feedback Welcome! (=
