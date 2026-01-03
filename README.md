@@ -1,16 +1,18 @@
 # Connoisseur
 
-This is a smart macro manager for World of Warcraft Classic & TBC. It automatically scans your bags and updates your action bar macros with the absolute best item available for your current situation.
+This add-on automatically scans your bags and updates consumable macros with the best item available for your current situation.
 
-Whether you just leveled up, picked up stack of conjured water, got a strange healthstone from a new warlock, or walked into Arathi Basin, the right consumable will always be ready for you.
+Whether you just leveled up, picked up a stack of conjured water, traded for a Healthstone, or just zoned into Tempest Keep or Warsong Gulch, your buttons are always ready. It can even prioritize food that keeps you "Well Fed" if your buff drops off.
 
-![Consumable-Connoisseur](https://github.com/user-attachments/assets/326eb93f-329f-4967-b750-909011a05b01)
+<img width="350" alt="image" src="https://github.com/user-attachments/assets/7265863c-b53e-4687-9c87-76cb2ac65f62" />
 
 ## Features
 
+![Consumable-Connoisseur](https://github.com/user-attachments/assets/326eb93f-329f-4967-b750-909011a05b01)
+
 🤖 **Auto-Updating** : Macros update instantly when you loot items, trade, level up, or change zones.
 
-🦺 **Safety First** : Uses a strict whitelist database. It will never accidentally eat your expensive Raid Buff food.
+🦺 **Safety First** : Toggle "Prioritize Buff Food" with a single click to stop wasting expensive stats on simple healing. You can also quickly add items (like pet food) to the Ignore List directly from the minimap menu.
 
 🧠 **Zone Aware** : Prioritizes Battleground-specific consumables (like Arathi Basin Runecloth Bandages) when you are in the correct zone.
 
