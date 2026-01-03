@@ -1,4 +1,4 @@
-# Consumable Connoisseur
+# Connoisseur
 
 This is a smart macro manager for World of Warcraft Classic & TBC. It automatically scans your bags and updates your action bar macros with the absolute best item available for your current situation.
 
