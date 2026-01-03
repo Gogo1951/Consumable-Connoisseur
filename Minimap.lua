@@ -26,11 +26,11 @@ local function OnEnter(anchor)
     
     if ns.BestFoodID and ns.BestFoodLink then
         tooltip:AddLine(" ")
-        tooltip:AddDoubleLine(C.TITLE..L["UI_BEST_FOOD"].."|r", "|T"..GetItemIcon(ns.BestFoodID)..":14:14|t "..ns.BestFoodLink)
+        tooltip:AddDoubleLine(C.TITLE..L["UI_BEST_FOOD"].."|r", ns.BestFoodLink.." |T"..GetItemIcon(ns.BestFoodID)..":14:14|t")
         tooltip:AddDoubleLine(C.INFO..L["UI_LEFT_CLICK"].."|r", C.INFO..L["MENU_IGNORE"].."|r")
     end
 
-    local hasIgnored = next(CC_IgnoreList) ~= nil
+local hasIgnored = next(CC_IgnoreList) ~= nil
     if hasIgnored then
         tooltip:AddLine(" ")
         tooltip:AddLine(C.TITLE..L["UI_IGNORE_LIST"].."|r")
@@ -38,9 +38,9 @@ local function OnEnter(anchor)
             local name, _, quality, _, _, _, _, _, _, tex = GetItemInfo(itemID)
             if name then
                 local _, _, _, hex = GetItemQualityColor(quality)
-                tooltip:AddLine(format("|T%s:14:14|t |c%s[%s]|r", tex, hex, name))
+                tooltip:AddDoubleLine(" ", format("|c%s[%s]|r |T%s:14:14|t", hex, name, tex))
             else
-                tooltip:AddLine(C.MUTED.."ID: "..itemID.."|r")
+                tooltip:AddDoubleLine(" ", C.MUTED.."ID: "..itemID.."|r")
             end
         end
         tooltip:AddDoubleLine(C.INFO..L["UI_MIDDLE_CLICK"].."|r", C.INFO..L["MENU_CLEAR_IGNORE"].."|r")
