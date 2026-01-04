@@ -6,7 +6,7 @@
 ## IconTexture: Interface/AddOns/Consumable-Connoisseur/Consumable-Connoisseur.tga
 ## Category-enUS: Consumables
 
-## Interface: 11508, 20505 
+## Interface: 11508, 20505, 50503, 110207
 ## Version: @project-version@
 ## X-Curse-Project-ID: 1416865
 ## SavedVariablesPerCharacter: CC_IgnoreList, CC_Settings
