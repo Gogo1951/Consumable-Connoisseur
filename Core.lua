@@ -20,6 +20,15 @@ local scanLines = {}
 local function InitVars()
     if not CC_IgnoreList then CC_IgnoreList = {} end
     if not CC_Settings then CC_Settings = { UseBuffFood = false } end
+    if not CC_Settings.Minimap then CC_Settings.Minimap = {} end -- Ensure table exists
+
+    -- Register Minimap Icon
+    local LDBIcon = LibStub and LibStub("LibDBIcon-1.0", true)
+    if LDBIcon and ns.LDBObj and not ns.IconRegistered then 
+        LDBIcon:Register("Connoisseur", ns.LDBObj, CC_Settings.Minimap)
+        ns.IconRegistered = true
+    end
+
     wipe(itemCache)
 
     -- Only listen for buffs if we care about "Well Fed" status
@@ -55,6 +64,7 @@ local function ParseNumber(text)
 end
 
 local function PlayerHasBuff(buffName)
+    if not buffName then return false end
     for i = 1, 40 do
         local name = UnitAura("player", i, "HELPFUL")
         if not name then return false end
@@ -111,17 +121,24 @@ local function ScanBagItem(bag, slot)
 
     if CC_IgnoreList[itemID] or ns.Excludes[itemID] then return nil end
 
+    -- Quick instant check to ensure it's a consumable-ish item
     local _, _, _, _, _, classID = GetItemInfoInstant(itemID)
     if classID ~= 0 then return nil end
 
     local staticData = itemCache[itemID]
     if not staticData then
         local name, _, _, _, _, _, subType, _, _, _, iPrice = GetItemInfo(itemID)
+        
+        -- If GetItemInfo returns nil (server hasn't sent data), abort.
+        -- Do NOT cache anything. We will try again next cycle.
         if not name then return nil end 
 
         scannerTooltip:ClearLines()
         scannerTooltip:SetHyperlink(info.hyperlink)
         
+        -- If the tooltip is empty (data lag), abort.
+        if scannerTooltip:NumLines() == 0 then return nil end
+
         wipe(scanLines)
         for i = 1, scannerTooltip:NumLines() do
             local line = _G["CC_ScannerTooltipTextLeft"..i]
@@ -157,7 +174,12 @@ local function ScanBagItem(bag, slot)
             local pVal = ParseNumber(text:match(L["SCAN_PERCENT"]))
             if pVal > 0 then
                 staticData.isPercent = true
-                if foundHealth then staticData.valHealth = 999999 end
+                -- Only assign the massive Health value if it's actually Health related.
+                -- This prevents Mana Eggnog from beating real food.
+                if foundHealth or (not foundMana) then 
+                    staticData.valHealth = 999999 
+                end
+                
                 if foundMana then staticData.valMana = 999999 end
             else
                 local rVal = ParseNumber(text:match(L["SCAN_RESTORES"]))
@@ -190,6 +212,8 @@ local function ScanBagItem(bag, slot)
         if foundSeated then
             if foundMana then staticData.isWater = true end
             
+            -- Only mark as food if we found health, or if it's strictly not water.
+            -- This handles the Eggnog case (foundMana=True, foundHealth=False -> isFood=False).
             if foundHealth then staticData.isFood = true end
             
             if not staticData.isWater and not staticData.isFood then
@@ -221,10 +245,7 @@ local function ScanBagItem(bag, slot)
     
     if staticData.reqLvl > UnitLevel("player") then return nil end
 
-    if staticData.isBuffFood and not ns.AllowBuffFood then 
-        return nil 
-    end
-
+    -- Note: We filter buff food in UpdateMacros, not here, to allow fallback
     return {
         id = staticData.id, 
         valHealth = staticData.valHealth, 
@@ -244,22 +265,32 @@ end
 local function IsBetter(item, best)
     if not best then return true end
     
-    -- 1. Percentage (Holiday) Food beats everything
+    -- PRIORITY 1: Buff Food
+    -- If the user needs the buff, items with the buff ALWAYS win.
+    -- (Strict filtering happens in UpdateMacros, so if we are here, we are allowed to use this)
+    if ns.AllowBuffFood then
+        if item.isBuffFood ~= best.isBuffFood then
+            return item.isBuffFood 
+        end
+    end
+    
+    -- PRIORITY 2: Percentage / Holiday Food
+    -- This ensures Percentage Food beats Regular Food (if buff status is equal)
     if item.isPercent ~= best.isPercent then return item.isPercent end
     
-    -- 2. Raw Total Value (Health + Mana)
+    -- PRIORITY 3: Raw Total Value (Health + Mana)
     local iVal, bVal = item.valHealth + item.valMana, best.valHealth + best.valMana
     if iVal ~= bVal then return iVal > bVal end
     
-    -- 3. Cheapest Vendor Price (Save money)
+    -- PRIORITY 4: Cheapest Vendor Price (Save money)
     if item.price ~= best.price then return item.price < best.price end
     
-    -- 4. Hybrid Efficiency (Restores both > Restores one)
+    -- PRIORITY 5: Hybrid Efficiency (Restores both > Restores one)
     local iHyb = (item.valHealth > 0 and item.valMana > 0)
     local bHyb = (best.valHealth > 0 and best.valMana > 0)
     if iHyb ~= bHyb then return iHyb end
     
-    -- 5. Smallest Stack Size (Clear bag space)
+    -- PRIORITY 6: Smallest Stack Size (Clear bag space)
     return item.stack < best.stack
 end
 
@@ -268,8 +299,12 @@ end
 function ns.UpdateMacros(forced)
     if InCombatLockdown() then return end
     
-    local hasWellFed = PlayerHasBuff(L["BUFF_WELL_FED"])
+    -- DYNAMIC NAME CHECK: Get the localized string for "Well Fed" from a known ID (19705)
+    -- This works for German, French, etc. without maintaining a string list.
+    local wellFedName = GetSpellInfo(19705)
+    local hasWellFed = wellFedName and PlayerHasBuff(wellFedName)
 
+    -- AllowBuffFood is TRUE if Setting is ON + User is MISSING the buff
     ns.AllowBuffFood = CC_Settings.UseBuffFood and not hasWellFed
 
     local best = { ["Food"] = nil, ["Water"] = nil, ["Health Potion"] = nil, ["Mana Potion"] = nil, ["Healthstone"] = nil, ["Bandage"] = nil }
@@ -278,17 +313,36 @@ function ns.UpdateMacros(forced)
         for slot = 1, C_Container.GetContainerNumSlots(bag) do
             local item = ScanBagItem(bag, slot)
             if item then
+                
+                -- STRICT GATEKEEPER:
+                -- If it is buff food, we MUST SKIP it if we are not allowed to use it.
+                -- This overrides High HP values.
+                local skipBuffFood = false
+                if item.isBuffFood and not ns.AllowBuffFood then
+                    skipBuffFood = true
+                end
+
                 if item.isBandage then
                     if IsBetter(item, best["Bandage"]) then best["Bandage"] = item end
+                
                 elseif item.isHealthstone then
                     if IsBetter(item, best["Healthstone"]) then best["Healthstone"] = item end
+                
                 elseif item.isPotion then
                     if item.valHealth > 0 and IsBetter(item, best["Health Potion"]) then best["Health Potion"] = item end
                     if item.valMana > 0 and IsBetter(item, best["Mana Potion"]) then best["Mana Potion"] = item end
+                
                 elseif item.isFood then
-                    if IsBetter(item, best["Food"]) then best["Food"] = item end
+                    -- Only process food if it passed the buff food gatekeeper
+                    if not skipBuffFood then
+                        if IsBetter(item, best["Food"]) then best["Food"] = item end
+                    end
+                
                 elseif item.isWater then
-                    if IsBetter(item, best["Water"]) then best["Water"] = item end
+                    -- Only process water (mana food) if it passed the buff food gatekeeper
+                    if not skipBuffFood then
+                        if IsBetter(item, best["Water"]) then best["Water"] = item end
+                    end
                 end
             end
         end
