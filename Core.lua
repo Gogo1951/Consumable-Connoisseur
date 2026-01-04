@@ -190,7 +190,7 @@ local function ScanBagItem(bag, slot)
         if foundSeated then
             if foundMana then staticData.isWater = true end
             
-            if foundHealth or staticData.isPercent then staticData.isFood = true end
+            if foundHealth then staticData.isFood = true end
             
             if not staticData.isWater and not staticData.isFood then
                  staticData.isFood = true
