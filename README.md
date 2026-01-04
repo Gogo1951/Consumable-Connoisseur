@@ -20,6 +20,14 @@ Whether you just leveled up, picked up a stack of conjured water, traded for a H
 
 ⏩ **Optimized** : Light-weight, but also only updates when inventory changes or combat ends.
 
+## Automatically Conjour Relevant Items
+
+For Mages and Warlocks, Right-Click on your Food, Water, or Healthstone macros to make more.
+
+And by simply targeting a lower-level player, when you Right-click on the macro, you'll conjour items useful to that player.
+
+<img width="350" alt="image" src="https://github.com/user-attachments/assets/f2b81313-06d4-42fc-b009-d35b4c86d4e4" />
+
 ## Setup
 
 **Easy Setup:** Just drag these macros to your action bar once. As you loot new items, level up, or enter a Battleground, the addon updates the macro in the background.
