@@ -13,7 +13,6 @@ ns.BestFoodID = nil
 ns.BestFoodLink = nil
 local updateQueued = false
 local updateTimer = 0
-local buffScanTimer = 0
 local currentMacroState = {}
 local itemCache = {} -- Caches static item data (stats, type) to reduce tooltip scanning
 local scanLines = {} 
@@ -39,6 +38,9 @@ function ns.ToggleBuffFood()
     else
         frame:UnregisterEvent("UNIT_AURA")
     end
+    
+    -- Explicitly wipe state to force the macro to rewrite immediately
+    wipe(currentMacroState)
     ns.UpdateMacros(true)
 end
 
@@ -109,17 +111,14 @@ local function ScanBagItem(bag, slot)
 
     if CC_IgnoreList[itemID] or ns.Excludes[itemID] then return nil end
 
-    -- Optimization: Quick Class Check (Consumable = 0)
     local _, _, _, _, _, classID = GetItemInfoInstant(itemID)
     if classID ~= 0 then return nil end
 
-    -- Check Cache first to avoid expensive Tooltip scanning
     local staticData = itemCache[itemID]
     if not staticData then
         local name, _, _, _, _, _, subType, _, _, _, iPrice = GetItemInfo(itemID)
         if not name then return nil end 
 
-        -- Load item into invisible tooltip to scrape text
         scannerTooltip:ClearLines()
         scannerTooltip:SetHyperlink(info.hyperlink)
         
@@ -143,7 +142,6 @@ local function ScanBagItem(bag, slot)
         local foundSeated, foundMana, foundHealth, foundWellFed = false, false, false, false
         local foundAlcohol = false
 
-        -- Regex Parsing Loop
         for _, text in ipairs(scanLines) do
             
             if text:find(L["SCAN_ALCOHOL"]) then foundAlcohol = true end
@@ -156,15 +154,12 @@ local function ScanBagItem(bag, slot)
             if text:find(L["SCAN_MANA"]) then foundMana = true end
             if text:find(L["SCAN_HEALTH"]) then foundHealth = true end
 
-            -- Priority 1: Percentage based food (Holiday items)
             local pVal = ParseNumber(text:match(L["SCAN_PERCENT"]))
             if pVal > 0 then
                 staticData.isPercent = true
-                -- Assign arbitrary high value to ensure it beats flat food
                 if foundHealth then staticData.valHealth = 999999 end
                 if foundMana then staticData.valMana = 999999 end
             else
-                -- Priority 2: Flat value food
                 local rVal = ParseNumber(text:match(L["SCAN_RESTORES"]))
                 local hVal = ParseNumber(text:match(L["SCAN_HEALS"]))
                 
@@ -192,16 +187,16 @@ local function ScanBagItem(bag, slot)
         local nameLower = name:lower()
         local isBandageByName = (subType == "Bandage" or nameLower:find("bandage"))
 
-        -- Categorize item based on flags
         if foundSeated then
             if foundMana then staticData.isWater = true end
-            if foundHealth then staticData.isFood = true end
-            if foundWellFed then staticData.isBuffFood = true end
             
-            -- Fallback for weirdly formatted food items
-            if not foundMana and not foundHealth then
-                staticData.isFood = true 
+            if foundHealth or staticData.isPercent then staticData.isFood = true end
+            
+            if not staticData.isWater and not staticData.isFood then
+                 staticData.isFood = true
             end
+
+            if foundWellFed and staticData.isFood then staticData.isBuffFood = true end
         
         elseif isBandageByName and (staticData.valHealth > 0) then
             staticData.isBandage = true
@@ -226,6 +221,10 @@ local function ScanBagItem(bag, slot)
     
     if staticData.reqLvl > UnitLevel("player") then return nil end
 
+    if staticData.isBuffFood and not ns.AllowBuffFood then 
+        return nil 
+    end
+
     return {
         id = staticData.id, 
         valHealth = staticData.valHealth, 
@@ -242,7 +241,6 @@ local function ScanBagItem(bag, slot)
     }
 end
 
--- Comparison logic for sorting
 local function IsBetter(item, best)
     if not best then return true end
     
@@ -270,11 +268,12 @@ end
 function ns.UpdateMacros(forced)
     if InCombatLockdown() then return end
     
-    local needWellFed = CC_Settings.UseBuffFood and not PlayerHasBuff(L["BUFF_WELL_FED"])
-    local best = { ["Food"] = nil, ["Water"] = nil, ["Health Potion"] = nil, ["Mana Potion"] = nil, ["Healthstone"] = nil, ["Bandage"] = nil }
-    local bestBuffFood = nil
+    local hasWellFed = PlayerHasBuff(L["BUFF_WELL_FED"])
 
-    -- Loop through all bags/slots to find best items
+    ns.AllowBuffFood = CC_Settings.UseBuffFood and not hasWellFed
+
+    local best = { ["Food"] = nil, ["Water"] = nil, ["Health Potion"] = nil, ["Mana Potion"] = nil, ["Healthstone"] = nil, ["Bandage"] = nil }
+    
     for bag = 0, NUM_BAG_SLOTS do
         for slot = 1, C_Container.GetContainerNumSlots(bag) do
             local item = ScanBagItem(bag, slot)
@@ -287,23 +286,12 @@ function ns.UpdateMacros(forced)
                     if item.valHealth > 0 and IsBetter(item, best["Health Potion"]) then best["Health Potion"] = item end
                     if item.valMana > 0 and IsBetter(item, best["Mana Potion"]) then best["Mana Potion"] = item end
                 elseif item.isFood then
-                    -- 1. Unified Logic: Always track the absolute best food found so far (Mirrors Water logic)
                     if IsBetter(item, best["Food"]) then best["Food"] = item end
-
-                    -- 2. Separately track best "Well Fed" food for the specific override condition
-                    if item.isBuffFood then
-                        if IsBetter(item, bestBuffFood) then bestBuffFood = item end
-                    end
                 elseif item.isWater then
                     if IsBetter(item, best["Water"]) then best["Water"] = item end
                 end
             end
         end
-    end
-
-    -- Override: If user needs "Well Fed" and we found buff food, force that to be the best.
-    if needWellFed and bestBuffFood then
-        best["Food"] = bestBuffFood
     end
 
     -- Update LDB/Minimap icon
@@ -394,14 +382,6 @@ frame:SetScript("OnUpdate", function(self, elapsed)
             updateQueued, updateTimer = false, 0
         end
     end
-    -- Periodic scan for Buff changes (if enabled)
-    if not InCombatLockdown() then
-        buffScanTimer = buffScanTimer + elapsed
-        if buffScanTimer > 10.0 then
-            ns.UpdateMacros()
-            buffScanTimer = 0
-        end
-    end
 end)
 
 frame:SetScript("OnEvent", function(self, event, ...)
@@ -413,6 +393,8 @@ frame:SetScript("OnEvent", function(self, event, ...)
         QueueUpdate()
     elseif event == "PLAYER_REGEN_ENABLED" then
         frame:UnregisterEvent("PLAYER_REGEN_ENABLED")
+        QueueUpdate()
+    elseif event == "UNIT_AURA" then
         QueueUpdate()
     elseif event == "GET_ITEM_INFO_RECEIVED" then
         QueueUpdate()
