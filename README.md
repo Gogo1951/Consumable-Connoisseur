@@ -26,7 +26,7 @@ For Mages and Warlocks, Right-Click on your Food, Water, or Healthstone macros t
 
 And by simply targeting a lower-level player, when you Right-click on the macro, you'll conjour items useful to that player.
 
-<img width="350" alt="image" src="https://github.com/user-attachments/assets/f2b81313-06d4-42fc-b009-d35b4c86d4e4" />
+<img width="426" height="498" alt="image" src="https://github.com/user-attachments/assets/094a9155-4136-4380-89cc-130aadf3c1ed" />
 
 ## Setup
 
