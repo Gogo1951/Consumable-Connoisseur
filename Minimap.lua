@@ -99,27 +99,44 @@ UpdateTooltip = function(anchor)
     local buffState = CC_Settings.UseBuffFood and (C.SUCCESS..L["UI_ENABLED"].."|r") or (C.DISABLED..L["UI_DISABLED"].."|r")
     tooltip:AddDoubleLine(C.TITLE..L["MENU_BUFF_FOOD"].."|r", buffState)
     tooltip:AddLine(C.DESC..L["MENU_BUFF_FOOD_DESC"].."|r", 1, 1, 1, true)
-    tooltip:AddDoubleLine(C.INFO..L["UI_RIGHT_CLICK"].."|r", C.INFO..L["UI_TOGGLE"].."|r")
+    tooltip:AddDoubleLine(C.INFO..L["UI_LEFT_CLICK"].."|r", C.INFO..L["UI_TOGGLE"].."|r")
     
     if ns.BestFoodID and ns.BestFoodLink then
         tooltip:AddLine(" ") 
-        tooltip:AddDoubleLine(C.TITLE..L["UI_BEST_FOOD"].."|r", ns.BestFoodLink.." |T"..C_Item.GetItemIconByID(ns.BestFoodID)..":14:14|t")
-        tooltip:AddDoubleLine(C.INFO..L["UI_LEFT_CLICK"].."|r", C.INFO..L["MENU_IGNORE"].."|r")
+        tooltip:AddLine(C.TITLE..L["UI_BEST_FOOD"].."|r")
+        
+        local icon = C_Item.GetItemIconByID(ns.BestFoodID)
+        tooltip:AddLine(format("|T%s:14:14|t %s", icon, ns.BestFoodLink))
+
+        tooltip:AddDoubleLine(C.INFO..L["UI_RIGHT_CLICK"].."|r", C.INFO..L["MENU_IGNORE"].."|r")
     end
 
     local hasIgnored = next(CC_IgnoreList) ~= nil
     if hasIgnored then
-        tooltip:AddLine(" ") --
+        tooltip:AddLine(" ")
         tooltip:AddLine(C.TITLE..L["UI_IGNORE_LIST"].."|r")
+        
+        local sortedList = {}
         for itemID in pairs(CC_IgnoreList) do
             local name, _, quality, _, _, _, _, _, _, tex = GetItemInfo(itemID)
             if name then
-                local _, _, _, hex = GetItemQualityColor(quality)
-                tooltip:AddDoubleLine(" ", format("|c%s[%s]|r |T%s:14:14|t", hex, name, tex))
+                tinsert(sortedList, { id = itemID, name = name, quality = quality, tex = tex })
             else
-                tooltip:AddDoubleLine(" ", C.MUTED.."ID: "..itemID.."|r")
+                tinsert(sortedList, { id = itemID, name = "ZZZ_Unknown", quality = 0, tex = nil })
             end
         end
+
+        table.sort(sortedList, function(a, b) return a.name < b.name end)
+
+        for _, item in ipairs(sortedList) do
+            if item.tex then
+                local _, _, _, hex = GetItemQualityColor(item.quality)
+                tooltip:AddLine(format("|T%s:14:14|t |c%s[%s]|r", item.tex, hex, item.name))
+            else
+                tooltip:AddLine(C.MUTED.."ID: "..item.id.."|r")
+            end
+        end
+        
         tooltip:AddDoubleLine(C.INFO..L["UI_MIDDLE_CLICK"].."|r", C.INFO..L["MENU_CLEAR_IGNORE"].."|r")
     end
 
@@ -134,11 +151,11 @@ if LDB then
         icon = "Interface\\Icons\\INV_Misc_Food_02",
         
         OnClick = function(self, button)
-            if button == "LeftButton" and ns.BestFoodID then
+            if button == "RightButton" and ns.BestFoodID then
                 CC_IgnoreList[ns.BestFoodID] = true
                 if ns.UpdateMacros then ns.UpdateMacros(true) end
                 
-            elseif button == "RightButton" then
+            elseif button == "LeftButton" then
                 if ns.ToggleBuffFood then
                     ns.ToggleBuffFood()
                 else
