@@ -101,8 +101,13 @@ end
 -- [[ ITEM SCANNING ]] --
 
 local function CacheItemData(itemID)
-    local name, _, _, _, _, classType, subType, _, _, _, iPrice = GetItemInfo(itemID)
+    local name, _, _, _, _, classType, subType, _, _, _, iPrice, classID = GetItemInfo(itemID)
     if not name then return nil end 
+
+    if classID ~= 0 then
+        itemCache[itemID] = "IGNORE"
+        return "IGNORE"
+    end
 
     scannerTooltip:ClearLines()
     scannerTooltip:SetHyperlink("item:"..itemID)
@@ -197,7 +202,7 @@ local function CacheItemData(itemID)
     end
 
     -- [[ CACHE LOGIC UPDATE ]] --
-    if classType == "Consumable" and data.valHealth == 0 and data.valMana == 0 and not data.isBuffFood then
+    if data.valHealth == 0 and data.valMana == 0 and not data.isBuffFood then
         data.incomplete = true
         return data
     end
