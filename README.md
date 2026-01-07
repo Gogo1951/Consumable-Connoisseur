@@ -2,11 +2,11 @@
 
 This add-on automatically scans your bags and updates consumable macros with the best item available for your current situation.
 
-Whether you just leveled up, picked up a stack of conjured water, traded for a Healthstone, or just zoned into Tempest Keep or Warsong Gulch, your buttons are always ready. 
+Whether you just leveled up, traded for a Healthstone from a new warlock, or just zoned into Tempest Keep  -- your buttons are always ready. 
 
 Connoisseur can even prioritize food that keeps you "Well Fed" if your buff drops off.
 
-<img width="350" alt="image" src="https://github.com/user-attachments/assets/bb34ccc9-fda5-433d-a531-83a364dc91ca" />
+<img width="360" alt="image" src="https://github.com/user-attachments/assets/c57060c0-4eee-44ab-af88-48e077d886cc" />
 
 ## Features
 
@@ -14,7 +14,7 @@ Connoisseur can even prioritize food that keeps you "Well Fed" if your buff drop
 
 🤖 **Auto-Updating** : Macros update instantly when you loot items, trade, level up, or change zones.
 
-🦺 **Safety First** : Toggle "Prioritize Buff Food" with a single click to stop wasting expensive stats on simple healing. You can also quickly add items (like pet food) to the Ignore List directly from the minimap menu.
+🦺 **Safety First** : You can also quickly add items (like pet food) to the Ignore List directly from the minimap menu.
 
 🧠 **Zone Aware** : Prioritizes Battleground-specific consumables (like Arathi Basin Runecloth Bandages) when you are in the correct zone.
 
@@ -28,7 +28,7 @@ For Mages and Warlocks, Right-Click on your Food, Water, or Healthstone macros t
 
 And by simply targeting a lower-level player, when you Right-click on the macro, you'll conjour items useful to that player.
 
-<img width="426" height="498" alt="image" src="https://github.com/user-attachments/assets/094a9155-4136-4380-89cc-130aadf3c1ed" />
+<img width="360" alt="image" src="https://github.com/user-attachments/assets/80a1e852-9bbd-4124-8f1e-8b3fb030e9ec" />
 
 ## Setup
 
