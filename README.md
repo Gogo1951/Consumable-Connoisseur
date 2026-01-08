@@ -49,6 +49,14 @@ You can find this on Curseforge.
 
 https://www.curseforge.com/wow/addons/consumable-connoisseur
 
+## Localization Status
+
+🟢 En-US (English)
+
+🟢 De-DE (German)
+
+Please reach out if you can help with other languages!
+
 ## Testing Status
 
 🟢 World of Warcraft Classic : Vanilla (Era, Anniversary, Hardcore, Anniversary Hardcore)
