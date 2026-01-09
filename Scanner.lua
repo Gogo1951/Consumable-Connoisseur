@@ -12,9 +12,8 @@ scannerTooltip:SetOwner(UIParent, "ANCHOR_NONE")
 -- [[ HELPER FUNCTIONS ]] --
 local function ParseNumber(text)
     if not text then return 0 end
-    local match = text:match("([%d,]+)")
-    if not match then return 0 end
-    return tonumber((string.gsub(match, ",", ""))) or 0
+    local clean = text:gsub("%D", "")
+    return tonumber(clean) or 0
 end
 
 local function CacheItemData(itemID)
@@ -41,7 +40,6 @@ local function CacheItemData(itemID)
     local isStrictHealth, isStrictMana = false, false
     
     -- Load Patterns (with safety fallbacks)
-    local txtAlcohol = L["SCAN_ALCOHOL"]
     local txtLevel = L["SCAN_REQ_LEVEL"]
     local txtFA = L["SCAN_REQ_FA"]
     local txtSeated = L["SCAN_SEATED"]
@@ -53,12 +51,6 @@ local function CacheItemData(itemID)
         
         if text then
             text = text:lower()
-
-            -- Safety Check: Ensure pattern exists before searching
-            if txtAlcohol and text:find(txtAlcohol) then 
-                itemCache[itemID] = "IGNORE"
-                return "IGNORE" 
-            end
 
             if txtLevel then
                 local lvl = text:match(txtLevel)
@@ -134,9 +126,9 @@ local function CacheItemData(itemID)
         if data.valMana > 0 then data.isWater = true end
         if data.valHealth > 0 then data.isFood = true end
         if not data.isWater and not data.isFood then data.isFood = true end
-    elseif (subType == "Bandage" or nameLower:find("bandage")) and data.valHealth > 0 then
+    elseif (subType == "Bandage" or (L["SCAN_BANDAGE"] and nameLower:find(L["SCAN_BANDAGE"]))) and data.valHealth > 0 then
         data.isBandage = true
-    elseif nameLower:find("healthstone") and data.valHealth > 0 then
+    elseif (L["SCAN_HEALTHSTONE"] and nameLower:find(L["SCAN_HEALTHSTONE"])) and data.valHealth > 0 then
         data.isHealthstone = true
     end
 
