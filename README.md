@@ -2,6 +2,8 @@
 
 This add-on automatically scans your bags and updates consumable macros with the best item available for your current situation.
 
+![Consumable-Connoisseur](https://github.com/user-attachments/assets/326eb93f-329f-4967-b750-909011a05b01)
+
 Whether you just leveled up, traded for a Healthstone from a new warlock, or just zoned into Tempest Keep  -- your buttons are always ready. 
 
 Connoisseur can even prioritize food that keeps you "Well Fed" if your buff drops off.
@@ -9,8 +11,6 @@ Connoisseur can even prioritize food that keeps you "Well Fed" if your buff drop
 <img width="360" alt="image" src="https://github.com/user-attachments/assets/c57060c0-4eee-44ab-af88-48e077d886cc" />
 
 ## Features
-
-![Consumable-Connoisseur](https://github.com/user-attachments/assets/326eb93f-329f-4967-b750-909011a05b01)
 
 🤖 **Automatic** : Macros update instantly when you loot items, level up, or change zones.
 
