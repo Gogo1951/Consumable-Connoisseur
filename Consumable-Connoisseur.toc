@@ -6,7 +6,7 @@
 ## IconTexture: Interface/AddOns/Consumable-Connoisseur/Consumable-Connoisseur.tga
 ## Category-enUS: Consumables
 
-## Interface: 11508, 20505, 50503, 110207
+## Interface: 11508, 20505
 ## Version: 2026.01.07.B
 ## X-Curse-Project-ID: 1416865
 ## SavedVariablesPerCharacter: CC_IgnoreList, CC_Settings
@@ -32,3 +32,4 @@ Minimap.lua
 # Consumable Connoisseur on CurseForge // https://www.curseforge.com/wow/addons/consumable-connoisseur
 # Consumable Connoisseur on GitHub // https://github.com/Gogo1951/Consumable-Connoisseur
 # Consumable Connoisseur on Discord // https://discord.gg/eh8hKq992Q
+
