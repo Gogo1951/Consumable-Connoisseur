@@ -7,7 +7,7 @@
 ## Category-enUS: Consumables
 
 ## Interface: 11508, 20505, 50503, 110207
-## Version: @project-version@
+## Version: 2026.01.07.B
 ## X-Curse-Project-ID: 1416865
 ## SavedVariablesPerCharacter: CC_IgnoreList, CC_Settings
 
@@ -17,11 +17,16 @@ Includes\CallbackHandler-1.0\CallbackHandler-1.0.lua
 Includes\LibDataBroker-1.1\LibDataBroker-1.1.lua
 Includes\LibDBIcon-1.0\LibDBIcon-1.0.lua
 
+# Locales
+Locales\enUS.lua
+Locales\deDE.lua
+
 # Connoisseur
-Locales.lua
 Data.lua
-Minimap.lua
+Scanner.lua
+Macros.lua
 Core.lua
+Minimap.lua
 
 # Feedback Welcome! (=
 # Consumable Connoisseur on CurseForge // https://www.curseforge.com/wow/addons/consumable-connoisseur
