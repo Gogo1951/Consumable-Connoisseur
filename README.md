@@ -65,9 +65,9 @@ Please reach out if you can help with other languages!
 
 🟢 World of Warcraft Classic : The Burning Crusade (Anniversary)
 
-🟡 Mists of Pandaria Classic
+🔴 Mists of Pandaria Classic
 
-🟡 World of Warcraft
+🔴 World of Warcraft
 
 Please reach out if you would like to be involved with testing!
 
