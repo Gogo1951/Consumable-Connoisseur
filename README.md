@@ -8,20 +8,6 @@ Connoisseur can even prioritize food that keeps you "Well Fed" if your buff drop
 
 <img width="360" alt="image" src="https://github.com/user-attachments/assets/c57060c0-4eee-44ab-af88-48e077d886cc" />
 
-## Features
-
-![Consumable-Connoisseur](https://github.com/user-attachments/assets/326eb93f-329f-4967-b750-909011a05b01)
-
-🤖 **Auto-Updating** : Macros update instantly when you loot items, trade, level up, or change zones.
-
-🦺 **Safety First** : You can also quickly add items (like pet food) to the Ignore List directly from the minimap menu.
-
-🧠 **Zone Aware** : Prioritizes Battleground-specific consumables (like Arathi Basin Runecloth Bandages) when you are in the correct zone.
-
-💬 **Perfect Tooltips** : What You See Is What You Get. No more shoehorned macros that don't show the correct tooltips or item counts.
-
-⏩ **Optimized** : Light-weight, but also only updates when inventory changes or combat ends.
-
 ## Automatically Conjour Relevant Items
 
 For Mages and Warlocks, Right-Click on your Food, Water, or Healthstone macros to make more.
@@ -29,6 +15,20 @@ For Mages and Warlocks, Right-Click on your Food, Water, or Healthstone macros t
 And by simply targeting a lower-level player, when you Right-click on the macro, you'll conjour items useful to that player.
 
 <img width="360" alt="image" src="https://github.com/user-attachments/assets/80a1e852-9bbd-4124-8f1e-8b3fb030e9ec" />
+
+## Features
+
+![Consumable-Connoisseur](https://github.com/user-attachments/assets/326eb93f-329f-4967-b750-909011a05b01)
+
+🤖 **Automatic** : Macros update instantly when you loot items, level up, or change zones.
+
+🦺 **Safety First** : You can easily add items (like pet food) to the Ignore List directly from the minimap menu.
+
+🧠 **Zone Aware** : Prioritizes Battleground-specific consumables (like Arathi Basin Runecloth Bandages) when you are in the correct zone.
+
+💬 **Perfect Tooltips** : What You See Is What You Get. No more shoehorned macros that don't show the correct tooltips or item counts.
+
+⏩ **Optimized** : Light-weight, but also only updates when inventory changes or combat ends.
 
 ## Setup
 
