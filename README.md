@@ -22,6 +22,8 @@ Connoisseur can even prioritize food that keeps you "Well Fed" if your buff drop
 
 ⏩ **Optimized** : Light-weight, but also only updates when inventory changes or combat ends.
 
+🗺️ **Localized** : Works with all Classic WoW Locales (enUS, deDE, esES, esMX, frFR, koKR, ptBR, ruRU, zhCN, zhTW).
+
 ## Automatically Conjour Relevant Items
 
 For Mages and Warlocks, Right-Click on your Food, Water, or Healthstone macros to make more.
@@ -48,12 +50,6 @@ And by simply targeting a lower-level player, when you Right-click on the macro,
 You can find this on Curseforge.
 
 https://www.curseforge.com/wow/addons/consumable-connoisseur
-
-## Localization Status
-
-🟢 En-US (English)
-
-🟢 De-DE (German)
 
 Please reach out if you can help with other languages!
 
