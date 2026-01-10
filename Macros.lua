@@ -27,7 +27,7 @@ local function GetSmartSpell(spellList)
                     return name, id
                 end
 
-                if rank and rank ~= "" then 
+                if rank and type(rank) == "string" and rank ~= "" then
                     if rank:find("%d") then
                         return name .. "(" .. L["RANK"] .. " " .. rankNum .. ")", id
                     else
