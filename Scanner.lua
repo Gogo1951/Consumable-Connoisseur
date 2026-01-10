@@ -52,6 +52,8 @@ local function CacheItemData(itemID)
         if text then
             text = text:lower()
 
+            text = text:gsub("([%d])[,%.]", "%1")
+
             if txtLevel then
                 local lvl = text:match(txtLevel)
                 if lvl then data.reqLvl = tonumber(lvl) end
@@ -274,7 +276,6 @@ function ns.ScanBags()
         end
     end
 
-    -- Update Global State for Minimap
     ns.BestFoodID = best["Food"].id
     ns.BestFoodLink = best["Food"].link
     
