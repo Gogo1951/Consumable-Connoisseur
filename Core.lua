@@ -62,9 +62,12 @@ function ns.UnregisterDataRetry()
 end
 
 -- [[ EVENT HANDLING ]] --
+
 function ns.RequestUpdate()
-    isUpdatePending = true
-    updateTimer = 0 
+    if not isUpdatePending then
+        isUpdatePending = true
+        updateTimer = 0 
+    end
 end
 
 frame:SetScript("OnUpdate", function(self, elapsed)
@@ -87,7 +90,14 @@ frame:SetScript("OnEvent", function(self, event, ...)
         return
     end
 
-    if event == "BAG_UPDATE_DELAYED" then
+    if event == "BAG_UPDATE_DELAYED" or 
+       event == "PLAYER_TARGET_CHANGED" or
+       event == "GET_ITEM_INFO_RECEIVED" or 
+       event == "ZONE_CHANGED_NEW_AREA" or 
+       event == "PLAYER_LEVEL_UP" or
+       event == "PLAYER_ALIVE" or 
+       event == "PLAYER_UNGHOST" then
+        
         ns.RequestUpdate()
         
     elseif event == "PLAYER_ENTERING_WORLD" then
@@ -95,17 +105,18 @@ frame:SetScript("OnEvent", function(self, event, ...)
         ns.RequestUpdate()
         C_Timer.After(3, function() ns.RequestUpdate() end) 
         
-    elseif event == "GET_ITEM_INFO_RECEIVED" then
-        ns.RequestUpdate()
-
-    elseif event == "PLAYER_TARGET_CHANGED" then
-        ns.RequestUpdate()
+    elseif event == "UNIT_AURA" then
+        local unit = ...
+        if unit == "player" then
+            ns.RequestUpdate()
+        end
 
     elseif event == "UNIT_SPELLCAST_SUCCEEDED" then
         local unit, _, spellID = ...
         if ns.SpellCache and ns.SpellCache[spellID] then
             ns.RequestUpdate()
         end
+
     elseif event == "UI_ERROR_MESSAGE" then
         if CC_LastTime and (GetTime() - CC_LastTime) < 1.0 then
             local _, msg = ...
@@ -129,12 +140,12 @@ frame:SetScript("OnEvent", function(self, event, ...)
 end)
 
 frame:RegisterEvent("BAG_UPDATE_DELAYED")
-frame:RegisterEvent("PLAYER_ENTERING_WORLD")
-frame:RegisterEvent("PLAYER_REGEN_ENABLED")
-frame:RegisterEvent("ZONE_CHANGED_NEW_AREA")
-frame:RegisterEvent("PLAYER_LEVEL_UP")
-frame:RegisterEvent("UI_ERROR_MESSAGE")
-frame:RegisterEvent("PLAYER_UNGHOST")
 frame:RegisterEvent("PLAYER_ALIVE")
+frame:RegisterEvent("PLAYER_ENTERING_WORLD")
+frame:RegisterEvent("PLAYER_LEVEL_UP")
+frame:RegisterEvent("PLAYER_REGEN_ENABLED")
 frame:RegisterEvent("PLAYER_TARGET_CHANGED")
+frame:RegisterEvent("PLAYER_UNGHOST")
+frame:RegisterEvent("UI_ERROR_MESSAGE")
+frame:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 frame:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player")
