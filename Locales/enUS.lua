@@ -1,5 +1,4 @@
 local _, ns = ...
--- Initialize the L table here
 ns.L = {}
 local L = ns.L
 
@@ -45,19 +44,33 @@ L["UI_MIDDLE_CLICK"] = "Middle-Click"
 L["UI_RIGHT_CLICK"] = "Right-Click"
 L["UI_TOGGLE"] = "Toggle"
 
-L["SCAN_BANDAGE"] = "bandage"
-L["SCAN_HEALS"] = "heals ([%d,]+)"
-L["SCAN_HEALTH"] = "health"
-L["SCAN_HEALTHSTONE"] = "healthstone"
-L["SCAN_HPOT_STRICT"] = "restores ([%d,]+) to ([%d,]+) health"
-L["SCAN_HYBRID"] = "mana and health"
-L["SCAN_LIFE"] = "life"
-L["SCAN_MANA"] = "mana"
-L["SCAN_MPOT_STRICT"] = "restores ([%d,]+) to ([%d,]+) mana"
-L["SCAN_PERCENT"] = "restores (%d+)%%"
+-- [[ SCANNING PATTERNS ]] --
+
 L["SCAN_REQ_FA"] = "requires first aid %((%d+)%)"
 L["SCAN_REQ_LEVEL"] = "requires level (%d+)"
-L["SCAN_RESTORES"] = "restores ([%d,]+)"
 L["SCAN_SEATED"] = "must remain seated"
-L["SCAN_USE"] = "use:"
-L["SCAN_WELL_FED"] = "well fed"
+
+-- Food
+L["PATTERNS_FOOD"] = {
+    "restores.-(%d+)%%.-of.-health", 
+    "restores%s+(%d+)%s+health"
+}
+
+-- Water
+L["PATTERNS_WATER"] = {
+    "restores.-(%d+)%%.-of.-mana",
+    "restores%s+(%d+)%s+mana"
+}
+
+-- Buff Food
+L["PATTERNS_BUFF"] = {
+    "well fed",
+    "10 seconds",
+    "10 min"
+}
+
+L["PATTERN_BANDAGE"] = "bandage.*heals%s+(%d+)%s+damage"
+L["PATTERN_CONJURED"] = "conjured item"
+L["PATTERN_HPOT"] = "restores%s+(%d+)%s+to%s+%d+%s+health%."
+L["PATTERN_HS"] = "healthstone.*restores%s+(%d+)%s+life"
+L["PATTERN_MPOT"] = "restores%s+(%d+)%s+to%s+%d+%s+mana%."
