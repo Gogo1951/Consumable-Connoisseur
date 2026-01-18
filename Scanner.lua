@@ -78,16 +78,14 @@ function ns.UpdateFASkill()
         return
     end
 
-    local profs = {GetProfessions()}
-    for _, index in ipairs(profs) do
-        if index then
-            local name, _, rank = GetProfessionInfo(index)
-            if name == faName then
-                currentFASkill = rank
-                return
-            end
+    for i = 1, GetNumSkillLines() do
+        local skillName, isHeader, _, skillRank = GetSkillLineInfo(i)
+        if not isHeader and skillName == faName then
+            currentFASkill = skillRank
+            return
         end
     end
+
     currentFASkill = 0
 end
 
