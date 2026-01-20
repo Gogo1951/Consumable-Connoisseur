@@ -61,11 +61,11 @@ ns.ConjureSpells = {
         {587, 1, 1} -- Rank 1 (Conjured Muffin)
     },
     MageGem = {
-        {27101, 68, 5}, -- Rank 5 (Mana Emerald)
-        {10054, 58, 4}, -- Rank 4 (Mana Ruby)
-        {10053, 48, 3}, -- Rank 3 (Mana Citrine)
-        {3552, 38, 2}, -- Rank 2 (Mana Jade)
-        {759, 28, 1} -- Rank 1 (Mana Agate)
+        {27101, 68}, -- Mana Emerald
+        {10054, 58}, -- Mana Ruby
+        {10053, 48}, -- Mana Citrine
+        {3552, 38}, -- Mana Jade
+        {759, 28} -- Mana Agate
     },
     WarlockSoul = {
         {29893, 68}
