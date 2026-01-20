@@ -70,6 +70,8 @@ function ns.UpdateMacros(forced)
         elseif typeName == "Food" and ns.ConjureSpells.MageFood then
             rightSpellName, rightSpellID = GetSmartSpell(ns.ConjureSpells.MageFood)
             midSpellName, midSpellID = GetSmartSpell(ns.ConjureSpells.MageTable)
+        elseif typeName == "Mana Gem" and ns.ConjureSpells.MageGem then
+            rightSpellName, rightSpellID = GetSmartSpell(ns.ConjureSpells.MageGem)
         elseif typeName == "Healthstone" and ns.ConjureSpells.WarlockHS then
             rightSpellName, rightSpellID = GetSmartSpell(ns.ConjureSpells.WarlockHS)
             midSpellName, midSpellID = GetSmartSpell(ns.ConjureSpells.WarlockSoul)

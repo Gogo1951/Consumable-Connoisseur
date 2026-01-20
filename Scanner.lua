@@ -9,6 +9,7 @@ local currentFASkill = 0
 ns.RawData = ns.RawData or {}
 ns.RawData.FoodAndWater = ns.RawData.FoodAndWater or {}
 ns.RawData.Potions = ns.RawData.Potions or {}
+ns.RawData.ManaGem = ns.RawData.ManaGem or {}
 ns.RawData.Healthstone = ns.RawData.Healthstone or {}
 ns.RawData.Bandage = ns.RawData.Bandage or {}
 
@@ -39,6 +40,7 @@ local best = {
         count = 0
     },
     ["Mana Potion"] = {id = nil, val = 0, price = 0, isBuffFood = false, isPercent = false, isHybrid = false, count = 0},
+    ["Mana Gem"] = {id = nil, val = 0, price = 0, isBuffFood = false, isPercent = false, isHybrid = false, count = 0},
     ["Healthstone"] = {id = nil, val = 0, price = 0, isBuffFood = false, isPercent = false, isHybrid = false, count = 0},
     ["Bandage"] = {id = nil, val = 0, price = 0, isBuffFood = false, isPercent = false, isHybrid = false, count = 0}
 }
@@ -98,10 +100,11 @@ local function CacheItemData(itemID)
 
     local rawFood = ns.RawData.FoodAndWater[itemID]
     local rawPotion = ns.RawData.Potions[itemID]
+    local rawManaGem = ns.RawData.ManaGem[itemID]
     local rawHS = ns.RawData.Healthstone[itemID]
     local rawBandage = ns.RawData.Bandage[itemID]
 
-    if not (rawFood or rawPotion or rawHS or rawBandage) then
+    if not (rawFood or rawPotion or rawManaGem or rawHS or rawBandage) then
         itemCache[itemID] = "IGNORE"
         return "IGNORE"
     end
@@ -117,6 +120,7 @@ local function CacheItemData(itemID)
         isWater = false,
         isBandage = false,
         isPotion = false,
+        isManaGem = false,
         isHealthstone = false,
         isBuffFood = false,
         isPercent = false,
@@ -153,6 +157,10 @@ local function CacheItemData(itemID)
         data.valHealth = rawPotion[1]
         data.valMana = rawPotion[2]
         data.zones = rawPotion[3]
+    elseif rawManaGem then
+        data.isManaGem = true
+        data.valMana = rawManaGem[1]
+        data.zones = rawManaGem[2]
     elseif rawHS then
         data.isHealthstone = true
         data.valHealth = rawHS[1]
@@ -305,6 +313,14 @@ function ns.ScanBags()
                                             IsBetter(data, totalCount, data.price, best["Mana Potion"], data.valMana)
                                      then
                                         local b = best["Mana Potion"]
+                                        b.id = id
+                                        b.val = data.valMana
+                                        b.price = data.price
+                                        b.count = totalCount
+                                    end
+                                elseif data.isManaGem then
+                                    if IsBetter(data, totalCount, data.price, best["Mana Gem"], data.valMana) then
+                                        local b = best["Mana Gem"]
                                         b.id = id
                                         b.val = data.valMana
                                         b.price = data.price
