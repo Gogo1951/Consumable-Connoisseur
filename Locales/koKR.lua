@@ -8,6 +8,7 @@ if GetLocale() == "koKR" then
     L["MACRO_HPOT"] = "- 치유 물약"
     L["MACRO_HS"] = "- 생명석"
     L["MACRO_MPOT"] = "- 마나 물약"
+    L["MACRO_MGEM"] = "- 마나 보석"
     L["MACRO_WATER"] = "- 물"
 
     L["ERR_ZONE"] = "여기선 사용할 수 없습니다."
@@ -29,6 +30,7 @@ if GetLocale() == "koKR" then
 
     L["TIP_DOWNRANK"] = "자신보다 레벨이 낮은 플레이어를 대상으로 하면 해당 레벨에 맞는 아이템을 창조합니다."
     L["TIP_MAGE_CONJURE"] = "음식 또는 물 매크로를 우클릭하면 음식 또는 물을 창조합니다."
+    L["TIP_MAGE_GEM"] = "마나 보석 매크로를 우클릭하면 마나 보석을 창조합니다."
     L["TIP_MAGE_TABLE"] = "마우스 휠(가운데) 클릭 시 식탁을 깝니다."
     L["TIP_WARLOCK_CONJURE"] = "생명석 매크로를 우클릭하면 생명석을 창조합니다."
     L["TIP_WARLOCK_SOUL"] = "마우스 휠(가운데) 클릭 시 영혼의 의식을 시전합니다."
