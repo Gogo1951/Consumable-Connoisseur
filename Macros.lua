@@ -5,10 +5,11 @@ local Config = ns.Config
 
 local currentMacroState = {}
 
-local function GetSmartSpell(spellList)
+local function GetSmartSpellList(spellList, includeRank)
     if not spellList then
-        return nil, 0
+        return nil, nil
     end
+    includeRank = (includeRank ~= false)
     local levelCap = UnitLevel("player")
 
     if UnitExists("target") and UnitIsFriend("player", "target") and UnitIsPlayer("target") then
@@ -17,6 +18,9 @@ local function GetSmartSpell(spellList)
             levelCap = tLvl
         end
     end
+
+    local names = {}
+    local ids = {}
 
     for _, data in ipairs(spellList) do
         local id, req, rankNum = data[1], data[2], data[3]
@@ -28,17 +32,42 @@ local function GetSmartSpell(spellList)
         if known and req <= levelCap then
             local name = GetSpellInfo(id)
             if name then
-                if name:find("%(") then
-                    return name, id
+                if includeRank and not name:find("%(") and rankNum then
+                    name = name .. "(" .. L["RANK"] .. " " .. rankNum .. ")"
                 end
-                if rankNum then
-                    return name .. "(" .. L["RANK"] .. " " .. rankNum .. ")", id
-                end
-                return name, id
+                names[#names + 1] = name
+                ids[#ids + 1] = id
             end
         end
     end
+
+    if #names == 0 then
+        return nil, nil
+    end
+
+    return names, ids
+end
+
+local function GetSmartSpell(spellList)
+    local names, ids = GetSmartSpellList(spellList)
+    if names then
+        return names[1], ids[1]
+    end
     return nil, 0
+end
+
+local function GetSpellNameWithRank(spellID, rankNum)
+    local name = GetSpellInfo(spellID)
+    if not name then
+        return nil
+    end
+    if name:find("%(") then
+        return name
+    end
+    if rankNum then
+        return name .. "(" .. L["RANK"] .. " " .. rankNum .. ")"
+    end
+    return name
 end
 
 function ns.UpdateMacros(forced)
@@ -60,9 +89,11 @@ function ns.UpdateMacros(forced)
 
     for typeName, cfg in pairs(Config) do
         local itemID = best[typeName].id
+        local secondaryItemID
         local stateID = itemID and tostring(itemID) or "none"
 
         local rightSpellName, rightSpellID, midSpellName, midSpellID
+        local rightSpellSequence, rightSpellSequenceIDs
 
         if typeName == "Water" and ns.ConjureSpells.MageWater then
             rightSpellName, rightSpellID = GetSmartSpell(ns.ConjureSpells.MageWater)
@@ -70,17 +101,42 @@ function ns.UpdateMacros(forced)
         elseif typeName == "Food" and ns.ConjureSpells.MageFood then
             rightSpellName, rightSpellID = GetSmartSpell(ns.ConjureSpells.MageFood)
             midSpellName, midSpellID = GetSmartSpell(ns.ConjureSpells.MageTable)
+        elseif typeName == "Mana Gem" and ns.ConjureSpells.MageGem then
+            rightSpellSequence, rightSpellSequenceIDs = GetSmartSpellList(ns.ConjureSpells.MageGem, false)
+            if rightSpellSequence then
+                rightSpellName = rightSpellSequence[1]
+                rightSpellID = rightSpellSequenceIDs[1]
+            end
         elseif typeName == "Healthstone" and ns.ConjureSpells.WarlockHS then
             rightSpellName, rightSpellID = GetSmartSpell(ns.ConjureSpells.WarlockHS)
             midSpellName, midSpellID = GetSmartSpell(ns.ConjureSpells.WarlockSoul)
+        elseif typeName == "Mana Gem" and ns.ConjureSpells.MageGem and ns.GetKnownManaGemData then
+            local bestGem, secondGem = ns.GetKnownManaGemData()
+            if bestGem then
+                rightSpellID = bestGem[1]
+                rightSpellName = GetSpellNameWithRank(bestGem[1], bestGem[3])
+            end
+            if secondGem then
+                midSpellID = secondGem[1]
+                midSpellName = GetSpellNameWithRank(secondGem[1], secondGem[3])
+            end
+            if best["Mana Gem 2"] then
+                secondaryItemID = best["Mana Gem 2"].id
+            end
         end
 
-        if rightSpellName or midSpellName then
+        if secondaryItemID and secondaryItemID ~= itemID then
+            stateID = stateID .. "_S:" .. secondaryItemID
+        end
+
+        if rightSpellName or midSpellName or rightSpellSequence then
             stateID = stateID .. "_C"
             if midSpellName then
                 stateID = stateID .. "_M:" .. midSpellID
             end
-            if rightSpellName then
+            if rightSpellSequenceIDs then
+                stateID = stateID .. "_RS:" .. table.concat(rightSpellSequenceIDs, "-")
+            elseif rightSpellName then
                 stateID = stateID .. "_R:" .. rightSpellID
             end
         end
@@ -90,7 +146,11 @@ function ns.UpdateMacros(forced)
 
             if itemID then
                 tooltipLine = "#showtooltip item:" .. itemID .. "\n"
-                actionBlock = "/run CC_LastID=" .. itemID .. ";CC_LastTime=GetTime()\n/use item:" .. itemID
+                local useLines = "/use item:" .. itemID
+                if typeName == "Mana Gem" and secondaryItemID and secondaryItemID ~= itemID then
+                    useLines = useLines .. "\n/use item:" .. secondaryItemID
+                end
+                actionBlock = "/run CC_LastID=" .. itemID .. ";CC_LastTime=GetTime()\n" .. useLines
                 icon = GetItemIcon(itemID)
             else
                 local msg = string.format(L["MSG_NO_ITEM"], typeName)
@@ -100,21 +160,23 @@ function ns.UpdateMacros(forced)
             end
 
             local conjureBlock = ""
-            if rightSpellName or midSpellName then
-                local castLine = ""
+            if rightSpellName or midSpellName or rightSpellSequence then
                 local stopConditions = ""
 
                 if midSpellName then
-                    castLine = castLine .. "[btn:3] " .. midSpellName .. "; "
+                    conjureBlock = conjureBlock .. "/cast [btn:3] " .. midSpellName .. "\n"
                     stopConditions = stopConditions .. "[btn:3]"
                 end
-                if rightSpellName then
-                    castLine = castLine .. "[btn:2] " .. rightSpellName .. "; "
+                if rightSpellSequence then
+                    conjureBlock = conjureBlock .. "/castsequence [btn:2] " .. table.concat(rightSpellSequence, ", ") .. "\n"
+                    stopConditions = stopConditions .. "[btn:2]"
+                elseif rightSpellName then
+                    conjureBlock = conjureBlock .. "/cast [btn:2] " .. rightSpellName .. "\n"
                     stopConditions = stopConditions .. "[btn:2]"
                 end
 
-                if castLine ~= "" then
-                    conjureBlock = "/cast " .. castLine .. "\n/stopmacro " .. stopConditions .. "\n"
+                if stopConditions ~= "" then
+                    conjureBlock = conjureBlock .. "/stopmacro " .. stopConditions .. "\n"
                 end
             end
 
