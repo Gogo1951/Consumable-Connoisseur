@@ -5,10 +5,11 @@ local Config = ns.Config
 
 local currentMacroState = {}
 
-local function GetSmartSpellList(spellList)
+local function GetSmartSpellList(spellList, includeRank)
     if not spellList then
         return nil, nil
     end
+    includeRank = (includeRank ~= false)
     local levelCap = UnitLevel("player")
 
     if UnitExists("target") and UnitIsFriend("player", "target") and UnitIsPlayer("target") then
@@ -31,7 +32,7 @@ local function GetSmartSpellList(spellList)
         if known and req <= levelCap then
             local name = GetSpellInfo(id)
             if name then
-                if not name:find("%(") and rankNum then
+                if includeRank and not name:find("%(") and rankNum then
                     name = name .. "(" .. L["RANK"] .. " " .. rankNum .. ")"
                 end
                 names[#names + 1] = name
@@ -101,7 +102,7 @@ function ns.UpdateMacros(forced)
             rightSpellName, rightSpellID = GetSmartSpell(ns.ConjureSpells.MageFood)
             midSpellName, midSpellID = GetSmartSpell(ns.ConjureSpells.MageTable)
         elseif typeName == "Mana Gem" and ns.ConjureSpells.MageGem then
-            rightSpellSequence, rightSpellSequenceIDs = GetSmartSpellList(ns.ConjureSpells.MageGem)
+            rightSpellSequence, rightSpellSequenceIDs = GetSmartSpellList(ns.ConjureSpells.MageGem, false)
             if rightSpellSequence then
                 rightSpellName = rightSpellSequence[1]
                 rightSpellID = rightSpellSequenceIDs[1]
