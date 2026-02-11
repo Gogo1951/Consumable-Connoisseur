@@ -8,6 +8,7 @@ if GetLocale() == "frFR" then
     L["MACRO_HPOT"] = "- Pot. Soins"
     L["MACRO_HS"] = "- Pierre"
     L["MACRO_MPOT"] = "- Pot. Mana"
+    L["MACRO_MGEM"] = "- Mana Gem"
     L["MACRO_WATER"] = "- Boire"
 
     L["ERR_ZONE"] = "Vous ne pouvez pas utiliser cela ici."
@@ -29,6 +30,7 @@ if GetLocale() == "frFR" then
 
     L["TIP_DOWNRANK"] = "Cibler un joueur de bas niveau adaptera le rang des objets créés par la macro."
     L["TIP_MAGE_CONJURE"] = "Clic droit sur vos macros Nourriture ou Eau pour en créer."
+    L["TIP_MAGE_GEM"] = "Clic droit sur votre macro Gemme de mana pour en créer une."
     L["TIP_MAGE_TABLE"] = "Clic milieu pour lancer Rituel de rafraîchissement."
     L["TIP_WARLOCK_CONJURE"] = "Clic droit sur votre macro Pierre de soins pour en créer une."
     L["TIP_WARLOCK_SOUL"] = "Clic milieu pour lancer Rituel des âmes."
