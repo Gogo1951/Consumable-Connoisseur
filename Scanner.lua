@@ -7,11 +7,11 @@ ns.BestFoodLink = nil
 local currentFASkill = 0
 
 ns.RawData = ns.RawData or {}
-ns.RawData.FoodAndWater = ns.RawData.FoodAndWater or {}
-ns.RawData.Potions = ns.RawData.Potions or {}
-ns.RawData.ManaGem = ns.RawData.ManaGem or {}
-ns.RawData.Healthstone = ns.RawData.Healthstone or {}
 ns.RawData.Bandage = ns.RawData.Bandage or {}
+ns.RawData.FoodAndWater = ns.RawData.FoodAndWater or {}
+ns.RawData.Healthstone = ns.RawData.Healthstone or {}
+ns.RawData.ManaGem = ns.RawData.ManaGem or {}
+ns.RawData.Potions = ns.RawData.Potions or {}
 
 local itemCache = {}
 
@@ -29,7 +29,15 @@ local best = {
         count = 0,
         link = nil
     },
-    ["Water"] = {id = nil, val = 0, price = 0, isBuffFood = false, isPercent = false, isHybrid = false, count = 0},
+    ["Water"] = {
+        id = nil, 
+        val = 0, 
+        price = 0, 
+        isBuffFood = false, 
+        isPercent = false, 
+        isHybrid = false, 
+        count = 0
+    },
     ["Health Potion"] = {
         id = nil,
         val = 0,
@@ -39,10 +47,42 @@ local best = {
         isHybrid = false,
         count = 0
     },
-    ["Mana Potion"] = {id = nil, val = 0, price = 0, isBuffFood = false, isPercent = false, isHybrid = false, count = 0},
-    ["Mana Gem"] = {id = nil, val = 0, price = 0, isBuffFood = false, isPercent = false, isHybrid = false, count = 0},
-    ["Healthstone"] = {id = nil, val = 0, price = 0, isBuffFood = false, isPercent = false, isHybrid = false, count = 0},
-    ["Bandage"] = {id = nil, val = 0, price = 0, isBuffFood = false, isPercent = false, isHybrid = false, count = 0}
+    ["Mana Potion"] = {
+        id = nil, 
+        val = 0, 
+        price = 0, 
+        isBuffFood = false, 
+        isPercent = false, 
+        isHybrid = false, 
+        count = 0
+    },
+    ["Mana Gem"] = {
+        id = nil, 
+        val = 0, 
+        price = 0, 
+        isBuffFood = false, 
+        isPercent = false, 
+        isHybrid = false, 
+        count = 0
+    },
+    ["Healthstone"] = {
+        id = nil, 
+        val = 0, 
+        price = 0, 
+        isBuffFood = false, 
+        isPercent = false, 
+        isHybrid = false,
+        count = 0
+    },
+    ["Bandage"] = {
+        id = nil, 
+        val = 0, 
+        price = 0, 
+        isBuffFood = false, 
+        isPercent = false, 
+        isHybrid = false, 
+        count = 0
+    }
 }
 
 local function ResetBest(t)
@@ -100,11 +140,11 @@ local function CacheItemData(itemID)
 
     local rawFood = ns.RawData.FoodAndWater[itemID]
     local rawPotion = ns.RawData.Potions[itemID]
-    local rawManaGem = ns.RawData.ManaGem[itemID]
     local rawHS = ns.RawData.Healthstone[itemID]
     local rawBandage = ns.RawData.Bandage[itemID]
+    local rawMGem = ns.RawData.ManaGem[itemID] -- Check for Mana Gem
 
-    if not (rawFood or rawPotion or rawManaGem or rawHS or rawBandage) then
+    if not (rawFood or rawPotion or rawHS or rawBandage or rawMGem) then
         itemCache[itemID] = "IGNORE"
         return "IGNORE"
     end
@@ -120,8 +160,8 @@ local function CacheItemData(itemID)
         isWater = false,
         isBandage = false,
         isPotion = false,
-        isManaGem = false,
         isHealthstone = false,
+        isManaGem = false, -- Init flag
         isBuffFood = false,
         isPercent = false,
         zones = nil
@@ -157,19 +197,19 @@ local function CacheItemData(itemID)
         data.valHealth = rawPotion[1]
         data.valMana = rawPotion[2]
         data.zones = rawPotion[3]
-    elseif rawManaGem then
-        data.isManaGem = true
-        data.valMana = rawManaGem[1]
-        data.zones = rawManaGem[2]
     elseif rawHS then
         data.isHealthstone = true
         data.valHealth = rawHS[1]
-        data.zones = rawHS[2]
+        data.zones = rawHS[2] -- Not Needed... can refactor later.
     elseif rawBandage then
         data.isBandage = true
         data.valHealth = rawBandage[1]
         data.reqFA = rawBandage[2]
         data.zones = rawBandage[3]
+    elseif rawMGem then
+        data.isManaGem = true
+        data.valMana = rawMGem[1]
+        data.zones = rawMGem[2] -- Not Needed... can refactor later.
     end
 
     itemCache[itemID] = data
@@ -202,34 +242,6 @@ local function IsBetter(itemData, itemCount, itemPrice, currentBest, score)
     end
 
     return itemCount < currentBest.count
-end
-
-local function IsSpellKnownSafe(spellID)
-    local known = IsSpellKnown(spellID)
-    if not known and IsPlayerSpell then
-        known = IsPlayerSpell(spellID)
-    end
-    return known
-end
-
-function ns.GetKnownManaGemData()
-    if not ns.ConjureSpells or not ns.ConjureSpells.MageGem then
-        return nil, nil
-    end
-
-    local bestGem, secondGem
-    for _, data in ipairs(ns.ConjureSpells.MageGem) do
-        if IsSpellKnownSafe(data[1]) then
-            if not bestGem then
-                bestGem = data
-            elseif not secondGem then
-                secondGem = data
-                break
-            end
-        end
-    end
-
-    return bestGem, secondGem
 end
 
 function ns.ScanBags()
@@ -301,6 +313,7 @@ function ns.ScanBags()
                                 end
                             end
 
+-- Inside the loop where we process usable items:
                             if usable then
                                 local totalCount = itemCounts[id]
                                 if data.isBandage then
@@ -319,7 +332,17 @@ function ns.ScanBags()
                                         b.price = data.price
                                         b.count = totalCount
                                     end
+                                elseif data.isManaGem then
+                                    -- NEW Block for Mana Gems
+                                    if IsBetter(data, totalCount, data.price, best["Mana Gem"], data.valMana) then
+                                        local b = best["Mana Gem"]
+                                        b.id = id
+                                        b.val = data.valMana
+                                        b.price = data.price
+                                        b.count = totalCount
+                                    end
                                 elseif data.isPotion then
+                                    -- ... existing potion logic ...
                                     if
                                         data.valHealth > 0 and
                                             IsBetter(
@@ -338,17 +361,15 @@ function ns.ScanBags()
                                     end
                                     if
                                         data.valMana > 0 and
-                                            IsBetter(data, totalCount, data.price, best["Mana Potion"], data.valMana)
+                                            IsBetter(
+                                                data, 
+                                                totalCount, 
+                                                data.price, 
+                                                best["Mana Potion"], 
+                                                data.valMana
+                                            )
                                      then
                                         local b = best["Mana Potion"]
-                                        b.id = id
-                                        b.val = data.valMana
-                                        b.price = data.price
-                                        b.count = totalCount
-                                    end
-                                elseif data.isManaGem then
-                                    if IsBetter(data, totalCount, data.price, best["Mana Gem"], data.valMana) then
-                                        local b = best["Mana Gem"]
                                         b.id = id
                                         b.val = data.valMana
                                         b.price = data.price
