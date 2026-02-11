@@ -31,12 +31,11 @@ Locales\zhTW.lua
 
 # Connoisseur
 Data/General.lua
-Data/Mana-Gems.lua
-Data/Potions.lua
-Data/ManaGems.lua
 Data/Bandages.lua
 Data/Food-and-Water.lua
 Data/Healthstones.lua
+Data/Mana-Gems.lua
+Data/Potions.lua
 Scanner.lua
 Macros.lua
 Core.lua
@@ -46,3 +45,4 @@ Minimap.lua
 # Consumable Connoisseur on CurseForge // https://www.curseforge.com/wow/addons/consumable-connoisseur
 # Consumable Connoisseur on GitHub // https://github.com/Gogo1951/Consumable-Connoisseur
 # Consumable Connoisseur on Discord // https://discord.gg/eh8hKq992Q
+
