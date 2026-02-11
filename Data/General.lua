@@ -12,13 +12,13 @@ ns.Colors = {
 }
 
 ns.Config = {
+    ["Bandage"] = {macro = ns.L["MACRO_BANDAGE"], defaultID = 1251},
     ["Food"] = {macro = ns.L["MACRO_FOOD"], defaultID = 5349},
-    ["Water"] = {macro = ns.L["MACRO_WATER"], defaultID = 5350},
     ["Health Potion"] = {macro = ns.L["MACRO_HPOT"], defaultID = 118},
-    ["Mana Potion"] = {macro = ns.L["MACRO_MPOT"], defaultID = 2455},
-    ["Mana Gem"] = {macro = ns.L["MACRO_MGEM"], defaultID = 5514},
     ["Healthstone"] = {macro = ns.L["MACRO_HS"], defaultID = 5512},
-    ["Bandage"] = {macro = ns.L["MACRO_BANDAGE"], defaultID = 1251}
+    ["Mana Gem"] = {macro = ns.L["MACRO_MGEM"], defaultID = 5514},
+    ["Mana Potion"] = {macro = ns.L["MACRO_MPOT"], defaultID = 2455},
+    ["Water"] = {macro = ns.L["MACRO_WATER"], defaultID = 5350}
 }
 
 -- Additional "Well Fed" Buff IDs
@@ -60,12 +60,12 @@ ns.ConjureSpells = {
         {597, 5, 2}, -- Rank 2 (Conjured Bread)
         {587, 1, 1} -- Rank 1 (Conjured Muffin)
     },
-    MageGem = {
-        {27101, 70, 5, 22044}, -- Rank 5 (Mana Emerald)
-        {10054, 58, 4, 8008}, -- Rank 4 (Mana Ruby)
-        {10053, 48, 3, 8007}, -- Rank 3 (Mana Citrine)
-        {3552, 38, 2, 5513}, -- Rank 2 (Mana Jade)
-        {759, 28, 1, 5514} -- Rank 1 (Mana Agate)
+    MageManaGem = {
+        {27101, 68}, -- Conjure Mana Emerald
+        {10054, 58}, -- Conjure Mana Ruby
+        {10053, 48}, -- Conjure Mana Citrine
+        {3552, 38}, -- Conjure Mana Jade
+        {759, 28} -- Conjure Mana Agate
     },
     WarlockSoul = {
         {29893, 68}
