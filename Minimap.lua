@@ -74,6 +74,7 @@ if class == "MAGE" and ns.ConjureSpells then
                 tooltip:AddLine(descColor .. L["TIP_MAGE_CONJURE"] .. "|r", 1, 1, 1, true)
             end
             if knowsMGem then
+                tooltip:AddLine(" ")
                 tooltip:AddLine(descColor .. L["TIP_MAGE_GEM"] .. "|r", 1, 1, 1, true)
             end
             if knowsTable then

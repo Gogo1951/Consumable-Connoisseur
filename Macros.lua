@@ -5,7 +5,16 @@ local Config = ns.Config
 
 local currentMacroState = {}
 
-local function GetSmartSpell(spellList, ignoreTarget)
+-- Map Spell IDs to the Item IDs they create
+local manaGemMap = {
+    [27101] = 22044, -- Emerald
+    [10054] = 8008,  -- Ruby
+    [10053] = 8007,  -- Citrine
+    [3552]  = 5513,  -- Jade
+    [759]   = 5514   -- Agate
+}
+
+local function GetSmartSpell(spellList, ignoreTarget, checkUnique)
     if not spellList then
         return nil, 0
     end
@@ -26,19 +35,37 @@ local function GetSmartSpell(spellList, ignoreTarget)
         end
 
         if known and req <= levelCap then
-            local name = GetSpellInfo(id)
-            if name then
-                if name:find("%(") then
+            local skip = false
+            
+            -- If we are checking for unique items (Mana Gems), scan the bags
+            if checkUnique and manaGemMap[id] then
+                if C_Item.GetItemCount(manaGemMap[id]) > 0 then
+                    skip = true
+                end
+            end
+
+            if not skip then
+                local name = GetSpellInfo(id)
+                if name then
+                    -- Only append Rank if rankNum exists (Mage Water/Food), 
+                    -- otherwise use the name as-is (Mana Gems)
+                    if rankNum then
+                        return name .. "(" .. L["RANK"] .. " " .. rankNum .. ")", id
+                    end
                     return name, id
                 end
-                if rankNum then
-                    return name .. "(" .. L["RANK"] .. " " .. rankNum .. ")", id
-                end
-                return name, id
             end
         end
     end
-    return nil, 0
+    
+    -- If we have all gems, default to the lowest rank spell (last in the list)
+    -- This ensures the click still casts something, resulting in the game error "Item already exists"
+    local lowest = spellList[#spellList]
+    local name = GetSpellInfo(lowest[1])
+    if lowest[3] then
+        return name .. "(" .. L["RANK"] .. " " .. lowest[3] .. ")", lowest[1]
+    end
+    return name, lowest[1]
 end
 
 function ns.UpdateMacros(forced)
@@ -74,7 +101,8 @@ function ns.UpdateMacros(forced)
             rightSpellName, rightSpellID = GetSmartSpell(ns.ConjureSpells.WarlockHS)
             midSpellName, midSpellID = GetSmartSpell(ns.ConjureSpells.WarlockSoul)
         elseif typeName == "Mana Gem" and ns.ConjureSpells.MageManaGem then
-            rightSpellName, rightSpellID = GetSmartSpell(ns.ConjureSpells.MageManaGem, true)
+            -- Pass true for ignoreTarget (gems are self-only) and true for checkUnique
+            rightSpellName, rightSpellID = GetSmartSpell(ns.ConjureSpells.MageManaGem, true, true)
         end
 
         if rightSpellName or midSpellName then
