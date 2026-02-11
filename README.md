@@ -30,7 +30,8 @@ For Mages and Warlocks, Right-Click on your Food, Water, Mana Gem, or Healthston
 
 And by simply targeting a lower-level player, when you Right-click on the macro, you'll conjour items useful to that player.
 
-<img width="360" alt="image" src="https://github.com/user-attachments/assets/80a1e852-9bbd-4124-8f1e-8b3fb030e9ec" />
+<img width="260" src="https://github.com/user-attachments/assets/4a4cd1b4-d227-4731-8988-36f505611883" />
+
 
 ## Setup
 
