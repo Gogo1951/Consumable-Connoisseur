@@ -30,7 +30,7 @@ if GetLocale() == "zhTW" then
 
     L["TIP_DOWNRANK"] = "選取低等級玩家為目標時，巨集會製造適合該等級的物品。"
     L["TIP_MAGE_CONJURE"] = "右鍵點擊你的食物或水巨集以製造食物或水。"
-    L["TIP_MAGE_GEM"] = "右鍵點擊你的法力寶石巨集以製造一顆新的寶石。"
+    L["TIP_MAGE_GEM"] = "右鍵點擊你的法力寶石巨集以製造一顆新的寶石。再次右鍵點擊以製造一顆低等級備用寶石。"
     L["TIP_MAGE_TABLE"] = "中鍵點擊以施放召喚餐桌。"
     L["TIP_WARLOCK_CONJURE"] = "右鍵點擊你的治療石巨集以製造治療石。"
     L["TIP_WARLOCK_SOUL"] = "中鍵點擊以施放靈魂儀式。"
