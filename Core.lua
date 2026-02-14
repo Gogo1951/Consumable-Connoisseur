@@ -1,7 +1,6 @@
 local _, ns = ...
 local L = ns.L
 local C = ns.Colors
-local Config = ns.Config
 
 local frame = CreateFrame("Frame")
 local isUpdatePending = false
@@ -157,7 +156,7 @@ frame:SetScript(
             end
         elseif event == "UI_ERROR_MESSAGE" then
             if CC_LastTime and (GetTime() - CC_LastTime) < 1.0 then
-                local messageID, msg = ...
+                local _, msg = ...
 
                 if msg == ERR_ITEM_WRONG_ZONE then
                     local mapID = C_Map.GetBestMapForUnit("player") or "0"

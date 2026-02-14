@@ -8,10 +8,10 @@ local currentMacroState = {}
 -- Map Spell IDs to the Item IDs they create
 local manaGemMap = {
     [27101] = 22044, -- Emerald
-    [10054] = 8008,  -- Ruby
-    [10053] = 8007,  -- Citrine
-    [3552]  = 5513,  -- Jade
-    [759]   = 5514   -- Agate
+    [10054] = 8008, -- Ruby
+    [10053] = 8007, -- Citrine
+    [3552] = 5513, -- Jade
+    [759] = 5514 -- Agate
 }
 
 local function GetSmartSpell(spellList, ignoreTarget, checkUnique)
@@ -36,7 +36,7 @@ local function GetSmartSpell(spellList, ignoreTarget, checkUnique)
 
         if known and req <= levelCap then
             local skip = false
-            
+
             -- If we are checking for unique items (Mana Gems), scan the bags
             if checkUnique and manaGemMap[id] then
                 if C_Item.GetItemCount(manaGemMap[id]) > 0 then
@@ -47,7 +47,7 @@ local function GetSmartSpell(spellList, ignoreTarget, checkUnique)
             if not skip then
                 local name = GetSpellInfo(id)
                 if name then
-                    -- Only append Rank if rankNum exists (Mage Water/Food), 
+                    -- Only append Rank if rankNum exists (Mage Water/Food),
                     -- otherwise use the name as-is (Mana Gems)
                     if rankNum then
                         return name .. "(" .. L["RANK"] .. " " .. rankNum .. ")", id
@@ -57,7 +57,7 @@ local function GetSmartSpell(spellList, ignoreTarget, checkUnique)
             end
         end
     end
-    
+
     -- If we have all gems, default to the lowest rank spell (last in the list)
     -- This ensures the click still casts something, resulting in the game error "Item already exists"
     local lowest = spellList[#spellList]
@@ -75,6 +75,10 @@ function ns.UpdateMacros(forced)
     end
     if not ns.ConjureSpells then
         return
+    end
+
+    if forced then
+        wipe(currentMacroState)
     end
 
     local best, dataRetry = ns.ScanBags()
@@ -121,12 +125,12 @@ function ns.UpdateMacros(forced)
             if itemID then
                 tooltipLine = "#showtooltip item:" .. itemID .. "\n"
                 actionBlock = "/run CC_LastID=" .. itemID .. ";CC_LastTime=GetTime()\n/use item:" .. itemID
-                icon = GetItemIcon(itemID)
+                icon = C_Item.GetItemIconByID(itemID)
             else
                 local msg = string.format(L["MSG_NO_ITEM"], typeName)
                 tooltipLine = "#showtooltip item:" .. cfg.defaultID .. "\n"
                 actionBlock = string.format("/run print('%s%s%s // %s%s')", C.INFO, L["BRAND"], C.MUTED, C.TEXT, msg)
-                icon = GetItemIcon(cfg.defaultID)
+                icon = C_Item.GetItemIconByID(cfg.defaultID)
             end
 
             local conjureBlock = ""
@@ -160,9 +164,6 @@ function ns.UpdateMacros(forced)
         end
     end
 
-    if forced then
-        wipe(currentMacroState)
-    end
     if ns.UpdateLDB then
         ns.UpdateLDB()
     end

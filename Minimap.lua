@@ -60,7 +60,7 @@ UpdateTooltip = function(anchor)
     local _, class = UnitClass("player")
     local descColor = C.DESC
 
-if class == "MAGE" and ns.ConjureSpells then
+    if class == "MAGE" and ns.ConjureSpells then
         local cColor = "|cff3FC7EB"
         local knowsTable = ns.ConjureSpells.MageTable and KnowsAny(ns.ConjureSpells.MageTable)
         local knowsFood = ns.ConjureSpells.MageFood and KnowsAny(ns.ConjureSpells.MageFood)

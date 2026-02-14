@@ -1,5 +1,4 @@
 local _, ns = ...
-local L = ns.L
 
 ns.BestFoodID = nil
 ns.BestFoodLink = nil
@@ -18,6 +17,8 @@ local itemCache = {}
 local itemCounts = {}
 local checked = {}
 
+-- Fix 3: Non-food/water best entries only need id/val/price/count.
+-- Food and Water keep their extra fields for buff food and percent tracking.
 local best = {
     ["Food"] = {
         id = nil,
@@ -30,15 +31,6 @@ local best = {
         link = nil
     },
     ["Water"] = {
-        id = nil, 
-        val = 0, 
-        price = 0, 
-        isBuffFood = false, 
-        isPercent = false, 
-        isHybrid = false, 
-        count = 0
-    },
-    ["Health Potion"] = {
         id = nil,
         val = 0,
         price = 0,
@@ -47,53 +39,29 @@ local best = {
         isHybrid = false,
         count = 0
     },
-    ["Mana Potion"] = {
-        id = nil, 
-        val = 0, 
-        price = 0, 
-        isBuffFood = false, 
-        isPercent = false, 
-        isHybrid = false, 
-        count = 0
-    },
-    ["Mana Gem"] = {
-        id = nil, 
-        val = 0, 
-        price = 0, 
-        isBuffFood = false, 
-        isPercent = false, 
-        isHybrid = false, 
-        count = 0
-    },
-    ["Healthstone"] = {
-        id = nil, 
-        val = 0, 
-        price = 0, 
-        isBuffFood = false, 
-        isPercent = false, 
-        isHybrid = false,
-        count = 0
-    },
-    ["Bandage"] = {
-        id = nil, 
-        val = 0, 
-        price = 0, 
-        isBuffFood = false, 
-        isPercent = false, 
-        isHybrid = false, 
-        count = 0
-    }
+    ["Health Potion"] = {id = nil, val = 0, price = 0, count = 0},
+    ["Mana Potion"] = {id = nil, val = 0, price = 0, count = 0},
+    ["Mana Gem"] = {id = nil, val = 0, price = 0, count = 0},
+    ["Healthstone"] = {id = nil, val = 0, price = 0, count = 0},
+    ["Bandage"] = {id = nil, val = 0, price = 0, count = 0}
 }
 
 local function ResetBest(t)
     t.id = nil
     t.val = 0
     t.price = 0
-    t.isBuffFood = false
-    t.isPercent = false
-    t.isHybrid = false
     t.count = 0
     t.link = nil
+    -- Food/Water-only fields (nil-safe: no-ops on other types)
+    if t.isBuffFood ~= nil then
+        t.isBuffFood = false
+    end
+    if t.isPercent ~= nil then
+        t.isPercent = false
+    end
+    if t.isHybrid ~= nil then
+        t.isHybrid = false
+    end
 end
 
 function ns.HasWellFedBuff()
@@ -143,26 +111,23 @@ local function CacheItemData(itemID)
     local rawPotion = ns.RawData.Potions[itemID]
     local rawHS = ns.RawData.Healthstone[itemID]
     local rawBandage = ns.RawData.Bandage[itemID]
-    local rawMGem = ns.RawData.ManaGem[itemID] -- Check for Mana Gem
+    local rawMGem = ns.RawData.ManaGem[itemID]
 
     if not (rawFood or rawPotion or rawHS or rawBandage or rawMGem) then
         itemCache[itemID] = "IGNORE"
         return "IGNORE"
     end
 
+    -- Fix 2: single itemType string replaces 6 boolean flags (isFood, isWater,
+    -- isBandage, isPotion, isHealthstone, isManaGem), saving ~5 fields per entry.
     local data = {
         id = itemID,
+        itemType = "", -- "food"|"water"|"foodwater"|"bandage"|"potion"|"healthstone"|"managem"
         valHealth = 0,
         valMana = 0,
         reqLvl = minLevel or 0,
         reqFA = 0,
         price = iPrice or 0,
-        isFood = false,
-        isWater = false,
-        isBandage = false,
-        isPotion = false,
-        isHealthstone = false,
-        isManaGem = false, -- Init flag
         isBuffFood = false,
         isPercent = false,
         zones = nil
@@ -172,57 +137,82 @@ local function CacheItemData(itemID)
         local isBuff = (rawFood[1] == 1)
         data.isBuffFood = isBuff
         data.zones = rawFood[6]
+
+        local hasFood = false
+        local hasWater = false
+
         if rawFood[2] > 0 then
-            data.isFood = true
+            hasFood = true
             data.valHealth = 99999
             data.isPercent = true
         elseif rawFood[3] > 0 then
-            data.isFood = true
+            hasFood = true
             data.valHealth = rawFood[3]
         end
 
         if rawFood[4] > 0 then
-            data.isWater = true
+            hasWater = true
             data.valMana = 99999
             data.isPercent = true
         elseif rawFood[5] > 0 then
-            data.isWater = true
+            hasWater = true
             data.valMana = rawFood[5]
         end
 
-        if isBuff and not data.isFood and not data.isWater then
-            data.isFood = true
+        if isBuff and not hasFood and not hasWater then
+            hasFood = true
+        end
+
+        if hasFood and hasWater then
+            data.itemType = "foodwater"
+        elseif hasFood then
+            data.itemType = "food"
+        else
+            data.itemType = "water"
         end
     elseif rawPotion then
-        data.isPotion = true
+        data.itemType = "potion"
         data.valHealth = rawPotion[1]
         data.valMana = rawPotion[2]
         data.zones = rawPotion[3]
     elseif rawHS then
-        data.isHealthstone = true
+        data.itemType = "healthstone"
         data.valHealth = rawHS[1]
-        data.zones = rawHS[2] -- Not Needed... can refactor later.
     elseif rawBandage then
-        data.isBandage = true
+        data.itemType = "bandage"
         data.valHealth = rawBandage[1]
         data.reqFA = rawBandage[2]
         data.zones = rawBandage[3]
     elseif rawMGem then
-        data.isManaGem = true
+        data.itemType = "managem"
         data.valMana = rawMGem[1]
-        data.zones = rawMGem[2] -- Not Needed... can refactor later.
     end
 
     itemCache[itemID] = data
+
+    -- Fix 1: free raw data now that it's been processed into itemCache.
+    -- itemCache is permanent so this will never be needed again.
+    if rawFood then
+        ns.RawData.FoodAndWater[itemID] = nil
+    elseif rawPotion then
+        ns.RawData.Potions[itemID] = nil
+    elseif rawHS then
+        ns.RawData.Healthstone[itemID] = nil
+    elseif rawBandage then
+        ns.RawData.Bandage[itemID] = nil
+    elseif rawMGem then
+        ns.RawData.ManaGem[itemID] = nil
+    end
+
     return data
 end
 
-local function IsBetter(itemData, itemCount, itemPrice, currentBest, score)
+local function IsBetter(itemData, itemCount, itemPrice, currentBest, score, allowBuffFood)
     if not currentBest.id then
         return true
     end
 
-    if ns.AllowBuffFood and itemData.isBuffFood ~= currentBest.isBuffFood then
+    if allowBuffFood and itemData.isBuffFood ~= currentBest.isBuffFood then
         return itemData.isBuffFood
     end
     if itemData.isPercent ~= currentBest.isPercent then
@@ -314,36 +304,62 @@ function ns.ScanBags()
                                 end
                             end
 
--- Inside the loop where we process usable items:
                             if usable then
                                 local totalCount = itemCounts[id]
-                                if data.isBandage then
-                                    if IsBetter(data, totalCount, data.price, best["Bandage"], data.valHealth) then
+                                local t = data.itemType
+
+                                if t == "bandage" then
+                                    if
+                                        IsBetter(
+                                            data,
+                                            totalCount,
+                                            data.price,
+                                            best["Bandage"],
+                                            data.valHealth,
+                                            ns.AllowBuffFood
+                                        )
+                                     then
                                         local b = best["Bandage"]
                                         b.id = id
                                         b.val = data.valHealth
                                         b.price = data.price
                                         b.count = totalCount
                                     end
-                                elseif data.isHealthstone then
-                                    if IsBetter(data, totalCount, data.price, best["Healthstone"], data.valHealth) then
+                                elseif t == "healthstone" then
+                                    if
+                                        IsBetter(
+                                            data,
+                                            totalCount,
+                                            data.price,
+                                            best["Healthstone"],
+                                            data.valHealth,
+                                            ns.AllowBuffFood
+                                        )
+                                     then
                                         local b = best["Healthstone"]
                                         b.id = id
                                         b.val = data.valHealth
                                         b.price = data.price
                                         b.count = totalCount
                                     end
-                                elseif data.isManaGem then
-                                    -- NEW Block for Mana Gems
-                                    if IsBetter(data, totalCount, data.price, best["Mana Gem"], data.valMana) then
+                                elseif t == "managem" then
+                                    if
+                                        IsBetter(
+                                            data,
+                                            totalCount,
+                                            data.price,
+                                            best["Mana Gem"],
+                                            data.valMana,
+                                            ns.AllowBuffFood
+                                        )
+                                     then
                                         local b = best["Mana Gem"]
                                         b.id = id
                                         b.val = data.valMana
                                         b.price = data.price
                                         b.count = totalCount
                                     end
-                                elseif data.isPotion then
-                                    -- ... existing potion logic ...
+                                elseif t == "potion" then
                                     if
                                         data.valHealth > 0 and
                                             IsBetter(
@@ -351,7 +367,8 @@ function ns.ScanBags()
                                                 totalCount,
                                                 data.price,
                                                 best["Health Potion"],
-                                                data.valHealth
+                                                data.valHealth,
+                                                ns.AllowBuffFood
                                             )
                                      then
                                         local b = best["Health Potion"]
@@ -363,11 +380,12 @@ function ns.ScanBags()
                                     if
                                         data.valMana > 0 and
                                             IsBetter(
-                                                data, 
-                                                totalCount, 
-                                                data.price, 
-                                                best["Mana Potion"], 
-                                                data.valMana
+                                                data,
+                                                totalCount,
+                                                data.price,
+                                                best["Mana Potion"],
+                                                data.valMana,
+                                                ns.AllowBuffFood
                                             )
                                      then
                                         local b = best["Mana Potion"]
@@ -376,10 +394,19 @@ function ns.ScanBags()
                                         b.price = data.price
                                         b.count = totalCount
                                     end
-                                elseif data.isFood or data.isWater then
+                                elseif t == "food" or t == "water" or t == "foodwater" then
                                     if not (data.isBuffFood and not ns.AllowBuffFood) then
-                                        if data.isFood then
-                                            if IsBetter(data, totalCount, data.price, best["Food"], data.valHealth) then
+                                        if t == "food" or t == "foodwater" then
+                                            if
+                                                IsBetter(
+                                                    data,
+                                                    totalCount,
+                                                    data.price,
+                                                    best["Food"],
+                                                    data.valHealth,
+                                                    ns.AllowBuffFood
+                                                )
+                                             then
                                                 local b = best["Food"]
                                                 b.id = id
                                                 b.val = data.valHealth
@@ -388,11 +415,20 @@ function ns.ScanBags()
                                                 b.isBuffFood = data.isBuffFood
                                                 b.isPercent = data.isPercent
                                                 b.link = info.hyperlink
-                                                b.isHybrid = (data.valHealth > 0 and data.valMana > 0)
+                                                b.isHybrid = (t == "foodwater")
                                             end
                                         end
-                                        if data.isWater then
-                                            if IsBetter(data, totalCount, data.price, best["Water"], data.valMana) then
+                                        if t == "water" or t == "foodwater" then
+                                            if
+                                                IsBetter(
+                                                    data,
+                                                    totalCount,
+                                                    data.price,
+                                                    best["Water"],
+                                                    data.valMana,
+                                                    ns.AllowBuffFood
+                                                )
+                                             then
                                                 local b = best["Water"]
                                                 b.id = id
                                                 b.val = data.valMana
@@ -400,7 +436,7 @@ function ns.ScanBags()
                                                 b.count = totalCount
                                                 b.isBuffFood = data.isBuffFood
                                                 b.isPercent = data.isPercent
-                                                b.isHybrid = (data.valHealth > 0 and data.valMana > 0)
+                                                b.isHybrid = (t == "foodwater")
                                             end
                                         end
                                     end
