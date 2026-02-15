@@ -17,8 +17,6 @@ local itemCache = {}
 local itemCounts = {}
 local checked = {}
 
--- Fix 3: Non-food/water best entries only need id/val/price/count.
--- Food and Water keep their extra fields for buff food and percent tracking.
 local best = {
     ["Food"] = {
         id = nil,
@@ -52,16 +50,9 @@ local function ResetBest(t)
     t.price = 0
     t.count = 0
     t.link = nil
-    -- Food/Water-only fields (nil-safe: no-ops on other types)
-    if t.isBuffFood ~= nil then
-        t.isBuffFood = false
-    end
-    if t.isPercent ~= nil then
-        t.isPercent = false
-    end
-    if t.isHybrid ~= nil then
-        t.isHybrid = false
-    end
+    t.isBuffFood = false
+    t.isPercent = false
+    t.isHybrid = false
 end
 
 function ns.HasWellFedBuff()
@@ -118,11 +109,9 @@ local function CacheItemData(itemID)
         return "IGNORE"
     end
 
-    -- Fix 2: single itemType string replaces 6 boolean flags (isFood, isWater,
-    -- isBandage, isPotion, isHealthstone, isManaGem), saving ~5 fields per entry.
     local data = {
         id = itemID,
-        itemType = "", -- "food"|"water"|"foodwater"|"bandage"|"potion"|"healthstone"|"managem"
+        itemType = "",
         valHealth = 0,
         valMana = 0,
         reqLvl = minLevel or 0,
@@ -190,8 +179,6 @@ local function CacheItemData(itemID)
 
     itemCache[itemID] = data
 
-    -- Fix 1: free raw data now that it's been processed into itemCache.
-    -- itemCache is permanent so this will never be needed again.
     if rawFood then
         ns.RawData.FoodAndWater[itemID] = nil
     elseif rawPotion then
