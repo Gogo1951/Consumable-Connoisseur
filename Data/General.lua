@@ -40,15 +40,15 @@ ns.ConjureSpells = {
         {43987, 70}
     },
     MageWater = {
-        {27090, 70, 9}, -- Rank 9 (Conjured Glacier Cascade)
-        {37420, 65, 8}, -- Rank 8 (Conjured Purified Draenic Water)
+        {27090, 65, 9}, -- Rank 9 (Conjured Glacier Cascade)
+        {37420, 60, 8}, -- Rank 8 (Conjured Mountain Spring Water)
         {10140, 55, 7}, -- Rank 7 (Conjured Crystal Water)
         {10139, 45, 6}, -- Rank 6 (Conjured Sparkling Water)
         {10138, 35, 5}, -- Rank 5 (Conjured Mineral Water)
         {6127, 25, 4}, -- Rank 4 (Conjured Spring Water)
         {5506, 15, 3}, -- Rank 3 (Conjured Fresh Water)
-        {5505, 5, 2}, -- Rank 2 (Conjured Water)
-        {5504, 1, 1} -- Rank 1 (Conjured Purified Water)
+        {5505, 5, 2}, -- Rank 2 (Conjured Purified Water)
+        {5504, 1, 1} -- Rank 1 (Conjured Fresh Water)
     },
     MageFood = {
         {33717, 65, 8}, -- Rank 8 (Magical Croissant)
@@ -78,4 +78,5 @@ ns.ConjureSpells = {
         {6202, 12, 2}, -- Rank 2 (Lesser Healthstone)
         {6201, 1, 1} -- Rank 1 (Minor Healthstone)
     }
+
 }
