@@ -40,7 +40,8 @@ function ns.IsKnownConsumable(itemID)
     if CC_ItemCache and CC_ItemCache[itemID] and CC_ItemCache[itemID] ~= "IGNORE" then
         return true
     end
-    return ns.RawData.FoodAndWater[itemID] ~= nil or ns.RawData.Potions[itemID] ~= nil or
+    return ns.RawData.FoodAndWater[itemID] ~= nil or 
+        ns.RawData.Potions[itemID] ~= nil or
         ns.RawData.Healthstone[itemID] ~= nil or
         ns.RawData.Soulstone[itemID] ~= nil or
         ns.RawData.Bandage[itemID] ~= nil or
@@ -419,7 +420,16 @@ function ns.ScanBags()
                     elseif itemType == "food" or itemType == "water" or itemType == "foodwater" then
                         if not (data.isBuffFood and not ns.AllowBuffFood) then
                             if itemType == "food" or itemType == "foodwater" then
-                                if IsBetter(data, totalCount, data.price, best["Food"], data.healthValue, ns.AllowBuffFood) then
+                                if
+                                    IsBetter(
+                                        data,
+                                        totalCount,
+                                        data.price,
+                                        best["Food"],
+                                        data.healthValue,
+                                        ns.AllowBuffFood
+                                    )
+                                 then
                                     local winner = best["Food"]
                                     winner.id = id
                                     winner.value = data.healthValue
@@ -432,7 +442,16 @@ function ns.ScanBags()
                                 end
                             end
                             if itemType == "water" or itemType == "foodwater" then
-                                if IsBetter(data, totalCount, data.price, best["Water"], data.manaValue, ns.AllowBuffFood) then
+                                if
+                                    IsBetter(
+                                        data,
+                                        totalCount,
+                                        data.price,
+                                        best["Water"],
+                                        data.manaValue,
+                                        ns.AllowBuffFood
+                                    )
+                                 then
                                     local winner = best["Water"]
                                     winner.id = id
                                     winner.value = data.manaValue
