@@ -1,5 +1,5 @@
 ## Title: Connoisseur
-## Notes: Automatically use the best available Food, Water, Potions, Mana Gems, Healthstones, and Bandages currently in your bags.
+## Notes: Creates macros to use the best food, water, potions, healthstones, soulstones, mana gems, or bandages available to you. Also automatically conjures the right items for low-level friends.
 ## Author: Gogo1951
 ## X-License: MIT
 
@@ -9,6 +9,7 @@
 ## Interface: 11508, 20505
 ## Version: @project-version@
 ## X-Curse-Project-ID: 1416865
+## SavedVariables: CC_ItemCache, CC_ItemCacheVersion
 ## SavedVariablesPerCharacter: CC_IgnoreList, CC_Settings
 
 # Includes
@@ -34,15 +35,15 @@ Data/General.lua
 Data/Bandages.lua
 Data/Food-and-Water.lua
 Data/Healthstones.lua
+Data/Soulstones.lua
 Data/Mana-Gems.lua
 Data/Potions.lua
 Scanner.lua
-Macros.lua
+Macro-Builder.lua
 Core.lua
-Minimap.lua
+Minimap-Menu.lua
 
 # Feedback Welcome! (=
 # Consumable Connoisseur on CurseForge // https://www.curseforge.com/wow/addons/consumable-connoisseur
 # Consumable Connoisseur on GitHub // https://github.com/Gogo1951/Consumable-Connoisseur
 # Consumable Connoisseur on Discord // https://discord.gg/eh8hKq992Q
-

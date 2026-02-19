@@ -1,13 +1,13 @@
-local _, ns = ...
+local addonName, ns = ...
 local L = ns.L
 local C = ns.Colors
 
 local frame = CreateFrame("Frame")
 local isUpdatePending = false
 local updateTimer = 0
-local UPDATE_THROTTLE = 0.5
+local UPDATE_THROTTLE = 0.5 -- seconds between update flushes
 
-local lastBuffState = false
+local ITEM_CACHE_VERSION = C_AddOns.GetAddOnMetadata(addonName, "Version") or "unknown"
 
 local function InitVars()
     if not CC_IgnoreList then
@@ -20,21 +20,30 @@ local function InitVars()
         CC_Settings.Minimap = {}
     end
 
+    if CC_ItemCacheVersion ~= ITEM_CACHE_VERSION then
+        CC_ItemCache = {}
+        CC_ItemCacheVersion = ITEM_CACHE_VERSION
+    else
+        CC_ItemCache = CC_ItemCache or {}
+    end
+
+    ns.CachedPlayerLevel = UnitLevel("player") or 1
+    ns.CachedMapID = C_Map.GetBestMapForUnit("player")
+
     ns.SpellCache = {}
     if ns.ConjureSpells then
         for _, spellList in pairs(ns.ConjureSpells) do
             for _, data in ipairs(spellList) do
-                local id = data[1]
-                local name = GetSpellInfo(id)
-                if name then
-                    ns.SpellCache[id] = name
+                local spellID = data[1]
+                if GetSpellInfo(spellID) then
+                    ns.SpellCache[spellID] = true
                 end
             end
         end
     end
 
-    if ns.UpdateFASkill then
-        ns.UpdateFASkill()
+    if ns.UpdateFirstAidSkill then
+        ns.UpdateFirstAidSkill()
     end
 
     local LDBIcon = LibStub("LibDBIcon-1.0", true)
@@ -45,24 +54,25 @@ local function InitVars()
 
     if CC_Settings.UseBuffFood then
         frame:RegisterUnitEvent("UNIT_AURA", "player")
-
-        if ns.HasWellFedBuff then
-            lastBuffState = ns.HasWellFedBuff()
-        end
+        ns.WellFedState = ns.HasWellFedBuff and ns.HasWellFedBuff() or false
     else
         frame:UnregisterEvent("UNIT_AURA")
+        ns.WellFedState = false
     end
 end
+
+-- ============================================================
+-- Public API
+-- ============================================================
 
 function ns.ToggleBuffFood()
     CC_Settings.UseBuffFood = not CC_Settings.UseBuffFood
     if CC_Settings.UseBuffFood then
         frame:RegisterUnitEvent("UNIT_AURA", "player")
-        if ns.HasWellFedBuff then
-            lastBuffState = ns.HasWellFedBuff()
-        end
+        ns.WellFedState = ns.HasWellFedBuff and ns.HasWellFedBuff() or false
     else
         frame:UnregisterEvent("UNIT_AURA")
+        ns.WellFedState = false
     end
     if ns.ResetMacroState then
         ns.ResetMacroState()
@@ -84,25 +94,24 @@ function ns.UnregisterDataRetry()
     frame:UnregisterEvent("GET_ITEM_INFO_RECEIVED")
 end
 
+local function OnUpdateHandler(self, elapsed)
+    updateTimer = updateTimer + elapsed
+    if updateTimer > UPDATE_THROTTLE then
+        frame:SetScript("OnUpdate", nil)
+        isUpdatePending = false
+        if ns.UpdateMacros then
+            ns.UpdateMacros()
+        end
+    end
+end
+
 function ns.RequestUpdate()
     if not isUpdatePending then
         isUpdatePending = true
         updateTimer = 0
+        frame:SetScript("OnUpdate", OnUpdateHandler)
     end
 end
-
-frame:SetScript(
-    "OnUpdate",
-    function(self, elapsed)
-        if isUpdatePending then
-            updateTimer = updateTimer + elapsed
-            if updateTimer > UPDATE_THROTTLE then
-                isUpdatePending = false
-                ns.UpdateMacros()
-            end
-        end
-    end
-)
 
 frame:SetScript(
     "OnEvent",
@@ -119,16 +128,23 @@ frame:SetScript(
         end
 
         if
-            event == "BAG_UPDATE_DELAYED" or event == "PLAYER_TARGET_CHANGED" or event == "GET_ITEM_INFO_RECEIVED" or
-                event == "ZONE_CHANGED_NEW_AREA" or
-                event == "PLAYER_LEVEL_UP" or
+            event == "BAG_UPDATE_DELAYED" or 
+                event == "PLAYER_TARGET_CHANGED" or 
+                event == "GET_ITEM_INFO_RECEIVED" or
                 event == "PLAYER_ALIVE" or
                 event == "PLAYER_UNGHOST"
          then
             ns.RequestUpdate()
+        elseif event == "ZONE_CHANGED_NEW_AREA" then
+            ns.CachedMapID = C_Map.GetBestMapForUnit("player")
+            ns.RequestUpdate()
+        elseif event == "PLAYER_LEVEL_UP" then
+            ns.CachedPlayerLevel = UnitLevel("player") or 1
+            ns.RequestUpdate()
         elseif event == "PLAYER_ENTERING_WORLD" then
             InitVars()
             ns.RequestUpdate()
+
             C_Timer.After(
                 3,
                 function()
@@ -136,28 +152,26 @@ frame:SetScript(
                 end
             )
         elseif event == "SKILL_LINES_CHANGED" then
-            if ns.UpdateFASkill then
-                ns.UpdateFASkill()
+            if ns.UpdateFirstAidSkill then
+                ns.UpdateFirstAidSkill()
             end
             ns.RequestUpdate()
         elseif event == "UNIT_AURA" then
             if ns.HasWellFedBuff then
                 local currentState = ns.HasWellFedBuff()
-
-                if currentState ~= lastBuffState then
-                    lastBuffState = currentState
+                if currentState ~= ns.WellFedState then
+                    ns.WellFedState = currentState
                     ns.RequestUpdate()
                 end
             end
         elseif event == "UNIT_SPELLCAST_SUCCEEDED" then
-            local unit, _, spellID = ...
+            local _, _, spellID = ...
             if ns.SpellCache and ns.SpellCache[spellID] then
                 ns.RequestUpdate()
             end
         elseif event == "UI_ERROR_MESSAGE" then
             if CC_LastTime and (GetTime() - CC_LastTime) < 1.0 then
                 local _, msg = ...
-
                 if msg == ERR_ITEM_WRONG_ZONE then
                     local mapID = C_Map.GetBestMapForUnit("player") or "0"
                     local zone = GetZoneText() or "?"
@@ -165,14 +179,16 @@ frame:SetScript(
                     if subzone == "" then
                         subzone = zone
                     end
+
                     local itemID = CC_LastID or 0
                     local link = "Item #" .. itemID
                     if itemID ~= 0 then
-                        local _, l = GetItemInfo(itemID)
-                        if l then
-                            link = l
+                        local _, itemLink = GetItemInfo(itemID)
+                        if itemLink then
+                            link = itemLink
                         end
                     end
+
                     print(
                         C.INFO ..
                             L["BRAND"] ..
@@ -183,6 +199,14 @@ frame:SetScript(
                     CC_LastTime = 0
                 end
             end
+        elseif event == "PLAYER_LOGOUT" then
+            if ns.IsKnownConsumable then
+                for itemID in pairs(CC_IgnoreList) do
+                    if not ns.IsKnownConsumable(itemID) then
+                        CC_IgnoreList[itemID] = nil
+                    end
+                end
+            end
         end
     end
 )
@@ -191,6 +215,7 @@ frame:RegisterEvent("BAG_UPDATE_DELAYED")
 frame:RegisterEvent("PLAYER_ALIVE")
 frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 frame:RegisterEvent("PLAYER_LEVEL_UP")
+frame:RegisterEvent("PLAYER_LOGOUT")
 frame:RegisterEvent("PLAYER_REGEN_ENABLED")
 frame:RegisterEvent("PLAYER_TARGET_CHANGED")
 frame:RegisterEvent("PLAYER_UNGHOST")
