@@ -5,7 +5,7 @@ local C = ns.Colors
 local frame = CreateFrame("Frame")
 local isUpdatePending = false
 local updateTimer = 0
-local UPDATE_THROTTLE = 0.5 -- seconds between update flushes
+local UPDATE_THROTTLE = 0.5
 
 local ITEM_CACHE_VERSION = C_AddOns.GetAddOnMetadata(addonName, "Version") or "unknown"
 
@@ -91,6 +91,12 @@ function ns.UnregisterDataRetry()
 end
 
 local function OnUpdateHandler(self, elapsed)
+    if InCombatLockdown() then
+        frame:SetScript("OnUpdate", nil)
+        isUpdatePending = true
+        return
+    end
+
     updateTimer = updateTimer + elapsed
     if updateTimer > UPDATE_THROTTLE then
         frame:SetScript("OnUpdate", nil)
@@ -113,23 +119,25 @@ frame:SetScript(
     "OnEvent",
     function(self, event, ...)
         if InCombatLockdown() then
-            if event == "PLAYER_REGEN_ENABLED" then
-                if isUpdatePending then
-                    isUpdatePending = false
-                    ns.RequestUpdate()
-                end
-            else
-                isUpdatePending = true
+            isUpdatePending = true
+            return
+        end
+
+        if event == "PLAYER_REGEN_ENABLED" then
+            if isUpdatePending then
+                isUpdatePending = false
+                ns.RequestUpdate()
             end
             return
         end
 
         if
             event == "BAG_UPDATE_DELAYED" or 
-            event == "PLAYER_TARGET_CHANGED" or 
-            event == "GET_ITEM_INFO_RECEIVED" or
-            event == "PLAYER_ALIVE" or
-            event == "PLAYER_UNGHOST"
+                event == "ITEM_PUSH" or
+                event == "PLAYER_TARGET_CHANGED" or
+                event == "GET_ITEM_INFO_RECEIVED" or
+                event == "PLAYER_ALIVE" or
+                event == "PLAYER_UNGHOST"
          then
             ns.RequestUpdate()
         elseif event == "ZONE_CHANGED_NEW_AREA" then
@@ -208,6 +216,7 @@ frame:SetScript(
 )
 
 frame:RegisterEvent("BAG_UPDATE_DELAYED")
+frame:RegisterEvent("ITEM_PUSH")
 frame:RegisterEvent("PLAYER_ALIVE")
 frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 frame:RegisterEvent("PLAYER_LEVEL_UP")
