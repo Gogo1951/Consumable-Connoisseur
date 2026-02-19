@@ -58,7 +58,6 @@ ns.RawData.FoodAndWater = {
     [30155] = {1, 0, 4320, 0, 0}, -- Clam Bar
     [5526] = {0, 0, 552, 0, 0}, -- Clam Chowder
     [16971] = {1, 0, 1392, 0, 0}, -- Clamlette Surprise
-    [33004] = {1, 0, 1392, 0, 0}, -- Clamlette Surprise
     [29451] = {0, 0, 7500, 0, 0}, -- Clefthoof Ribs
     [1113] = {0, 0, 243, 0, 0}, -- Conjured Bread
     [22895] = {0, 0, 4320, 0, 0}, -- Conjured Cinnamon Roll
