@@ -61,10 +61,6 @@ local function InitVars()
     end
 end
 
--- ============================================================
--- Public API
--- ============================================================
-
 function ns.ToggleBuffFood()
     CC_Settings.UseBuffFood = not CC_Settings.UseBuffFood
     if CC_Settings.UseBuffFood then
@@ -119,6 +115,7 @@ frame:SetScript(
         if InCombatLockdown() then
             if event == "PLAYER_REGEN_ENABLED" then
                 if isUpdatePending then
+                    isUpdatePending = false
                     ns.RequestUpdate()
                 end
             else
@@ -129,10 +126,10 @@ frame:SetScript(
 
         if
             event == "BAG_UPDATE_DELAYED" or 
-                event == "PLAYER_TARGET_CHANGED" or 
-                event == "GET_ITEM_INFO_RECEIVED" or
-                event == "PLAYER_ALIVE" or
-                event == "PLAYER_UNGHOST"
+            event == "PLAYER_TARGET_CHANGED" or 
+            event == "GET_ITEM_INFO_RECEIVED" or
+            event == "PLAYER_ALIVE" or
+            event == "PLAYER_UNGHOST"
          then
             ns.RequestUpdate()
         elseif event == "ZONE_CHANGED_NEW_AREA" then
@@ -144,7 +141,6 @@ frame:SetScript(
         elseif event == "PLAYER_ENTERING_WORLD" then
             InitVars()
             ns.RequestUpdate()
-
             C_Timer.After(
                 3,
                 function()
