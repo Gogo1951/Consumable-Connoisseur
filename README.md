@@ -1,6 +1,6 @@
 # Connoisseur
 
-This add-on automatically scans your bags and updates consumable macros with the best item available for your current situation.
+Creates macros to use the best food, water, potions, healthstones, soulstones, mana gems, or bandages available to you. Also automatically conjures the right items for low-level friends.
 
 ![Consumable-Connoisseur](https://github.com/user-attachments/assets/326eb93f-329f-4967-b750-909011a05b01)
 
