@@ -18,6 +18,18 @@ ns.RawData.Soulstone = ns.RawData.Soulstone or {}
 ns.RawData.ManaGem = ns.RawData.ManaGem or {}
 ns.RawData.Potions = ns.RawData.Potions or {}
 
+function ns.KnowsAny(spellList)
+    if not spellList then
+        return false
+    end
+    for _, data in ipairs(spellList) do
+        if IsSpellKnown(data[1]) then
+            return true
+        end
+    end
+    return false
+end
+
 function ns.ClearItemCache()
     if CC_ItemCache then
         wipe(CC_ItemCache)
@@ -264,12 +276,12 @@ local function CacheItemData(itemID)
     return data
 end
 
-local function IsBetter(candidate, candidateCount, candidatePrice, currentBest, score)
+local function IsBetter(candidate, candidateCount, candidatePrice, currentBest, score, allowBuffFood)
     if not currentBest.id then
         return true
     end
 
-    if candidate.isBuffFood ~= currentBest.isBuffFood then
+    if allowBuffFood and candidate.isBuffFood ~= currentBest.isBuffFood then
         return candidate.isBuffFood
     end
 
@@ -352,7 +364,7 @@ function ns.ScanBags()
                     local itemType = data.itemType
 
                     if itemType == "bandage" then
-                        if IsBetter(data, totalCount, data.price, best["Bandage"], data.healthValue) then
+                        if IsBetter(data, totalCount, data.price, best["Bandage"], data.healthValue, false) then
                             local winner = best["Bandage"]
                             winner.id = id
                             winner.value = data.healthValue
@@ -360,7 +372,7 @@ function ns.ScanBags()
                             winner.count = totalCount
                         end
                     elseif itemType == "healthstone" then
-                        if IsBetter(data, totalCount, data.price, best["Healthstone"], data.healthValue) then
+                        if IsBetter(data, totalCount, data.price, best["Healthstone"], data.healthValue, false) then
                             local winner = best["Healthstone"]
                             winner.id = id
                             winner.value = data.healthValue
@@ -368,7 +380,7 @@ function ns.ScanBags()
                             winner.count = totalCount
                         end
                     elseif itemType == "soulstone" then
-                        if IsBetter(data, totalCount, data.price, best["Soulstone"], data.healthValue) then
+                        if IsBetter(data, totalCount, data.price, best["Soulstone"], data.healthValue, false) then
                             local winner = best["Soulstone"]
                             winner.id = id
                             winner.value = data.healthValue
@@ -376,7 +388,7 @@ function ns.ScanBags()
                             winner.count = totalCount
                         end
                     elseif itemType == "managem" then
-                        if IsBetter(data, totalCount, data.price, best["Mana Gem"], data.manaValue) then
+                        if IsBetter(data, totalCount, data.price, best["Mana Gem"], data.manaValue, false) then
                             local winner = best["Mana Gem"]
                             winner.id = id
                             winner.value = data.manaValue
@@ -386,7 +398,7 @@ function ns.ScanBags()
                     elseif itemType == "potion" then
                         if
                             data.healthValue > 0 and
-                                IsBetter(data, totalCount, data.price, best["Health Potion"], data.healthValue)
+                                IsBetter(data, totalCount, data.price, best["Health Potion"], data.healthValue, false)
                          then
                             local winner = best["Health Potion"]
                             winner.id = id
@@ -396,7 +408,7 @@ function ns.ScanBags()
                         end
                         if
                             data.manaValue > 0 and
-                                IsBetter(data, totalCount, data.price, best["Mana Potion"], data.manaValue)
+                                IsBetter(data, totalCount, data.price, best["Mana Potion"], data.manaValue, false)
                          then
                             local winner = best["Mana Potion"]
                             winner.id = id
@@ -407,7 +419,7 @@ function ns.ScanBags()
                     elseif itemType == "food" or itemType == "water" or itemType == "foodwater" then
                         if not (data.isBuffFood and not ns.AllowBuffFood) then
                             if itemType == "food" or itemType == "foodwater" then
-                                if IsBetter(data, totalCount, data.price, best["Food"], data.healthValue) then
+                                if IsBetter(data, totalCount, data.price, best["Food"], data.healthValue, ns.AllowBuffFood) then
                                     local winner = best["Food"]
                                     winner.id = id
                                     winner.value = data.healthValue
@@ -420,7 +432,7 @@ function ns.ScanBags()
                                 end
                             end
                             if itemType == "water" or itemType == "foodwater" then
-                                if IsBetter(data, totalCount, data.price, best["Water"], data.manaValue) then
+                                if IsBetter(data, totalCount, data.price, best["Water"], data.manaValue, ns.AllowBuffFood) then
                                     local winner = best["Water"]
                                     winner.id = id
                                     winner.value = data.manaValue
