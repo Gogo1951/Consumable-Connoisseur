@@ -40,8 +40,7 @@ function ns.IsKnownConsumable(itemID)
     if CC_ItemCache and CC_ItemCache[itemID] and CC_ItemCache[itemID] ~= "IGNORE" then
         return true
     end
-    return ns.RawData.FoodAndWater[itemID] ~= nil or 
-        ns.RawData.Potions[itemID] ~= nil or
+    return ns.RawData.FoodAndWater[itemID] ~= nil or ns.RawData.Potions[itemID] ~= nil or
         ns.RawData.Healthstone[itemID] ~= nil or
         ns.RawData.Soulstone[itemID] ~= nil or
         ns.RawData.Bandage[itemID] ~= nil or
@@ -143,10 +142,15 @@ local function ResetBest(entry)
 end
 
 function ns.HasWellFedBuff()
+    local TARGET_ICON_ID = 136000
+    local TARGET_ICON_ID_2 = 133943
     for i = 1, 40 do
-        local name, _, _, _, _, _, _, _, _, spellID = UnitAura("player", i, "HELPFUL")
+        local name, icon, _, _, _, _, _, _, _, spellID = UnitAura("player", i, "HELPFUL")
         if not name then
             break
+        end
+        if icon == TARGET_ICON_ID or icon == TARGET_ICON_ID_2 then
+            return true
         end
         if ns.WellFedBuffIDs and ns.WellFedBuffIDs[spellID] then
             return true
