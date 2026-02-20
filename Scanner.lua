@@ -445,7 +445,7 @@ function ns.ScanBags()
                                     winner.isHybrid = (itemType == "foodwater")
                                 end
                             end
-                            if itemType == "water" or itemType == "foodwater" then
+                            if itemType == "water" then
                                 if
                                     IsBetter(
                                         data,
