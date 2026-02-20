@@ -281,7 +281,7 @@ local function CacheItemData(itemID)
     return data
 end
 
-local function IsBetter(candidate, candidateCount, candidatePrice, currentBest, score, allowBuffFood)
+local function IsBetter(candidate, candidateCount, candidatePrice, currentBest, score, allowBuffFood, preferHybrid)
     if not currentBest.id then
         return true
     end
@@ -304,7 +304,11 @@ local function IsBetter(candidate, candidateCount, candidatePrice, currentBest, 
 
     local candidateIsHybrid = (candidate.healthValue > 0 and candidate.manaValue > 0)
     if candidateIsHybrid ~= currentBest.isHybrid then
-        return candidateIsHybrid
+        if preferHybrid then
+            return candidateIsHybrid
+        else
+            return not candidateIsHybrid
+        end
     end
 
     return candidateCount < currentBest.count
@@ -431,7 +435,8 @@ function ns.ScanBags()
                                         data.price,
                                         best["Food"],
                                         data.healthValue,
-                                        ns.AllowBuffFood
+                                        ns.AllowBuffFood,
+                                        true
                                     )
                                  then
                                     local winner = best["Food"]
@@ -445,7 +450,7 @@ function ns.ScanBags()
                                     winner.isHybrid = (itemType == "foodwater")
                                 end
                             end
-                            if itemType == "water" then
+                            if itemType == "water" or itemType == "foodwater" then
                                 if
                                     IsBetter(
                                         data,
@@ -453,7 +458,8 @@ function ns.ScanBags()
                                         data.price,
                                         best["Water"],
                                         data.manaValue,
-                                        ns.AllowBuffFood
+                                        ns.AllowBuffFood,
+                                        false
                                     )
                                  then
                                     local winner = best["Water"]
