@@ -9,6 +9,7 @@ ns.CachedMapID = nil
 ns.WellFedState = false
 
 local currentFirstAidSkill = 0
+local currentAlchemySkill = 0
 
 ns.RawData = ns.RawData or {}
 ns.RawData.Bandage = ns.RawData.Bandage or {}
@@ -177,6 +178,24 @@ function ns.UpdateFirstAidSkill()
     currentFirstAidSkill = 0
 end
 
+function ns.UpdateAlchemySkill()
+    local alchemySpellName = GetSpellInfo(2259) -- Spell ID for Alchemy
+    if not alchemySpellName then
+        currentAlchemySkill = 0
+        return
+    end
+
+    for i = 1, GetNumSkillLines() do
+        local skillName, isHeader, _, skillRank = GetSkillLineInfo(i)
+        if not isHeader and skillName == alchemySpellName then
+            currentAlchemySkill = skillRank
+            return
+        end
+    end
+
+    currentAlchemySkill = 0
+end
+
 local function BuildZoneSet(rawZoneArray)
     if not rawZoneArray then
         return nil
@@ -213,6 +232,7 @@ local function CacheItemData(itemID)
         manaValue = 0,
         requiredLevel = minLevel or 0,
         requiredFirstAid = 0,
+        requiredAlchemy = 0,
         price = vendorPrice or 0,
         isBuffFood = false,
         isPercent = false,
@@ -261,6 +281,7 @@ local function CacheItemData(itemID)
         data.healthValue = rawPotion[1]
         data.manaValue = rawPotion[2]
         data.zones = BuildZoneSet(rawPotion[3])
+        data.requiredAlchemy = rawPotion[4] or 0
     elseif rawHealthstone then
         data.itemType = "healthstone"
         data.healthValue = rawHealthstone[1]
@@ -361,6 +382,10 @@ function ns.ScanBags()
                 end
 
                 if usable and data.requiredFirstAid > 0 and data.requiredFirstAid > currentFirstAidSkill then
+                    usable = false
+                end
+
+                if usable and (data.requiredAlchemy or 0) > 0 and (data.requiredAlchemy or 0) > currentAlchemySkill then
                     usable = false
                 end
 

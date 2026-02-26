@@ -45,6 +45,9 @@ local function InitVars()
     if ns.UpdateFirstAidSkill then
         ns.UpdateFirstAidSkill()
     end
+    if ns.UpdateAlchemySkill then
+        ns.UpdateAlchemySkill()
+    end
 
     local LDBIcon = LibStub("LibDBIcon-1.0", true)
     if LDBIcon and ns.LDBObj and not ns.IconRegistered then
@@ -158,6 +161,9 @@ frame:SetScript(
         elseif event == "SKILL_LINES_CHANGED" then
             if ns.UpdateFirstAidSkill then
                 ns.UpdateFirstAidSkill()
+            end
+            if ns.UpdateAlchemySkill then
+                ns.UpdateAlchemySkill()
             end
             ns.RequestUpdate()
         elseif event == "UNIT_AURA" then
