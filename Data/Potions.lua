@@ -58,5 +58,6 @@ ns.RawData.Potions = {
     [23579] = {1050, 0}, -- The McWeaksauce Classic
     [28101] = {0, 1350}, -- Unstable Mana Potion
     [28100] = {1050, 0}, -- Volatile Healing Potion
+    [34440] = {1650, 1650, nil, 315}, -- Mad Alchemist's Potion
     -- [11951] = {700, 0}, -- Whipper Root Tuber
 }
