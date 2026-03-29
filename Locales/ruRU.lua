@@ -5,6 +5,7 @@ local L = ns.L
 if GetLocale() == "ruRU" then
     L["BRAND"] = "Connoisseur"
     
+    -- Macro Names Can't Exceed 16 Total Characters
     L["MACRO_BANDAGE"] = "- Бинты"
     L["MACRO_FOOD"]    = "- Еда"
     L["MACRO_HPOT"]    = "- Леч. зелье"
@@ -28,6 +29,10 @@ if GetLocale() == "ruRU" then
     L["MENU_SCAN"]           = "Сканировать"
     L["MENU_TITLE"]          = "Расходники"
 
+    L["MENU_SCROLL_BUFFS"]      = "Баффы от свитков"
+    L["MENU_SCROLL_BUFFS_DESC"] = "Использует свитки характеристик как часть макроса еды, если бафф от свитка отсутствует."
+    L["MENU_OPTIONS_HINT"]      = "Дополнительные настройки доступны в Настройки > Модификации > Connoisseur."
+
     L["PREFIX_MAGE"]    = "Внимание Маги"
     L["PREFIX_WARLOCK"] = "Внимание Чернокнижники"
 
@@ -45,5 +50,26 @@ if GetLocale() == "ruRU" then
     L["UI_LEFT_CLICK"]   = "ЛКМ"
     L["UI_MIDDLE_CLICK"] = "СКМ"
     L["UI_RIGHT_CLICK"]  = "ПКМ"
+    L["UI_SHIFT_LEFT"]   = "Shift + ЛКМ"
     L["UI_TOGGLE"]       = "Переключить"
+
+    -- Options Panel
+    L["OPTIONS_DESC"]              = "Создает макросы для использования лучшей еды, воды, зелий, камней здоровья, камней душ, мана-камней или бинтов, доступных вам."
+    L["OPTIONS_BUFF_FOOD"]         = "Еда с баффами"
+    L["OPTIONS_BUFF_FOOD_DESC"]    = "Приоритет еды, дающей эффект \"Сытость\", если он отсутствует."
+    L["OPTIONS_SCROLL_HEADER"]     = "Баффы от свитков"
+    L["OPTIONS_USE_SCROLLS"]       = "Включить баффы от свитков"
+    L["OPTIONS_USE_SCROLLS_DESC"]  = "Использует свитки, если бафф от свитка отсутствует, как часть макроса еды."
+    L["OPTIONS_SCROLL_TYPES"]      = "Включить типы свитков в проверку"
+    L["OPTIONS_SCROLL_AGILITY"]    = "Ловкость"
+    L["OPTIONS_SCROLL_INTELLECT"]  = "Интеллект"
+    L["OPTIONS_SCROLL_PROTECTION"] = "Защита"
+    L["OPTIONS_SCROLL_SPIRIT"]     = "Дух"
+    L["OPTIONS_SCROLL_STAMINA"]    = "Выносливость"
+    L["OPTIONS_SCROLL_STRENGTH"]   = "Сила"
+
+    L["OPTIONS_RESET_HEADER"]      = "Сброс"
+    L["OPTIONS_RESET_IGNORE_DESC"] = "Удалить все предметы из списка игнорирования."
+    L["OPTIONS_RESET_IGNORE_CONFIRM"] = "Вы уверены, что хотите очистить список игнорирования?"
+    L["OPTIONS_COMMUNITY_HEADER"]  = "Обратная связь и поддержка"
 end

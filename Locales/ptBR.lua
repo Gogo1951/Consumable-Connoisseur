@@ -5,6 +5,7 @@ local L = ns.L
 if GetLocale() == "ptBR" then
     L["BRAND"] = "Connoisseur"
     
+    -- Macro Names Can't Exceed 16 Total Characters
     L["MACRO_BANDAGE"] = "- Bandagem"
     L["MACRO_FOOD"]    = "- Comida"
     L["MACRO_HPOT"]    = "- Poção de Cura"
@@ -28,6 +29,10 @@ if GetLocale() == "ptBR" then
     L["MENU_SCAN"]           = "Forçar verificação"
     L["MENU_TITLE"]          = "Consumíveis"
 
+    L["MENU_SCROLL_BUFFS"]      = "Bônus de Pergaminho"
+    L["MENU_SCROLL_BUFFS_DESC"] = "Usa pergaminhos de atributos como parte de sua macro de Comida quando o bônus do pergaminho está ausente."
+    L["MENU_OPTIONS_HINT"]      = "Opções adicionais disponíveis em Opções > AddOns > Connoisseur."
+
     L["PREFIX_MAGE"]    = "Atenção Magos"
     L["PREFIX_WARLOCK"] = "Atenção Bruxos"
 
@@ -45,5 +50,26 @@ if GetLocale() == "ptBR" then
     L["UI_LEFT_CLICK"]   = "Clique Esquerdo"
     L["UI_MIDDLE_CLICK"] = "Clique do Meio"
     L["UI_RIGHT_CLICK"]  = "Clique Direito"
+    L["UI_SHIFT_LEFT"]   = "Shift + Clique Esquerdo"
     L["UI_TOGGLE"]       = "Alternar"
+
+    -- Options Panel
+    L["OPTIONS_DESC"]              = "Cria macros para usar a melhor comida, água, poções, pedras de vida, pedras da alma, gemas de mana ou bandagens disponíveis para você."
+    L["OPTIONS_BUFF_FOOD"]         = "Priorizar comida com bônus"
+    L["OPTIONS_BUFF_FOOD_DESC"]    = "Prioriza comida que concede o bônus \"Bem Alimentado\" quando ele está ausente."
+    L["OPTIONS_SCROLL_HEADER"]     = "Bônus de Pergaminho"
+    L["OPTIONS_USE_SCROLLS"]       = "Incluir Bônus de Pergaminho"
+    L["OPTIONS_USE_SCROLLS_DESC"]  = "Usa pergaminhos, quando o bônus do pergaminho está ausente, como parte de sua macro de Comida."
+    L["OPTIONS_SCROLL_TYPES"]      = "Incluir Tipos de Pergaminho na Verificação"
+    L["OPTIONS_SCROLL_AGILITY"]    = "Agilidade"
+    L["OPTIONS_SCROLL_INTELLECT"]  = "Intelecto"
+    L["OPTIONS_SCROLL_PROTECTION"] = "Proteção"
+    L["OPTIONS_SCROLL_SPIRIT"]     = "Espírito"
+    L["OPTIONS_SCROLL_STAMINA"]    = "Vigor"
+    L["OPTIONS_SCROLL_STRENGTH"]   = "Força"
+
+    L["OPTIONS_RESET_HEADER"]      = "Redefinir"
+    L["OPTIONS_RESET_IGNORE_DESC"] = "Remove todos os itens da lista de ignorados."
+    L["OPTIONS_RESET_IGNORE_CONFIRM"] = "Tem certeza de que deseja limpar a lista de ignorados?"
+    L["OPTIONS_COMMUNITY_HEADER"]  = "Feedback e Suporte"
 end

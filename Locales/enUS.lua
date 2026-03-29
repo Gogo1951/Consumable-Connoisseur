@@ -5,6 +5,7 @@ local L = ns.L
 -- [[ DEFAULT ENGLISH (enUS) ]] --
 L["BRAND"] = "Connoisseur"
 
+-- Macro Names Can't Exceed 16 Total Characters
 L["MACRO_BANDAGE"] = "- Bandage"
 L["MACRO_FOOD"]    = "- Food"
 L["MACRO_HPOT"]    = "- Health Potion"
@@ -28,6 +29,10 @@ L["MENU_RESET"]          = "Reset"
 L["MENU_SCAN"]           = "Force Scan"
 L["MENU_TITLE"]          = "Consumables"
 
+L["MENU_SCROLL_BUFFS"]      = "Scroll Buffs"
+L["MENU_SCROLL_BUFFS_DESC"] = "Uses attribute scrolls as part of your Food macro when the scroll buff is missing."
+L["MENU_OPTIONS_HINT"]      = "Additional options available under Options > AddOns > Connoisseur."
+
 L["PREFIX_MAGE"]    = "Attention Mages"
 L["PREFIX_WARLOCK"] = "Attention Warlocks"
 
@@ -38,11 +43,32 @@ L["TIP_MAGE_TABLE"]     = "Middle-click to cast Ritual of Refreshment."
 L["TIP_WARLOCK_CONJURE"] = "Right-Click on your Healthstone or Soulstone macros to create a Healthstone or Soulstone."
 L["TIP_WARLOCK_SOUL"]   = "Middle-click to cast Ritual of Souls."
 
-L["UI_BEST_FOOD"]   = "Current Best Food"
-L["UI_DISABLED"]    = "Disabled"
-L["UI_ENABLED"]     = "Enabled"
-L["UI_IGNORE_LIST"] = "Ignore List"
-L["UI_LEFT_CLICK"]  = "Left-Click"
+L["UI_BEST_FOOD"]    = "Current Best Food"
+L["UI_DISABLED"]     = "Disabled"
+L["UI_ENABLED"]      = "Enabled"
+L["UI_IGNORE_LIST"]  = "Ignore List"
+L["UI_LEFT_CLICK"]   = "Left-Click"
 L["UI_MIDDLE_CLICK"] = "Middle-Click"
-L["UI_RIGHT_CLICK"] = "Right-Click"
-L["UI_TOGGLE"]      = "Toggle"
+L["UI_RIGHT_CLICK"]  = "Right-Click"
+L["UI_SHIFT_LEFT"]   = "Shift + Left-Click"
+L["UI_TOGGLE"]       = "Toggle"
+
+-- Options Panel
+L["OPTIONS_DESC"]              = "Creates macros to use the best food, water, potions, healthstones, soulstones, mana gems, or bandages available to you."
+L["OPTIONS_BUFF_FOOD"]         = "Prioritize Buff Food"
+L["OPTIONS_BUFF_FOOD_DESC"]    = "Prioritizes food that grants the \"Well Fed\" buff, when the buff is missing."
+L["OPTIONS_SCROLL_HEADER"]     = "Scroll Buffs"
+L["OPTIONS_USE_SCROLLS"]       = "Include Scroll Buffs"
+L["OPTIONS_USE_SCROLLS_DESC"]  = "Uses scrolls, when the scroll buff is missing, as part of your Food macro."
+L["OPTIONS_SCROLL_TYPES"]      = "Include Scroll Types in Check"
+L["OPTIONS_SCROLL_AGILITY"]    = "Agility"
+L["OPTIONS_SCROLL_INTELLECT"]  = "Intellect"
+L["OPTIONS_SCROLL_PROTECTION"] = "Protection"
+L["OPTIONS_SCROLL_SPIRIT"]     = "Spirit"
+L["OPTIONS_SCROLL_STAMINA"]    = "Stamina"
+L["OPTIONS_SCROLL_STRENGTH"]   = "Strength"
+
+L["OPTIONS_RESET_HEADER"]      = "Reset"
+L["OPTIONS_RESET_IGNORE_DESC"] = "Remove all items from the ignore list."
+L["OPTIONS_RESET_IGNORE_CONFIRM"] = "Are you sure you want to clear the ignore list?"
+L["OPTIONS_COMMUNITY_HEADER"]  = "Feedback & Support"

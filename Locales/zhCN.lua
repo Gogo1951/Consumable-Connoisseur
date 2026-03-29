@@ -5,6 +5,7 @@ local L = ns.L
 if GetLocale() == "zhCN" then
     L["BRAND"] = "Connoisseur"
     
+    -- Macro Names Can't Exceed 16 Total Characters
     L["MACRO_BANDAGE"] = "- 绷带"
     L["MACRO_FOOD"]    = "- 食物"
     L["MACRO_HPOT"]    = "- 治疗药水"
@@ -28,6 +29,10 @@ if GetLocale() == "zhCN" then
     L["MENU_SCAN"]           = "强制扫描"
     L["MENU_TITLE"]          = "消耗品"
 
+    L["MENU_SCROLL_BUFFS"]      = "卷轴增益"
+    L["MENU_SCROLL_BUFFS_DESC"] = "当缺少卷轴增益时，在你的食物宏中使用属性卷轴。"
+    L["MENU_OPTIONS_HINT"]      = "在 选项 > 插件 > Connoisseur 中有更多选项可用。"
+
     L["PREFIX_MAGE"]    = "法师请注意"
     L["PREFIX_WARLOCK"] = "术士请注意"
 
@@ -45,5 +50,26 @@ if GetLocale() == "zhCN" then
     L["UI_LEFT_CLICK"]   = "左键点击"
     L["UI_MIDDLE_CLICK"] = "中键点击"
     L["UI_RIGHT_CLICK"]  = "右键点击"
+    L["UI_SHIFT_LEFT"]   = "Shift + 左键点击"
     L["UI_TOGGLE"]       = "切换"
+
+    -- Options Panel
+    L["OPTIONS_DESC"]              = "创建宏以使用你可用的最佳食物、水、药水、治疗石、灵魂石、法力宝石或绷带。"
+    L["OPTIONS_BUFF_FOOD"]         = "优先增益食物"
+    L["OPTIONS_BUFF_FOOD_DESC"]    = "当缺少 \"进食充分\" BUFF时，优先使用提供该BUFF的食物。"
+    L["OPTIONS_SCROLL_HEADER"]     = "卷轴增益"
+    L["OPTIONS_USE_SCROLLS"]       = "包含卷轴增益"
+    L["OPTIONS_USE_SCROLLS_DESC"]  = "当缺少卷轴增益时，在你的食物宏中使用卷轴。"
+    L["OPTIONS_SCROLL_TYPES"]      = "在检查中包含卷轴类型"
+    L["OPTIONS_SCROLL_AGILITY"]    = "敏捷"
+    L["OPTIONS_SCROLL_INTELLECT"]  = "智力"
+    L["OPTIONS_SCROLL_PROTECTION"] = "防护"
+    L["OPTIONS_SCROLL_SPIRIT"]     = "精神"
+    L["OPTIONS_SCROLL_STAMINA"]    = "耐力"
+    L["OPTIONS_SCROLL_STRENGTH"]   = "力量"
+
+    L["OPTIONS_RESET_HEADER"]      = "重置"
+    L["OPTIONS_RESET_IGNORE_DESC"] = "从忽略列表中移除所有物品。"
+    L["OPTIONS_RESET_IGNORE_CONFIRM"] = "你确定要清除忽略列表吗？"
+    L["OPTIONS_COMMUNITY_HEADER"]  = "反馈与支持"
 end

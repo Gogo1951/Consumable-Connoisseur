@@ -5,6 +5,7 @@ local L = ns.L
 if GetLocale() == "koKR" then
     L["BRAND"] = "Connoisseur"
     
+    -- Macro Names Can't Exceed 16 Total Characters
     L["MACRO_BANDAGE"] = "- 붕대"
     L["MACRO_FOOD"]    = "- 음식"
     L["MACRO_HPOT"]    = "- 치유 물약"
@@ -28,6 +29,10 @@ if GetLocale() == "koKR" then
     L["MENU_SCAN"]           = "강제 스캔"
     L["MENU_TITLE"]          = "소모품"
 
+    L["MENU_SCROLL_BUFFS"]      = "두루마리 버프"
+    L["MENU_SCROLL_BUFFS_DESC"] = "두루마리 버프가 없을 때 음식 매크로의 일부로 능력치 두루마리를 사용합니다."
+    L["MENU_OPTIONS_HINT"]      = "설정 > 애드온 > Connoisseur에서 추가 옵션을 사용할 수 있습니다."
+
     L["PREFIX_MAGE"]    = "마법사 주의"
     L["PREFIX_WARLOCK"] = "흑마법사 주의"
 
@@ -45,5 +50,26 @@ if GetLocale() == "koKR" then
     L["UI_LEFT_CLICK"]   = "좌클릭"
     L["UI_MIDDLE_CLICK"] = "휠클릭"
     L["UI_RIGHT_CLICK"]  = "우클릭"
+    L["UI_SHIFT_LEFT"]   = "Shift + 좌클릭"
     L["UI_TOGGLE"]       = "토글"
+
+    -- Options Panel
+    L["OPTIONS_DESC"]              = "사용 가능한 최고의 음식, 물, 물약, 생명석, 영혼석, 마나 보석 또는 붕대를 사용하는 매크로를 생성합니다."
+    L["OPTIONS_BUFF_FOOD"]         = "버프 음식 우선"
+    L["OPTIONS_BUFF_FOOD_DESC"]    = "\"포만감\" 버프가 없을 때 해당 버프를 주는 음식을 우선 사용합니다."
+    L["OPTIONS_SCROLL_HEADER"]     = "두루마리 버프"
+    L["OPTIONS_USE_SCROLLS"]       = "두루마리 버프 포함"
+    L["OPTIONS_USE_SCROLLS_DESC"]  = "두루마리 버프가 없을 때 음식 매크로의 일부로 두루마리를 사용합니다."
+    L["OPTIONS_SCROLL_TYPES"]      = "확인할 두루마리 유형 포함"
+    L["OPTIONS_SCROLL_AGILITY"]    = "민첩성"
+    L["OPTIONS_SCROLL_INTELLECT"]  = "지능"
+    L["OPTIONS_SCROLL_PROTECTION"] = "보호"
+    L["OPTIONS_SCROLL_SPIRIT"]     = "정신력"
+    L["OPTIONS_SCROLL_STAMINA"]    = "체력"
+    L["OPTIONS_SCROLL_STRENGTH"]   = "힘"
+
+    L["OPTIONS_RESET_HEADER"]      = "초기화"
+    L["OPTIONS_RESET_IGNORE_DESC"] = "차단 목록에서 모든 아이템을 제거합니다."
+    L["OPTIONS_RESET_IGNORE_CONFIRM"] = "차단 목록을 지우시겠습니까?"
+    L["OPTIONS_COMMUNITY_HEADER"]  = "피드백 및 지원"
 end

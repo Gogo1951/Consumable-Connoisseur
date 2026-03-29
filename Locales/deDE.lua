@@ -5,6 +5,7 @@ local L = ns.L
 if GetLocale() == "deDE" then
     L["BRAND"] = "Connoisseur"
 
+    -- Macro Names Can't Exceed 16 Total Characters
     L["MACRO_BANDAGE"] = "- Verband"
     L["MACRO_FOOD"]    = "- Essen"
     L["MACRO_HPOT"]    = "- Heiltrank"
@@ -28,6 +29,10 @@ if GetLocale() == "deDE" then
     L["MENU_SCAN"]           = "Scan erzwingen"
     L["MENU_TITLE"]          = "Verbrauchsgüter"
 
+    L["MENU_SCROLL_BUFFS"]      = "Schriftrollen-Buffs"
+    L["MENU_SCROLL_BUFFS_DESC"] = "Verwendet Attributs-Schriftrollen als Teil deines Essen-Makros, wenn der Schriftrollen-Buff fehlt."
+    L["MENU_OPTIONS_HINT"]      = "Weitere Optionen verfügbar unter Optionen > AddOns > Connoisseur."
+
     L["PREFIX_MAGE"]    = "Achtung Magier"
     L["PREFIX_WARLOCK"] = "Achtung Hexenmeister"
 
@@ -45,5 +50,26 @@ if GetLocale() == "deDE" then
     L["UI_LEFT_CLICK"]   = "Linksklick"
     L["UI_MIDDLE_CLICK"] = "Mittelklick"
     L["UI_RIGHT_CLICK"]  = "Rechtsklick"
+    L["UI_SHIFT_LEFT"]   = "Shift + Linksklick"
     L["UI_TOGGLE"]       = "Umschalten"
+
+    -- Options Panel
+    L["OPTIONS_DESC"]              = "Erstellt Makros, um das beste verfügbare Essen, Wasser, Tränke, Gesundheitssteine, Seelensteine, Manasteine oder Verbände zu verwenden."
+    L["OPTIONS_BUFF_FOOD"]         = "Buff-Essen bevorzugen"
+    L["OPTIONS_BUFF_FOOD_DESC"]    = "Bevorzugt Essen, das den \"Satt\"-Buff gewährt, wenn der Buff fehlt."
+    L["OPTIONS_SCROLL_HEADER"]     = "Schriftrollen-Buffs"
+    L["OPTIONS_USE_SCROLLS"]       = "Schriftrollen-Buffs einschließen"
+    L["OPTIONS_USE_SCROLLS_DESC"]  = "Verwendet Schriftrollen, wenn der Schriftrollen-Buff fehlt, als Teil deines Essen-Makros."
+    L["OPTIONS_SCROLL_TYPES"]      = "Schriftrollentypen in Prüfung einschließen"
+    L["OPTIONS_SCROLL_AGILITY"]    = "Beweglichkeit"
+    L["OPTIONS_SCROLL_INTELLECT"]  = "Intelligenz"
+    L["OPTIONS_SCROLL_PROTECTION"] = "Schutz"
+    L["OPTIONS_SCROLL_SPIRIT"]     = "Willenskraft"
+    L["OPTIONS_SCROLL_STAMINA"]    = "Ausdauer"
+    L["OPTIONS_SCROLL_STRENGTH"]   = "Stärke"
+
+    L["OPTIONS_RESET_HEADER"]      = "Zurücksetzen"
+    L["OPTIONS_RESET_IGNORE_DESC"] = "Alle Gegenstände von der Ignorierliste entfernen."
+    L["OPTIONS_RESET_IGNORE_CONFIRM"] = "Bist du sicher, dass du die Ignorierliste löschen möchtest?"
+    L["OPTIONS_COMMUNITY_HEADER"]  = "Feedback & Support"
 end

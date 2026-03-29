@@ -5,6 +5,7 @@ local L = ns.L
 if GetLocale() == "frFR" then
     L["BRAND"] = "Connoisseur"
     
+    -- Macro Names Can't Exceed 16 Total Characters
     L["MACRO_BANDAGE"] = "- Bandage"
     L["MACRO_FOOD"]    = "- Manger"
     L["MACRO_HPOT"]    = "- Pot. Soins"
@@ -28,6 +29,10 @@ if GetLocale() == "frFR" then
     L["MENU_SCAN"]           = "Forcer le scan"
     L["MENU_TITLE"]          = "Consommables"
 
+    L["MENU_SCROLL_BUFFS"]      = "Améliorations de parchemins"
+    L["MENU_SCROLL_BUFFS_DESC"] = "Utilise des parchemins de caractéristiques dans votre macro Nourriture si l'amélioration est absente."
+    L["MENU_OPTIONS_HINT"]      = "Options supplémentaires disponibles dans Options > AddOns > Connoisseur."
+
     L["PREFIX_MAGE"]    = "Attention Mages"
     L["PREFIX_WARLOCK"] = "Attention Démonistes"
 
@@ -45,5 +50,26 @@ if GetLocale() == "frFR" then
     L["UI_LEFT_CLICK"]   = "Clic Gauche"
     L["UI_MIDDLE_CLICK"] = "Clic Milieu"
     L["UI_RIGHT_CLICK"]  = "Clic Droit"
+    L["UI_SHIFT_LEFT"]   = "Maj + Clic Gauche"
     L["UI_TOGGLE"]       = "Basculer"
+
+    -- Options Panel
+    L["OPTIONS_DESC"]              = "Crée des macros pour utiliser la meilleure nourriture, eau, potions, pierres de soins, pierres d'âme, gemmes de mana ou bandages à votre disposition."
+    L["OPTIONS_BUFF_FOOD"]         = "Priorité : Bien nourri"
+    L["OPTIONS_BUFF_FOOD_DESC"]    = "Priorise la nourriture conférant l'amélioration \"Bien nourri\" si elle est absente."
+    L["OPTIONS_SCROLL_HEADER"]     = "Améliorations de parchemins"
+    L["OPTIONS_USE_SCROLLS"]       = "Inclure les parchemins"
+    L["OPTIONS_USE_SCROLLS_DESC"]  = "Utilise des parchemins, si l'amélioration est absente, dans votre macro Nourriture."
+    L["OPTIONS_SCROLL_TYPES"]      = "Types de parchemins à vérifier"
+    L["OPTIONS_SCROLL_AGILITY"]    = "Agilité"
+    L["OPTIONS_SCROLL_INTELLECT"]  = "Intelligence"
+    L["OPTIONS_SCROLL_PROTECTION"] = "Protection"
+    L["OPTIONS_SCROLL_SPIRIT"]     = "Esprit"
+    L["OPTIONS_SCROLL_STAMINA"]    = "Endurance"
+    L["OPTIONS_SCROLL_STRENGTH"]   = "Force"
+
+    L["OPTIONS_RESET_HEADER"]      = "Réinitialiser"
+    L["OPTIONS_RESET_IGNORE_DESC"] = "Retire tous les objets de la liste d'exclusion."
+    L["OPTIONS_RESET_IGNORE_CONFIRM"] = "Voulez-vous vraiment vider la liste d'exclusion ?"
+    L["OPTIONS_COMMUNITY_HEADER"]  = "Commentaires et Assistance"
 end
