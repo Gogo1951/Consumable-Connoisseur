@@ -1,0 +1,301 @@
+local addonName, ns = ...
+local L = ns.L
+local GetColor = ns.GetColor
+
+--------------------------------------------------------------------------------
+-- AceConfig Helpers
+--------------------------------------------------------------------------------
+
+local function Header(text, order)
+    return {
+        type  = "header",
+        name  = GetColor("TITLE") .. text .. "|r",
+        order = order,
+    }
+end
+
+local function Desc(text, order)
+    return {
+        type     = "description",
+        name     = text,
+        fontSize = "medium",
+        order    = order,
+    }
+end
+
+local function Spacer(order)
+    return {
+        type  = "description",
+        name  = " ",
+        order = order,
+    }
+end
+
+--------------------------------------------------------------------------------
+-- Options Table
+--------------------------------------------------------------------------------
+
+local function GetOptions()
+    return {
+        name = L["BRAND"],
+        type = "group",
+        args = {
+            descIntro = Desc(
+                L["OPTIONS_DESC"],
+                1
+            ),
+
+            -- Buff Food
+            spaceBuff0 = Spacer(10),
+            headerBuff = Header(L["MENU_BUFF_FOOD"], 11),
+
+            descBuff = Desc(
+                GetColor("DESC") .. L["OPTIONS_BUFF_FOOD_DESC"] .. "|r",
+                12
+            ),
+
+            spaceBuff1 = Spacer(13),
+
+            toggleBuffFood = {
+                type  = "toggle",
+                name  = L["OPTIONS_BUFF_FOOD"],
+                desc  = L["OPTIONS_BUFF_FOOD_DESC"],
+                order = 14,
+                width = "full",
+                get   = function()
+                    return ConnoisseurCharDB and ConnoisseurCharDB.settings and ConnoisseurCharDB.settings.useBuffFood
+                end,
+                set   = function(_, value)
+                    if ns.ToggleBuffFood then
+                        ns.ToggleBuffFood()
+                    end
+                end,
+            },
+
+            -- Scroll Buffs
+            spaceScroll0 = Spacer(20),
+            headerScroll = Header(L["OPTIONS_SCROLL_HEADER"], 21),
+
+            descScroll = Desc(
+                GetColor("DESC") .. L["OPTIONS_USE_SCROLLS_DESC"] .. "|r",
+                22
+            ),
+
+            spaceScroll1 = Spacer(23),
+
+            toggleScrolls = {
+                type  = "toggle",
+                name  = L["OPTIONS_USE_SCROLLS"],
+                desc  = L["OPTIONS_USE_SCROLLS_DESC"],
+                order = 24,
+                width = "full",
+                get   = function()
+                    return ConnoisseurCharDB and ConnoisseurCharDB.settings and ConnoisseurCharDB.settings.useScrolls
+                end,
+                set   = function(_, value)
+                    if ns.ToggleScrollBuffs then
+                        ns.ToggleScrollBuffs()
+                    end
+                end,
+            },
+
+            spaceScrollTypes0 = Spacer(29),
+
+            scrollTypesGroup = {
+                type   = "group",
+                name   = L["OPTIONS_SCROLL_TYPES"],
+                order  = 30,
+                inline = true,
+                hidden = function()
+                    return not (ConnoisseurCharDB and ConnoisseurCharDB.settings and ConnoisseurCharDB.settings.useScrolls)
+                end,
+                args   = {
+                    scrollAgility = {
+                        type  = "toggle",
+                        name  = L["OPTIONS_SCROLL_AGILITY"],
+                        order = 1,
+                        get   = function()
+                            local st = ConnoisseurCharDB and ConnoisseurCharDB.settings and ConnoisseurCharDB.settings.scrollTypes
+                            return st and st.Agility
+                        end,
+                        set   = function(_, value)
+                            ConnoisseurCharDB.settings.scrollTypes.Agility = value
+                            if ns.ResetMacroState then ns.ResetMacroState() end
+                            ns.RequestUpdate()
+                        end,
+                    },
+                    scrollIntellect = {
+                        type  = "toggle",
+                        name  = L["OPTIONS_SCROLL_INTELLECT"],
+                        order = 2,
+                        get   = function()
+                            local st = ConnoisseurCharDB and ConnoisseurCharDB.settings and ConnoisseurCharDB.settings.scrollTypes
+                            return st and st.Intellect
+                        end,
+                        set   = function(_, value)
+                            ConnoisseurCharDB.settings.scrollTypes.Intellect = value
+                            if ns.ResetMacroState then ns.ResetMacroState() end
+                            ns.RequestUpdate()
+                        end,
+                    },
+                    scrollProtection = {
+                        type  = "toggle",
+                        name  = L["OPTIONS_SCROLL_PROTECTION"],
+                        order = 3,
+                        get   = function()
+                            local st = ConnoisseurCharDB and ConnoisseurCharDB.settings and ConnoisseurCharDB.settings.scrollTypes
+                            return st and st.Protection
+                        end,
+                        set   = function(_, value)
+                            ConnoisseurCharDB.settings.scrollTypes.Protection = value
+                            if ns.ResetMacroState then ns.ResetMacroState() end
+                            ns.RequestUpdate()
+                        end,
+                    },
+                    scrollSpirit = {
+                        type  = "toggle",
+                        name  = L["OPTIONS_SCROLL_SPIRIT"],
+                        order = 4,
+                        get   = function()
+                            local st = ConnoisseurCharDB and ConnoisseurCharDB.settings and ConnoisseurCharDB.settings.scrollTypes
+                            return st and st.Spirit
+                        end,
+                        set   = function(_, value)
+                            ConnoisseurCharDB.settings.scrollTypes.Spirit = value
+                            if ns.ResetMacroState then ns.ResetMacroState() end
+                            ns.RequestUpdate()
+                        end,
+                    },
+                    scrollStamina = {
+                        type  = "toggle",
+                        name  = L["OPTIONS_SCROLL_STAMINA"],
+                        order = 5,
+                        get   = function()
+                            local st = ConnoisseurCharDB and ConnoisseurCharDB.settings and ConnoisseurCharDB.settings.scrollTypes
+                            return st and st.Stamina
+                        end,
+                        set   = function(_, value)
+                            ConnoisseurCharDB.settings.scrollTypes.Stamina = value
+                            if ns.ResetMacroState then ns.ResetMacroState() end
+                            ns.RequestUpdate()
+                        end,
+                    },
+                    scrollStrength = {
+                        type  = "toggle",
+                        name  = L["OPTIONS_SCROLL_STRENGTH"],
+                        order = 6,
+                        get   = function()
+                            local st = ConnoisseurCharDB and ConnoisseurCharDB.settings and ConnoisseurCharDB.settings.scrollTypes
+                            return st and st.Strength
+                        end,
+                        set   = function(_, value)
+                            ConnoisseurCharDB.settings.scrollTypes.Strength = value
+                            if ns.ResetMacroState then ns.ResetMacroState() end
+                            ns.RequestUpdate()
+                        end,
+                    },
+                },
+            },
+
+            -- Reset
+            spaceReset0 = Spacer(80),
+            headerReset = Header(L["OPTIONS_RESET_HEADER"], 81),
+            spaceReset1 = Spacer(82),
+            resetIgnore = {
+                type        = "execute",
+                name        = L["MENU_CLEAR_IGNORE"],
+                desc        = L["OPTIONS_RESET_IGNORE_DESC"],
+                order       = 83,
+                width       = "normal",
+                confirm     = true,
+                confirmText = L["OPTIONS_RESET_IGNORE_CONFIRM"],
+                func        = function()
+                    if ConnoisseurCharDB and ConnoisseurCharDB.ignoreList then
+                        wipe(ConnoisseurCharDB.ignoreList)
+                    end
+                    if ns.UpdateMacros then
+                        ns.UpdateMacros(true)
+                    end
+                end,
+            },
+
+            -- Support & Community
+            spaceCommunity0 = Spacer(90),
+            headerCommunity = Header(L["OPTIONS_COMMUNITY_HEADER"], 91),
+            spaceCommunity1 = Spacer(92),
+
+            curseforgeLabel = Desc(GetColor("TITLE") .. "CurseForge" .. "|r", 93),
+            curseforgeURL = {
+                type  = "input",
+                name  = "",
+                order = 94,
+                width = "double",
+                get   = function() return ns.CURSEFORGE_URL end,
+                set   = function() end,
+            },
+            spaceCommunity2 = Spacer(95),
+
+            githubLabel = Desc(GetColor("TITLE") .. "GitHub" .. "|r", 96),
+            githubURL = {
+                type  = "input",
+                name  = "",
+                order = 97,
+                width = "double",
+                get   = function() return ns.GITHUB_URL end,
+                set   = function() end,
+            },
+            spaceCommunity3 = Spacer(98),
+
+            discordLabel = Desc(GetColor("TITLE") .. "Discord" .. "|r", 99),
+            discordURL = {
+                type  = "input",
+                name  = "",
+                order = 100,
+                width = "double",
+                get   = function() return ns.DISCORD_URL end,
+                set   = function() end,
+            },
+        },
+    }
+end
+
+--------------------------------------------------------------------------------
+-- Registration
+--------------------------------------------------------------------------------
+
+local AceConfig = LibStub("AceConfig-3.0", true)
+local AceConfigDialog = LibStub("AceConfigDialog-3.0", true)
+
+if AceConfig and AceConfigDialog then
+    AceConfig:RegisterOptionsTable(addonName, GetOptions)
+
+    local mainPanel = AceConfigDialog:AddToBlizOptions(addonName, L["BRAND"])
+
+    function ns.OpenOptions()
+        if Settings and Settings.GetCategory then
+            local category = Settings.GetCategory(L["BRAND"])
+            if category then
+                Settings.OpenToCategory(category.ID)
+                return
+            end
+        end
+        if InterfaceOptionsFrame_OpenToCategory then
+            InterfaceOptionsFrame_OpenToCategory(mainPanel)
+            InterfaceOptionsFrame_OpenToCategory(mainPanel)
+            return
+        end
+        AceConfigDialog:Open(addonName)
+    end
+end
+
+--------------------------------------------------------------------------------
+-- Slash Command
+--------------------------------------------------------------------------------
+
+SLASH_CONNOISSEUR1 = "/connoisseur"
+SLASH_CONNOISSEUR2 = "/cc"
+SlashCmdList["CONNOISSEUR"] = function()
+    if ns.OpenOptions then
+        ns.OpenOptions()
+    end
+end

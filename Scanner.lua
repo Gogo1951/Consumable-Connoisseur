@@ -1,7 +1,12 @@
 local _, ns = ...
 
+--------------------------------------------------------------------------------
+-- State
+--------------------------------------------------------------------------------
+
 ns.BestFoodID = nil
 ns.BestFoodLink = nil
+ns.ScrollOverrideID = nil
 
 ns.CachedPlayerLevel = 1
 ns.CachedMapID = nil
@@ -19,116 +24,45 @@ ns.RawData.Soulstone = ns.RawData.Soulstone or {}
 ns.RawData.ManaGem = ns.RawData.ManaGem or {}
 ns.RawData.Potions = ns.RawData.Potions or {}
 
-function ns.KnowsAny(spellList)
-    if not spellList then
-        return false
-    end
-    for _, data in ipairs(spellList) do
-        if IsSpellKnown(data[1]) then
-            return true
-        end
-    end
-    return false
-end
+--------------------------------------------------------------------------------
+-- Item Cache Helpers
+--------------------------------------------------------------------------------
 
 function ns.ClearItemCache()
-    if CC_ItemCache then
-        wipe(CC_ItemCache)
+    if ConnoisseurDB and ConnoisseurDB.itemCache then
+        wipe(ConnoisseurDB.itemCache)
     end
 end
 
 function ns.IsKnownConsumable(itemID)
-    if CC_ItemCache and CC_ItemCache[itemID] and CC_ItemCache[itemID] ~= "IGNORE" then
+    local cache = ConnoisseurDB and ConnoisseurDB.itemCache
+    if cache and cache[itemID] and cache[itemID] ~= "IGNORE" then
         return true
     end
-    return ns.RawData.FoodAndWater[itemID] ~= nil or ns.RawData.Potions[itemID] ~= nil or
-        ns.RawData.Healthstone[itemID] ~= nil or
-        ns.RawData.Soulstone[itemID] ~= nil or
-        ns.RawData.Bandage[itemID] ~= nil or
-        ns.RawData.ManaGem[itemID] ~= nil
+    if ns.ScrollItemLookup and ns.ScrollItemLookup[itemID] then
+        return true
+    end
+    return ns.RawData.FoodAndWater[itemID] ~= nil
+        or ns.RawData.Potions[itemID] ~= nil
+        or ns.RawData.Healthstone[itemID] ~= nil
+        or ns.RawData.Soulstone[itemID] ~= nil
+        or ns.RawData.Bandage[itemID] ~= nil
+        or ns.RawData.ManaGem[itemID] ~= nil
 end
 
+--------------------------------------------------------------------------------
+-- Best Item Tracking
+--------------------------------------------------------------------------------
+
 local best = {
-    ["Bandage"] = {
-        id = nil,
-        value = 0,
-        price = 0,
-        count = 0,
-        link = nil,
-        isBuffFood = false,
-        isPercent = false,
-        isHybrid = false
-    },
-    ["Food"] = {
-        id = nil,
-        value = 0,
-        price = 0,
-        count = 0,
-        link = nil,
-        isBuffFood = false,
-        isPercent = false,
-        isHybrid = false
-    },
-    ["Health Potion"] = {
-        id = nil,
-        value = 0,
-        price = 0,
-        count = 0,
-        link = nil,
-        isBuffFood = false,
-        isPercent = false,
-        isHybrid = false
-    },
-    ["Healthstone"] = {
-        id = nil,
-        value = 0,
-        price = 0,
-        count = 0,
-        link = nil,
-        isBuffFood = false,
-        isPercent = false,
-        isHybrid = false
-    },
-    ["Mana Gem"] = {
-        id = nil,
-        value = 0,
-        price = 0,
-        count = 0,
-        link = nil,
-        isBuffFood = false,
-        isPercent = false,
-        isHybrid = false
-    },
-    ["Mana Potion"] = {
-        id = nil,
-        value = 0,
-        price = 0,
-        count = 0,
-        link = nil,
-        isBuffFood = false,
-        isPercent = false,
-        isHybrid = false
-    },
-    ["Soulstone"] = {
-        id = nil,
-        value = 0,
-        price = 0,
-        count = 0,
-        link = nil,
-        isBuffFood = false,
-        isPercent = false,
-        isHybrid = false
-    },
-    ["Water"] = {
-        id = nil,
-        value = 0,
-        price = 0,
-        count = 0,
-        link = nil,
-        isBuffFood = false,
-        isPercent = false,
-        isHybrid = false
-    }
+    ["Bandage"]       = { id = nil, value = 0, price = 0, count = 0, link = nil, isBuffFood = false, isPercent = false, isHybrid = false },
+    ["Food"]          = { id = nil, value = 0, price = 0, count = 0, link = nil, isBuffFood = false, isPercent = false, isHybrid = false },
+    ["Health Potion"] = { id = nil, value = 0, price = 0, count = 0, link = nil, isBuffFood = false, isPercent = false, isHybrid = false },
+    ["Healthstone"]   = { id = nil, value = 0, price = 0, count = 0, link = nil, isBuffFood = false, isPercent = false, isHybrid = false },
+    ["Mana Gem"]      = { id = nil, value = 0, price = 0, count = 0, link = nil, isBuffFood = false, isPercent = false, isHybrid = false },
+    ["Mana Potion"]   = { id = nil, value = 0, price = 0, count = 0, link = nil, isBuffFood = false, isPercent = false, isHybrid = false },
+    ["Soulstone"]     = { id = nil, value = 0, price = 0, count = 0, link = nil, isBuffFood = false, isPercent = false, isHybrid = false },
+    ["Water"]         = { id = nil, value = 0, price = 0, count = 0, link = nil, isBuffFood = false, isPercent = false, isHybrid = false },
 }
 
 local function ResetBest(entry)
@@ -142,14 +76,16 @@ local function ResetBest(entry)
     entry.isHybrid = false
 end
 
+--------------------------------------------------------------------------------
+-- Buff Detection
+--------------------------------------------------------------------------------
+
 function ns.HasWellFedBuff()
     local TARGET_ICON_ID = 136000
     local TARGET_ICON_ID_2 = 133943
     for i = 1, 40 do
         local name, icon, _, _, _, _, _, _, _, spellID = UnitAura("player", i, "HELPFUL")
-        if not name then
-            break
-        end
+        if not name then break end
         if icon == TARGET_ICON_ID or icon == TARGET_ICON_ID_2 then
             return true
         end
@@ -159,6 +95,46 @@ function ns.HasWellFedBuff()
     end
     return false
 end
+
+-- Returns true if the player already has adequate coverage for this scroll type.
+-- A scroll buff of any rank counts as covered. A conflict spell (e.g. Fort)
+-- only counts as covered if its base amount >= the scroll we would use.
+function ns.HasScrollBuff(scrollType, scrollAmount)
+    if not ns.ScrollData or not ns.ScrollData[scrollType] then
+        return true
+    end
+
+    local data = ns.ScrollData[scrollType]
+
+    -- Build a set of all scroll buff IDs for this type
+    local scrollBuffIDs = {}
+    for _, entry in ipairs(data.items) do
+        scrollBuffIDs[entry[2]] = true
+    end
+
+    for i = 1, 40 do
+        local name, _, _, _, _, _, _, _, _, spellID = UnitAura("player", i, "HELPFUL")
+        if not name then break end
+
+        -- Already have a scroll buff active for this stat
+        if scrollBuffIDs[spellID] then
+            return true
+        end
+
+        -- Check conflict spells — only block the scroll if the class buff
+        -- provides at least as much stat as our best scroll would
+        local conflictAmount = data.conflictSpells[spellID]
+        if conflictAmount and conflictAmount >= (scrollAmount or 0) then
+            return true
+        end
+    end
+
+    return false
+end
+
+--------------------------------------------------------------------------------
+-- Profession Skills
+--------------------------------------------------------------------------------
 
 function ns.UpdateFirstAidSkill()
     local firstAidSpellName = GetSpellInfo(3273)
@@ -179,7 +155,7 @@ function ns.UpdateFirstAidSkill()
 end
 
 function ns.UpdateAlchemySkill()
-    local alchemySpellName = GetSpellInfo(2259) -- Spell ID for Alchemy
+    local alchemySpellName = GetSpellInfo(2259)
     if not alchemySpellName then
         currentAlchemySkill = 0
         return
@@ -196,10 +172,12 @@ function ns.UpdateAlchemySkill()
     currentAlchemySkill = 0
 end
 
+--------------------------------------------------------------------------------
+-- Zone Helpers
+--------------------------------------------------------------------------------
+
 local function BuildZoneSet(rawZoneArray)
-    if not rawZoneArray then
-        return nil
-    end
+    if not rawZoneArray then return nil end
     local set = {}
     for _, mapID in ipairs(rawZoneArray) do
         set[mapID] = true
@@ -207,36 +185,41 @@ local function BuildZoneSet(rawZoneArray)
     return set
 end
 
+--------------------------------------------------------------------------------
+-- Item Data Caching
+--------------------------------------------------------------------------------
+
 local function CacheItemData(itemID)
+    local itemCache = ConnoisseurDB and ConnoisseurDB.itemCache
+    if not itemCache then return nil end
+
     local name, _, _, _, minLevel, _, _, _, _, _, vendorPrice = GetItemInfo(itemID)
-    if not name then
-        return nil
-    end
+    if not name then return nil end
 
     local rawFoodAndWater = ns.RawData.FoodAndWater[itemID]
-    local rawPotion = ns.RawData.Potions[itemID]
-    local rawHealthstone = ns.RawData.Healthstone[itemID]
-    local rawSoulstone = ns.RawData.Soulstone[itemID]
-    local rawBandage = ns.RawData.Bandage[itemID]
-    local rawManaGem = ns.RawData.ManaGem[itemID]
+    local rawPotion       = ns.RawData.Potions[itemID]
+    local rawHealthstone  = ns.RawData.Healthstone[itemID]
+    local rawSoulstone    = ns.RawData.Soulstone[itemID]
+    local rawBandage      = ns.RawData.Bandage[itemID]
+    local rawManaGem      = ns.RawData.ManaGem[itemID]
 
     if not (rawFoodAndWater or rawPotion or rawHealthstone or rawSoulstone or rawBandage or rawManaGem) then
-        CC_ItemCache[itemID] = "IGNORE"
+        itemCache[itemID] = "IGNORE"
         return "IGNORE"
     end
 
     local data = {
-        id = itemID,
-        itemType = "",
-        healthValue = 0,
-        manaValue = 0,
-        requiredLevel = minLevel or 0,
+        id             = itemID,
+        itemType       = "",
+        healthValue    = 0,
+        manaValue      = 0,
+        requiredLevel  = minLevel or 0,
         requiredFirstAid = 0,
-        requiredAlchemy = 0,
-        price = vendorPrice or 0,
-        isBuffFood = false,
-        isPercent = false,
-        zones = nil
+        requiredAlchemy  = 0,
+        price          = vendorPrice or 0,
+        isBuffFood     = false,
+        isPercent      = false,
+        zones          = nil,
     }
 
     if rawFoodAndWater then
@@ -298,9 +281,13 @@ local function CacheItemData(itemID)
         data.manaValue = rawManaGem[1]
     end
 
-    CC_ItemCache[itemID] = data
+    itemCache[itemID] = data
     return data
 end
+
+--------------------------------------------------------------------------------
+-- Comparison Logic
+--------------------------------------------------------------------------------
 
 local function IsBetter(candidate, candidateCount, candidatePrice, currentBest, score, allowBuffFood, preferHybrid)
     if not currentBest.id then
@@ -335,14 +322,68 @@ local function IsBetter(candidate, candidateCount, candidatePrice, currentBest, 
     return candidateCount < currentBest.count
 end
 
+--------------------------------------------------------------------------------
+-- Scroll Scanning
+--------------------------------------------------------------------------------
+
+-- Finds the best available scroll for a type from bag contents.
+-- Scroll entries: {[1] itemID, [2] buffID, [3] requiredLevel, [4] amount}
+-- Returns itemID, amount (or nil, nil if nothing usable is found).
+local function FindBestScroll(scrollType, bagItemCounts)
+    if not ns.ScrollData or not ns.ScrollData[scrollType] then
+        return nil, nil
+    end
+
+    local playerLevel = ns.CachedPlayerLevel or 1
+    local items = ns.ScrollData[scrollType].items
+    for _, entry in ipairs(items) do
+        if entry[3] <= playerLevel then
+            if bagItemCounts[entry[1]] and bagItemCounts[entry[1]] > 0 then
+                return entry[1], entry[4]
+            end
+        end
+    end
+
+    return nil, nil
+end
+
+-- Returns the item ID of the first scroll that should be used, or nil
+function ns.FindScrollOverride(bagItemCounts)
+    local charDB = ConnoisseurCharDB
+    if not charDB or not charDB.settings or not charDB.settings.useScrolls then
+        return nil
+    end
+
+    local scrollTypes = charDB.settings.scrollTypes
+    if not scrollTypes then return nil end
+
+    for _, scrollType in ipairs(ns.SCROLL_CHECK_ORDER) do
+        if scrollTypes[scrollType] then
+            local scrollItemID, scrollAmount = FindBestScroll(scrollType, bagItemCounts)
+            if scrollItemID and not ns.HasScrollBuff(scrollType, scrollAmount) then
+                return scrollItemID
+            end
+        end
+    end
+
+    return nil
+end
+
+--------------------------------------------------------------------------------
+-- Bag Scanning
+--------------------------------------------------------------------------------
+
 local itemCounts = {}
 local slotItems = {}
 
 function ns.ScanBags()
     local playerLevel = ns.CachedPlayerLevel
     local currentMap = ns.CachedMapID
+    local charDB = ConnoisseurCharDB or {}
+    local settings = charDB.settings or {}
+    local itemCache = ConnoisseurDB and ConnoisseurDB.itemCache or {}
 
-    ns.AllowBuffFood = CC_Settings.UseBuffFood and not ns.WellFedState
+    ns.AllowBuffFood = settings.useBuffFood and not ns.WellFedState
 
     for _, entry in pairs(best) do
         ResetBest(entry)
@@ -365,136 +406,119 @@ function ns.ScanBags()
         end
     end
 
+    -- Scroll override check happens before consumable scan
+    ns.ScrollOverrideID = ns.FindScrollOverride(itemCounts)
+
     for id, hyperlink in pairs(slotItems) do
-        if not CC_IgnoreList[id] then
-            local data = CC_ItemCache[id]
-            if not data then
-                data = CacheItemData(id)
-            end
-
-            if not data then
-                dataRetry = true
-            elseif data ~= "IGNORE" then
-                local usable = true
-
-                if data.requiredLevel > playerLevel then
-                    usable = false
+        local ignoreList = charDB.ignoreList or {}
+        if not ignoreList[id] then
+            -- Skip scroll items from normal consumable processing
+            if ns.ScrollItemLookup and ns.ScrollItemLookup[id] then
+                -- Scrolls are handled by the scroll override system
+            else
+                local data = itemCache[id]
+                if not data then
+                    data = CacheItemData(id)
                 end
 
-                if usable and data.requiredFirstAid > 0 and data.requiredFirstAid > currentFirstAidSkill then
-                    usable = false
-                end
+                if not data then
+                    dataRetry = true
+                elseif data ~= "IGNORE" then
+                    local usable = true
 
-                if usable and (data.requiredAlchemy or 0) > 0 and (data.requiredAlchemy or 0) > currentAlchemySkill then
-                    usable = false
-                end
+                    if data.requiredLevel > playerLevel then
+                        usable = false
+                    end
 
-                if usable and data.zones then
-                    usable = (currentMap ~= nil) and (data.zones[currentMap] == true) or false
-                end
+                    if usable and data.requiredFirstAid > 0 and data.requiredFirstAid > currentFirstAidSkill then
+                        usable = false
+                    end
 
-                if usable then
-                    local totalCount = itemCounts[id]
-                    local itemType = data.itemType
+                    if usable and (data.requiredAlchemy or 0) > 0 and (data.requiredAlchemy or 0) > currentAlchemySkill then
+                        usable = false
+                    end
 
-                    if itemType == "bandage" then
-                        if IsBetter(data, totalCount, data.price, best["Bandage"], data.healthValue, false) then
-                            local winner = best["Bandage"]
-                            winner.id = id
-                            winner.value = data.healthValue
-                            winner.price = data.price
-                            winner.count = totalCount
-                        end
-                    elseif itemType == "healthstone" then
-                        if IsBetter(data, totalCount, data.price, best["Healthstone"], data.healthValue, false) then
-                            local winner = best["Healthstone"]
-                            winner.id = id
-                            winner.value = data.healthValue
-                            winner.price = data.price
-                            winner.count = totalCount
-                        end
-                    elseif itemType == "soulstone" then
-                        if IsBetter(data, totalCount, data.price, best["Soulstone"], data.healthValue, false) then
-                            local winner = best["Soulstone"]
-                            winner.id = id
-                            winner.value = data.healthValue
-                            winner.price = data.price
-                            winner.count = totalCount
-                        end
-                    elseif itemType == "managem" then
-                        if IsBetter(data, totalCount, data.price, best["Mana Gem"], data.manaValue, false) then
-                            local winner = best["Mana Gem"]
-                            winner.id = id
-                            winner.value = data.manaValue
-                            winner.price = data.price
-                            winner.count = totalCount
-                        end
-                    elseif itemType == "potion" then
-                        if
-                            data.healthValue > 0 and
-                                IsBetter(data, totalCount, data.price, best["Health Potion"], data.healthValue, false)
-                         then
-                            local winner = best["Health Potion"]
-                            winner.id = id
-                            winner.value = data.healthValue
-                            winner.price = data.price
-                            winner.count = totalCount
-                        end
-                        if
-                            data.manaValue > 0 and
-                                IsBetter(data, totalCount, data.price, best["Mana Potion"], data.manaValue, false)
-                         then
-                            local winner = best["Mana Potion"]
-                            winner.id = id
-                            winner.value = data.manaValue
-                            winner.price = data.price
-                            winner.count = totalCount
-                        end
-                    elseif itemType == "food" or itemType == "water" or itemType == "foodwater" then
-                        if not (data.isBuffFood and not ns.AllowBuffFood) then
-                            if itemType == "food" or itemType == "foodwater" then
-                                if
-                                    IsBetter(
-                                        data,
-                                        totalCount,
-                                        data.price,
-                                        best["Food"],
-                                        data.healthValue,
-                                        ns.AllowBuffFood,
-                                        true
-                                    )
-                                 then
-                                    local winner = best["Food"]
-                                    winner.id = id
-                                    winner.value = data.healthValue
-                                    winner.price = data.price
-                                    winner.count = totalCount
-                                    winner.isBuffFood = data.isBuffFood
-                                    winner.isPercent = data.isPercent
-                                    winner.link = hyperlink
-                                    winner.isHybrid = (itemType == "foodwater")
-                                end
+                    if usable and data.zones then
+                        usable = (currentMap ~= nil) and (data.zones[currentMap] == true) or false
+                    end
+
+                    if usable then
+                        local totalCount = itemCounts[id]
+                        local itemType = data.itemType
+
+                        if itemType == "bandage" then
+                            if IsBetter(data, totalCount, data.price, best["Bandage"], data.healthValue, false) then
+                                local winner = best["Bandage"]
+                                winner.id = id
+                                winner.value = data.healthValue
+                                winner.price = data.price
+                                winner.count = totalCount
                             end
-                            if itemType == "water" or itemType == "foodwater" then
-                                if
-                                    IsBetter(
-                                        data,
-                                        totalCount,
-                                        data.price,
-                                        best["Water"],
-                                        data.manaValue,
-                                        ns.AllowBuffFood,
-                                        false
-                                    )
-                                 then
-                                    local winner = best["Water"]
-                                    winner.id = id
-                                    winner.value = data.manaValue
-                                    winner.price = data.price
-                                    winner.count = totalCount
-                                    winner.isBuffFood = data.isBuffFood
-                                    winner.isPercent = data.isPercent
-                                    winner.isHybrid = (itemType == "foodwater")
+                        elseif itemType == "healthstone" then
+                            if IsBetter(data, totalCount, data.price, best["Healthstone"], data.healthValue, false) then
+                                local winner = best["Healthstone"]
+                                winner.id = id
+                                winner.value = data.healthValue
+                                winner.price = data.price
+                                winner.count = totalCount
+                            end
+                        elseif itemType == "soulstone" then
+                            if IsBetter(data, totalCount, data.price, best["Soulstone"], data.healthValue, false) then
+                                local winner = best["Soulstone"]
+                                winner.id = id
+                                winner.value = data.healthValue
+                                winner.price = data.price
+                                winner.count = totalCount
+                            end
+                        elseif itemType == "managem" then
+                            if IsBetter(data, totalCount, data.price, best["Mana Gem"], data.manaValue, false) then
+                                local winner = best["Mana Gem"]
+                                winner.id = id
+                                winner.value = data.manaValue
+                                winner.price = data.price
+                                winner.count = totalCount
+                            end
+                        elseif itemType == "potion" then
+                            if data.healthValue > 0 and IsBetter(data, totalCount, data.price, best["Health Potion"], data.healthValue, false) then
+                                local winner = best["Health Potion"]
+                                winner.id = id
+                                winner.value = data.healthValue
+                                winner.price = data.price
+                                winner.count = totalCount
+                            end
+                            if data.manaValue > 0 and IsBetter(data, totalCount, data.price, best["Mana Potion"], data.manaValue, false) then
+                                local winner = best["Mana Potion"]
+                                winner.id = id
+                                winner.value = data.manaValue
+                                winner.price = data.price
+                                winner.count = totalCount
+                            end
+                        elseif itemType == "food" or itemType == "water" or itemType == "foodwater" then
+                            if not (data.isBuffFood and not ns.AllowBuffFood) then
+                                if itemType == "food" or itemType == "foodwater" then
+                                    if IsBetter(data, totalCount, data.price, best["Food"], data.healthValue, ns.AllowBuffFood, true) then
+                                        local winner = best["Food"]
+                                        winner.id = id
+                                        winner.value = data.healthValue
+                                        winner.price = data.price
+                                        winner.count = totalCount
+                                        winner.isBuffFood = data.isBuffFood
+                                        winner.isPercent = data.isPercent
+                                        winner.link = hyperlink
+                                        winner.isHybrid = (itemType == "foodwater")
+                                    end
+                                end
+                                if itemType == "water" or itemType == "foodwater" then
+                                    if IsBetter(data, totalCount, data.price, best["Water"], data.manaValue, ns.AllowBuffFood, false) then
+                                        local winner = best["Water"]
+                                        winner.id = id
+                                        winner.value = data.manaValue
+                                        winner.price = data.price
+                                        winner.count = totalCount
+                                        winner.isBuffFood = data.isBuffFood
+                                        winner.isPercent = data.isPercent
+                                        winner.isHybrid = (itemType == "foodwater")
+                                    end
                                 end
                             end
                         end

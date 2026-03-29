@@ -1,7 +1,11 @@
 local _, ns = ...
 local L = ns.L
-local C = ns.Colors
+local GetColor = ns.GetColor
 local Config = ns.Config
+
+--------------------------------------------------------------------------------
+-- State
+--------------------------------------------------------------------------------
 
 local currentMacroState = {}
 
@@ -9,14 +13,16 @@ local conjuredGemItemIDBySpell = {
     [27101] = 22044,
     [10054] = 8008,
     [10053] = 8007,
-    [3552] = 5513,
-    [759] = 5514
+    [3552]  = 5513,
+    [759]   = 5514,
 }
 
+--------------------------------------------------------------------------------
+-- Smart Spell Resolution
+--------------------------------------------------------------------------------
+
 local function GetSmartSpell(spellList, ignoreTarget, checkUnique)
-    if not spellList then
-        return nil, 0
-    end
+    if not spellList then return nil, 0 end
 
     local levelCap = UnitLevel("player")
 
@@ -56,6 +62,12 @@ local function GetSmartSpell(spellList, ignoreTarget, checkUnique)
         end
     end
 
+    -- Fallback only when the player knows at least one spell in the list
+    -- but none matched the level cap (e.g. targeting a low-level friend)
+    if not ns.KnowsAny(spellList) then
+        return nil, 0
+    end
+
     local lowestRank = spellList[#spellList]
     local fallbackName = GetSpellInfo(lowestRank[1])
     if lowestRank[3] then
@@ -63,6 +75,10 @@ local function GetSmartSpell(spellList, ignoreTarget, checkUnique)
     end
     return fallbackName, lowestRank[1]
 end
+
+--------------------------------------------------------------------------------
+-- Macro Writing
+--------------------------------------------------------------------------------
 
 local function WriteMacro(macroName, icon, body, stateKey, typeName)
     local index = GetMacroIndexByName(macroName)
@@ -77,14 +93,16 @@ local function WriteMacro(macroName, icon, body, stateKey, typeName)
     currentMacroState[typeName] = stateKey
 end
 
+--------------------------------------------------------------------------------
+-- Macro Update Loop
+--------------------------------------------------------------------------------
+
 function ns.UpdateMacros(forced)
     if InCombatLockdown() then
         ns.RequestUpdate()
         return
     end
-    if not ns.ConjureSpells then
-        return
-    end
+    if not ns.ConjureSpells then return end
 
     if forced then
         wipe(currentMacroState)
@@ -100,6 +118,13 @@ function ns.UpdateMacros(forced)
 
     for typeName, cfg in pairs(Config) do
         local itemID = best[typeName] and best[typeName].id
+
+        -- Scroll override: when a scroll should be used, replace the Food macro item
+        local scrollOverride = false
+        if typeName == "Food" and ns.ScrollOverrideID then
+            itemID = ns.ScrollOverrideID
+            scrollOverride = true
+        end
 
         local rightClickSpellName, rightClickSpellID
         local middleClickSpellName, middleClickSpellID
@@ -119,7 +144,10 @@ function ns.UpdateMacros(forced)
             rightClickSpellName, rightClickSpellID = GetSmartSpell(ns.ConjureSpells.MageCreateManaGem, true, true)
         end
 
-        local stateParts = {itemID and tostring(itemID) or "none"}
+        local stateParts = { itemID and tostring(itemID) or "none" }
+        if scrollOverride then
+            stateParts[#stateParts + 1] = "S:" .. tostring(ns.ScrollOverrideID)
+        end
         if rightClickSpellName or middleClickSpellName then
             stateParts[#stateParts + 1] = "C"
             if middleClickSpellName then
@@ -137,13 +165,21 @@ function ns.UpdateMacros(forced)
             if itemID then
                 tooltipLine = "#showtooltip item:" .. itemID .. "\n"
 
-                actionBlock = "/run CC_LastID=" .. itemID .. ";CC_LastTime=GetTime()\n" .. "/use item:" .. itemID
+                -- Scrolls target the player to avoid buffing the current target
+                if scrollOverride then
+                    actionBlock = "/run CC_LastID=" .. itemID .. ";CC_LastTime=GetTime()\n" .. "/use [@player] item:" .. itemID
+                else
+                    actionBlock = "/run CC_LastID=" .. itemID .. ";CC_LastTime=GetTime()\n" .. "/use item:" .. itemID
+                end
+
                 icon = C_Item.GetItemIconByID(itemID)
             else
                 local message = string.format(L["MSG_NO_ITEM"], typeName)
                 tooltipLine = "#showtooltip item:" .. cfg.defaultID .. "\n"
-                actionBlock =
-                    string.format("/run print('%s%s%s // %s%s')", C.INFO, L["BRAND"], C.MUTED, C.TEXT, message)
+                actionBlock = string.format(
+                    "/run print('%s%s%s // %s%s')",
+                    GetColor("INFO"), L["BRAND"], GetColor("MUTED"), GetColor("TEXT"), message
+                )
                 icon = C_Item.GetItemIconByID(cfg.defaultID)
             end
 
