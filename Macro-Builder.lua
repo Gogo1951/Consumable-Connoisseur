@@ -63,7 +63,7 @@ local function GetSmartSpell(spellList, ignoreTarget, checkUnique)
     end
 
     -- Fallback only when the player knows at least one spell in the list
-    -- but none matched the level cap (e.g. targeting a low-level friend)
+    -- but none matched the level cap (targeting a low-level friend)
     if not ns.KnowsAny(spellList) then
         return nil, 0
     end
@@ -74,6 +74,24 @@ local function GetSmartSpell(spellList, ignoreTarget, checkUnique)
         return fallbackName .. "(" .. L["RANK"] .. " " .. lowestRank[3] .. ")", lowestRank[1]
     end
     return fallbackName, lowestRank[1]
+end
+
+--------------------------------------------------------------------------------
+-- Shadowmeld Suffix
+--------------------------------------------------------------------------------
+
+local function ShouldAppendShadowmeld(typeName)
+    if typeName ~= "Water" then
+        return false
+    end
+    if not ns.IsNightElf then
+        return false
+    end
+    local settings = ConnoisseurCharDB and ConnoisseurCharDB.settings
+    if not settings or not settings.enableShadowmeldDrinking then
+        return false
+    end
+    return ns.ShadowmeldSpellName ~= nil
 end
 
 --------------------------------------------------------------------------------
@@ -144,6 +162,8 @@ function ns.UpdateMacros(forced)
             rightClickSpellName, rightClickSpellID = GetSmartSpell(ns.ConjureSpells.MageCreateManaGem, true, true)
         end
 
+        local appendShadowmeld = ShouldAppendShadowmeld(typeName)
+
         local stateParts = { itemID and tostring(itemID) or "none" }
         if scrollOverride then
             stateParts[#stateParts + 1] = "S:" .. tostring(ns.ScrollOverrideID)
@@ -156,6 +176,9 @@ function ns.UpdateMacros(forced)
             if rightClickSpellName then
                 stateParts[#stateParts + 1] = "R:" .. tostring(rightClickSpellID)
             end
+        end
+        if appendShadowmeld then
+            stateParts[#stateParts + 1] = "SM"
         end
         local stateID = table.concat(stateParts, "_")
 
@@ -202,7 +225,12 @@ function ns.UpdateMacros(forced)
                 end
             end
 
-            local body = tooltipLine .. conjureBlock .. actionBlock
+            local shadowmeldBlock = ""
+            if appendShadowmeld and ns.ShadowmeldSpellName then
+                shadowmeldBlock = "\n/cast " .. ns.ShadowmeldSpellName
+            end
+
+            local body = tooltipLine .. conjureBlock .. actionBlock .. shadowmeldBlock
 
             WriteMacro(cfg.macro, icon, body, stateID, typeName)
         end

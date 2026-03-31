@@ -1,6 +1,6 @@
 local _, ns = ...
 
-assert(ns.L, "Consumable Connoisseur: Locales must be loaded before Data/General.lua — check your .toc load order.")
+ns.L = LibStub("AceLocale-3.0"):GetLocale("Connoisseur")
 
 --------------------------------------------------------------------------------
 -- Brand Colors
@@ -20,7 +20,6 @@ ns.Colors = {
 function ns.GetColor(key)
     return "|cff" .. (ns.Colors[key] or ns.Colors.TEXT)
 end
-
 
 --------------------------------------------------------------------------------
 -- URLs
@@ -46,19 +45,26 @@ ns.Config = {
 }
 
 --------------------------------------------------------------------------------
+-- Shadowmeld
+--------------------------------------------------------------------------------
+
+ns.SHADOWMELD_SPELL_ID = 20580
+
+--------------------------------------------------------------------------------
 -- Additional "Well Fed" Buff IDs
 --------------------------------------------------------------------------------
 
+-- { buffID = true }
 ns.WellFedBuffIDs = {
-    [18125] = true, -- blessed-sunfruit
-    [18141] = true, -- blessed-sunfruit-juice
-    [18191] = true, -- increased-stamina
-    [18192] = true, -- increased-agility
-    [18193] = true, -- increased-spirit
-    [18194] = true, -- mana-regeneration
-    [18222] = true, -- health-regeneration
-    [22730] = true, -- increased-intellect
-    [23697] = true, -- alterac-spring-water
+    [18125] = true, -- Blessed Sunfruit
+    [18141] = true, -- Blessed Sunfruit Juice
+    [18191] = true, -- Increased Stamina
+    [18192] = true, -- Increased Agility
+    [18193] = true, -- Increased Spirit
+    [18194] = true, -- Mana Regeneration
+    [18222] = true, -- Health Regeneration
+    [22730] = true, -- Increased Intellect
+    [23697] = true, -- Alterac Spring Water
 }
 
 --------------------------------------------------------------------------------
@@ -76,6 +82,7 @@ ns.SETTINGS_DEFAULTS = {
         Stamina    = true,
         Strength   = true,
     },
+    enableShadowmeldDrinking = false,
 }
 
 --------------------------------------------------------------------------------
@@ -96,30 +103,31 @@ end
 -- Mage and Warlock Spells
 --------------------------------------------------------------------------------
 
+-- { spellID, requiredLevel[, rankNumber] }
 ns.ConjureSpells = {
     MageCreateTable = {
         { 43987, 70 },
     },
     MageCreateWater = {
-        { 27090, 65, 9 }, -- Rank 9 (Conjured Glacier Water)
-        { 37420, 60, 8 }, -- Rank 8 (Conjured Mountain Spring Water)
-        { 10140, 55, 7 }, -- Rank 7 (Conjured Crystal Water)
-        { 10139, 45, 6 }, -- Rank 6 (Conjured Sparkling Water)
-        { 10138, 35, 5 }, -- Rank 5 (Conjured Mineral Water)
-        { 6127,  25, 4 }, -- Rank 4 (Conjured Spring Water)
-        { 5506,  15, 3 }, -- Rank 3 (Conjured Fresh Water)
-        { 5505,   5, 2 }, -- Rank 2 (Conjured Purified Water)
-        { 5504,   1, 1 }, -- Rank 1 (Conjured Fresh Water)
+        { 27090, 65, 9 }, -- Conjured Glacier Water
+        { 37420, 60, 8 }, -- Conjured Mountain Spring Water
+        { 10140, 55, 7 }, -- Conjured Crystal Water
+        { 10139, 45, 6 }, -- Conjured Sparkling Water
+        { 10138, 35, 5 }, -- Conjured Mineral Water
+        { 6127,  25, 4 }, -- Conjured Spring Water
+        { 5506,  15, 3 }, -- Conjured Fresh Water
+        { 5505,   5, 2 }, -- Conjured Purified Water
+        { 5504,   1, 1 }, -- Conjured Fresh Water
     },
     MageCreateFood = {
-        { 33717, 65, 8 }, -- Rank 8 (Magical Croissant)
-        { 28612, 55, 7 }, -- Rank 7 (Conjured Cinnamon Roll)
-        { 10145, 45, 6 }, -- Rank 6 (Conjured Sweet Roll)
-        { 10144, 35, 5 }, -- Rank 5 (Conjured Sourdough)
-        { 6129,  25, 4 }, -- Rank 4 (Conjured Pumpernickel)
-        { 990,   15, 3 }, -- Rank 3 (Conjured Rye)
-        { 597,    5, 2 }, -- Rank 2 (Conjured Bread)
-        { 587,    1, 1 }, -- Rank 1 (Conjured Muffin)
+        { 33717, 65, 8 }, -- Magical Croissant
+        { 28612, 55, 7 }, -- Conjured Cinnamon Roll
+        { 10145, 45, 6 }, -- Conjured Sweet Roll
+        { 10144, 35, 5 }, -- Conjured Sourdough
+        { 6129,  25, 4 }, -- Conjured Pumpernickel
+        { 990,   15, 3 }, -- Conjured Rye
+        { 597,    5, 2 }, -- Conjured Bread
+        { 587,    1, 1 }, -- Conjured Muffin
     },
     MageCreateManaGem = {
         { 27101, 68 }, -- Conjure Mana Emerald
@@ -132,19 +140,19 @@ ns.ConjureSpells = {
         { 29893, 68 },
     },
     WarlockCreateHealthstone = {
-        { 27230, 60, 6 }, -- Rank 6 (Master Healthstone)
-        { 11730, 48, 5 }, -- Rank 5 (Major Healthstone)
-        { 11729, 36, 4 }, -- Rank 4 (Greater Healthstone)
-        { 5699,  24, 3 }, -- Rank 3 (Healthstone)
-        { 6202,  12, 2 }, -- Rank 2 (Lesser Healthstone)
-        { 6201,   1, 1 }, -- Rank 1 (Minor Healthstone)
+        { 27230, 60, 6 }, -- Master Healthstone
+        { 11730, 48, 5 }, -- Major Healthstone
+        { 11729, 36, 4 }, -- Greater Healthstone
+        { 5699,  24, 3 }, -- Healthstone
+        { 6202,  12, 2 }, -- Lesser Healthstone
+        { 6201,   1, 1 }, -- Minor Healthstone
     },
     WarlockCreateSoulstone = {
-        { 27238, 70, 6 }, -- Rank 6 (Master Soulstone)
-        { 20757, 60, 5 }, -- Rank 5 (Major Soulstone)
-        { 20756, 50, 4 }, -- Rank 4 (Greater Soulstone)
-        { 20755, 40, 3 }, -- Rank 3 (Soulstone)
-        { 20752, 30, 2 }, -- Rank 2 (Lesser Soulstone)
-        { 693,   18, 1 }, -- Rank 1 (Minor Soulstone)
+        { 27238, 70, 6 }, -- Master Soulstone
+        { 20757, 60, 5 }, -- Major Soulstone
+        { 20756, 50, 4 }, -- Greater Soulstone
+        { 20755, 40, 3 }, -- Soulstone
+        { 20752, 30, 2 }, -- Lesser Soulstone
+        { 693,   18, 1 }, -- Minor Soulstone
     },
 }

@@ -1,36 +1,43 @@
 ## Title: Connoisseur
 ## Notes: Creates macros to use the best food, water, potions, healthstones, soulstones, mana gems, or bandages available to you. Also automatically conjures the right items for low-level friends.
 ## Author: Gogo1951
-## X-License: MIT
 
 ## IconTexture: Interface/AddOns/Consumable-Connoisseur/Consumable-Connoisseur.tga
 ## Category-enUS: Consumables
+## X-License: MIT
 
 ## Interface: 11508, 20505
 ## Version: @project-version@
 ## X-Curse-Project-ID: 1416865
+
+## X-Discord: https://discord.gg/eh8hKq992Q
+
 ## SavedVariables: ConnoisseurDB, CC_ItemCache, CC_ItemCacheVersion, CC_MinimapSettings
 ## SavedVariablesPerCharacter: ConnoisseurCharDB, CC_IgnoreList, CC_Settings
 
 # Includes
-Includes\LibStub\LibStub.lua
-Includes\CallbackHandler-1.0\CallbackHandler-1.0.lua
-Includes\LibDataBroker-1.1\LibDataBroker-1.1.lua
-Includes\LibDBIcon-1.0\LibDBIcon-1.0.lua
+Includes/LibStub/LibStub.lua
+Includes/CallbackHandler-1.0/CallbackHandler-1.0.lua
+Includes/AceLocale-3.0/AceLocale-3.0.lua
+Includes/AceGUI-3.0/AceGUI-3.0.xml
+Includes/AceConfigRegistry-3.0/AceConfigRegistry-3.0.lua
+Includes/AceConfig-3.0/AceConfig-3.0.lua
+Includes/AceConfigDialog-3.0/AceConfigDialog-3.0.lua
+Includes/LibDataBroker-1.1/LibDataBroker-1.1.lua
+Includes/LibDBIcon-1.0/LibDBIcon-1.0.lua
 
-# Locales
-Locales\enUS.lua
-Locales\deDE.lua
-Locales\esES.lua
-Locales\esMX.lua
-Locales\frFR.lua
-Locales\koKR.lua
-Locales\ptBR.lua
-Locales\ruRU.lua
-Locales\zhCN.lua
-Locales\zhTW.lua
+# Localization
+Locales/enUS.lua
+Locales/deDE.lua
+Locales/esES.lua
+Locales/frFR.lua
+Locales/koKR.lua
+Locales/ptBR.lua
+Locales/ruRU.lua
+Locales/zhCN.lua
+Locales/zhTW.lua
 
-# Connoisseur
+# Data
 Data/General.lua
 Data/Scrolls.lua
 Data/Bandages.lua
@@ -39,9 +46,11 @@ Data/Healthstones.lua
 Data/Soulstones.lua
 Data/Mana-Gems.lua
 Data/Potions.lua
+
+# Connoisseur
+Core.lua
 Scanner.lua
 Macro-Builder.lua
-Core.lua
 Minimap-Menu.lua
 Options.lua
 

@@ -31,6 +31,15 @@ local function Spacer(order)
     }
 end
 
+local function SubHeader(text, order)
+    return {
+        type     = "description",
+        name     = "\n" .. GetColor("TITLE") .. text .. "|r",
+        fontSize = "medium",
+        order    = order,
+    }
+end
+
 --------------------------------------------------------------------------------
 -- Options Table
 --------------------------------------------------------------------------------
@@ -43,6 +52,15 @@ local function GetOptions()
             descIntro = Desc(
                 L["OPTIONS_DESC"],
                 1
+            ),
+
+            -- /Commands
+            spaceCommands0 = Spacer(5),
+            headerCommands = Header(L["OPTIONS_COMMANDS_HEADER"], 6),
+            spaceCommands1 = Spacer(7),
+            descCommands = Desc(
+                GetColor("INFO") .. L["OPTIONS_COMMANDS_DESC"] .. "|r" .. "  Opens the Connoisseur options interface.",
+                8
             ),
 
             -- Buff Food
@@ -197,6 +215,42 @@ local function GetOptions()
                 },
             },
 
+            -- Night Elves
+            spaceNightElf0 = {
+                type   = "description",
+                name   = " ",
+                order  = 40,
+                hidden = function() return not ns.IsNightElf end,
+            },
+            headerNightElf = {
+                type   = "header",
+                name   = GetColor("TITLE") .. L["OPTIONS_NIGHTELF_HEADER"] .. "|r",
+                order  = 41,
+                hidden = function() return not ns.IsNightElf end,
+            },
+            spaceNightElf1 = {
+                type   = "description",
+                name   = " ",
+                order  = 42,
+                hidden = function() return not ns.IsNightElf end,
+            },
+            toggleShadowmeldDrinking = {
+                type   = "toggle",
+                name   = L["OPTIONS_SHADOWMELD_DRINKING"],
+                desc   = L["OPTIONS_SHADOWMELD_DRINKING_DESC"],
+                order  = 43,
+                width  = "full",
+                hidden = function() return not ns.IsNightElf end,
+                get    = function()
+                    return ConnoisseurCharDB and ConnoisseurCharDB.settings and ConnoisseurCharDB.settings.enableShadowmeldDrinking
+                end,
+                set    = function(_, value)
+                    if ns.ToggleShadowmeldDrinking then
+                        ns.ToggleShadowmeldDrinking()
+                    end
+                end,
+            },
+
             -- Reset
             spaceReset0 = Spacer(80),
             headerReset = Header(L["OPTIONS_RESET_HEADER"], 81),
@@ -219,7 +273,7 @@ local function GetOptions()
                 end,
             },
 
-            -- Support & Community
+            -- Feedback & Support
             spaceCommunity0 = Spacer(90),
             headerCommunity = Header(L["OPTIONS_COMMUNITY_HEADER"], 91),
             spaceCommunity1 = Spacer(92),
@@ -263,33 +317,31 @@ end
 -- Registration
 --------------------------------------------------------------------------------
 
-local AceConfig = LibStub("AceConfig-3.0", true)
-local AceConfigDialog = LibStub("AceConfigDialog-3.0", true)
+local AceConfig = LibStub("AceConfig-3.0")
+local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 
-if AceConfig and AceConfigDialog then
-    AceConfig:RegisterOptionsTable(addonName, GetOptions)
+AceConfig:RegisterOptionsTable(addonName, GetOptions)
 
-    local mainPanel = AceConfigDialog:AddToBlizOptions(addonName, L["BRAND"])
+local mainPanel = AceConfigDialog:AddToBlizOptions(addonName, L["BRAND"])
 
-    function ns.OpenOptions()
-        if Settings and Settings.GetCategory then
-            local category = Settings.GetCategory(L["BRAND"])
-            if category then
-                Settings.OpenToCategory(category.ID)
-                return
-            end
-        end
-        if InterfaceOptionsFrame_OpenToCategory then
-            InterfaceOptionsFrame_OpenToCategory(mainPanel)
-            InterfaceOptionsFrame_OpenToCategory(mainPanel)
+function ns.OpenOptions()
+    if Settings and Settings.GetCategory then
+        local category = Settings.GetCategory(L["BRAND"])
+        if category then
+            Settings.OpenToCategory(category.ID)
             return
         end
-        AceConfigDialog:Open(addonName)
     end
+    if InterfaceOptionsFrame_OpenToCategory then
+        InterfaceOptionsFrame_OpenToCategory(mainPanel)
+        InterfaceOptionsFrame_OpenToCategory(mainPanel)
+        return
+    end
+    AceConfigDialog:Open(addonName)
 end
 
 --------------------------------------------------------------------------------
--- Slash Command
+-- Slash Commands
 --------------------------------------------------------------------------------
 
 SLASH_CONNOISSEUR1 = "/connoisseur"

@@ -11,11 +11,20 @@ local isUpdatePending = false
 local updateTimer = 0
 local UPDATE_THROTTLE = 0.5
 
-local ITEM_CACHE_VERSION
-do
-    local meta = C_AddOns and C_AddOns.GetAddOnMetadata or GetAddOnMetadata
-    ITEM_CACHE_VERSION = meta(addonName, "Version") or "unknown"
+--------------------------------------------------------------------------------
+-- Version
+--------------------------------------------------------------------------------
+
+local function GetVersion()
+    local version = C_AddOns and C_AddOns.GetAddOnMetadata(addonName, "Version")
+        or GetAddOnMetadata(addonName, "Version")
+    if not version or version:find("@") then
+        return "Dev"
+    end
+    return version
 end
+
+ns.Version = GetVersion()
 
 --------------------------------------------------------------------------------
 -- Saved Variable Migration
@@ -79,26 +88,32 @@ local function InitVars()
     ConnoisseurCharDB.ignoreList = ConnoisseurCharDB.ignoreList or {}
     ConnoisseurCharDB.settings = ConnoisseurCharDB.settings or {}
 
-    -- One-time migration from legacy variable names
     if CC_MinimapSettings or CC_ItemCache or CC_IgnoreList or CC_Settings then
         MigrateFromLegacy()
     end
 
     ConnoisseurDB.minimap = ConnoisseurDB.minimap or {}
 
-    -- Apply default settings without overwriting existing values
     ApplyDefaults(ConnoisseurCharDB.settings, ns.SETTINGS_DEFAULTS)
 
     -- Invalidate item cache on version change
-    if ConnoisseurDB.itemCacheVersion ~= ITEM_CACHE_VERSION then
+    if ConnoisseurDB.itemCacheVersion ~= ns.Version then
         ConnoisseurDB.itemCache = {}
-        ConnoisseurDB.itemCacheVersion = ITEM_CACHE_VERSION
+        ConnoisseurDB.itemCacheVersion = ns.Version
     else
         ConnoisseurDB.itemCache = ConnoisseurDB.itemCache or {}
     end
 
     ns.CachedPlayerLevel = UnitLevel("player") or 1
     ns.CachedMapID = C_Map.GetBestMapForUnit("player")
+
+    local _, raceToken = UnitRace("player")
+    ns.IsNightElf = (raceToken == "NightElf")
+
+    -- Resolve the Shadowmeld spell name once for macro building
+    if ns.IsNightElf then
+        ns.ShadowmeldSpellName = GetSpellInfo(ns.SHADOWMELD_SPELL_ID)
+    end
 
     ns.SpellCache = {}
     if ns.ConjureSpells then
@@ -164,6 +179,15 @@ function ns.ToggleScrollBuffs()
     local settings = ConnoisseurCharDB.settings
     settings.useScrolls = not settings.useScrolls
     UpdateAuraTracking()
+    if ns.ResetMacroState then
+        ns.ResetMacroState()
+    end
+    ns.RequestUpdate()
+end
+
+function ns.ToggleShadowmeldDrinking()
+    local settings = ConnoisseurCharDB.settings
+    settings.enableShadowmeldDrinking = not settings.enableShadowmeldDrinking
     if ns.ResetMacroState then
         ns.ResetMacroState()
     end
@@ -267,7 +291,6 @@ frame:SetScript("OnEvent", function(self, event, ...)
             end
         end
 
-        -- Scroll buff changes also trigger a rescan
         if ConnoisseurCharDB and ConnoisseurCharDB.settings and ConnoisseurCharDB.settings.useScrolls then
             needsUpdate = true
         end

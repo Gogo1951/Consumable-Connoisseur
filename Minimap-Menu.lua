@@ -42,13 +42,10 @@ UpdateTooltip = function(anchor)
     local settings = ConnoisseurCharDB.settings or {}
     local tooltip = GameTooltip
 
-    local meta = C_AddOns and C_AddOns.GetAddOnMetadata or GetAddOnMetadata
-
     tooltip:SetOwner(anchor, "ANCHOR_BOTTOMLEFT")
     tooltip:ClearLines()
 
-    local version = meta(addonName, "Version") or ""
-    tooltip:AddDoubleLine(GetColor("TITLE") .. L["BRAND"] .. "|r", GetColor("MUTED") .. version .. "|r")
+    tooltip:AddDoubleLine(GetColor("TITLE") .. L["BRAND"] .. "|r", GetColor("MUTED") .. ns.Version .. "|r")
     tooltip:AddLine(" ")
 
     -- Class-specific conjure tips
@@ -80,7 +77,7 @@ UpdateTooltip = function(anchor)
             tooltip:AddLine(descriptionColor .. L["TIP_DOWNRANK"] .. "|r", 1, 1, 1, true)
         end
     elseif playerClass == "WARLOCK" and ns.ConjureSpells then
-        local warlockColor = "|cff8787ED"
+        local warlockColor = "|cff8788EE"
         local knowsSoulwell    = KnowsAny(ns.ConjureSpells.WarlockCreateSoulwell)
         local knowsHealthstone = KnowsAny(ns.ConjureSpells.WarlockCreateHealthstone)
         local knowsSoulstone   = KnowsAny(ns.ConjureSpells.WarlockCreateSoulstone)

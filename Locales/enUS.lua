@@ -1,6 +1,5 @@
-local _, ns = ...
-ns.L = {}
-local L = ns.L
+local L = LibStub("AceLocale-3.0"):NewLocale("Connoisseur", "enUS", true)
+if not L then return end
 
 -- [[ DEFAULT ENGLISH (enUS) ]] --
 L["BRAND"] = "Connoisseur"
@@ -31,17 +30,17 @@ L["MENU_TITLE"]          = "Consumables"
 
 L["MENU_SCROLL_BUFFS"]      = "Scroll Buffs"
 L["MENU_SCROLL_BUFFS_DESC"] = "Uses attribute scrolls as part of your Food macro when the scroll buff is missing."
-L["MENU_OPTIONS_HINT"]      = "Additional options available under Options > AddOns > Connoisseur."
+L["MENU_OPTIONS_HINT"]      = "Additional settings can be found under Options > AddOns > Connoisseur."
 
 L["PREFIX_MAGE"]    = "Attention Mages"
 L["PREFIX_WARLOCK"] = "Attention Warlocks"
 
-L["TIP_DOWNRANK"]       = "Targeting a lower-level player will cause the macro to conjure items appropriate for their level."
-L["TIP_MAGE_CONJURE"]   = "Right-Click on your Food or Water macros to Create Food or Water."
-L["TIP_MAGE_GEM"]       = "Right-Click on your Mana Gem macro to conjure a new gem. Right-Click again to conjure a lower-rank backup."
-L["TIP_MAGE_TABLE"]     = "Middle-click to cast Ritual of Refreshment."
+L["TIP_DOWNRANK"]        = "Targeting a lower-level player will cause the macro to conjure items appropriate for their level."
+L["TIP_MAGE_CONJURE"]    = "Right-Click on your Food or Water macros to Create Food or Water."
+L["TIP_MAGE_GEM"]        = "Right-Click on your Mana Gem macro to conjure a new gem. Right-Click again to conjure a lower-rank backup."
+L["TIP_MAGE_TABLE"]      = "Middle-click to cast Ritual of Refreshment."
 L["TIP_WARLOCK_CONJURE"] = "Right-Click on your Healthstone or Soulstone macros to create a Healthstone or Soulstone."
-L["TIP_WARLOCK_SOUL"]   = "Middle-click to cast Ritual of Souls."
+L["TIP_WARLOCK_SOUL"]    = "Middle-click to cast Ritual of Souls."
 
 L["UI_BEST_FOOD"]    = "Current Best Food"
 L["UI_DISABLED"]     = "Disabled"
@@ -68,7 +67,14 @@ L["OPTIONS_SCROLL_SPIRIT"]     = "Spirit"
 L["OPTIONS_SCROLL_STAMINA"]    = "Stamina"
 L["OPTIONS_SCROLL_STRENGTH"]   = "Strength"
 
-L["OPTIONS_RESET_HEADER"]      = "Reset"
-L["OPTIONS_RESET_IGNORE_DESC"] = "Remove all items from the ignore list."
+L["OPTIONS_NIGHTELF_HEADER"]           = "Night Elves"
+L["OPTIONS_SHADOWMELD_DRINKING"]      = "Shadowmeld Drinking"
+L["OPTIONS_SHADOWMELD_DRINKING_DESC"] = "Appends Shadowmeld to your Water macro so you stealth while drinking."
+
+L["OPTIONS_COMMANDS_HEADER"] = "/Commands"
+L["OPTIONS_COMMANDS_DESC"]   = "/connoisseur"
+
+L["OPTIONS_RESET_HEADER"]         = "Reset"
+L["OPTIONS_RESET_IGNORE_DESC"]    = "Remove all items from the ignore list."
 L["OPTIONS_RESET_IGNORE_CONFIRM"] = "Are you sure you want to clear the ignore list?"
-L["OPTIONS_COMMUNITY_HEADER"]  = "Feedback & Support"
+L["OPTIONS_COMMUNITY_HEADER"]     = "Feedback & Support"

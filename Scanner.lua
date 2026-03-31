@@ -439,7 +439,7 @@ function ns.ScanBags()
                     end
 
                     if usable and data.zones then
-                        usable = (currentMap ~= nil) and (data.zones[currentMap] == true) or false
+                        usable = (currentMap ~= nil) and (data.zones[currentMap] == true)
                     end
 
                     if usable then
