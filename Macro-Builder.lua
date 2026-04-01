@@ -227,7 +227,7 @@ function ns.UpdateMacros(forced)
 
             local shadowmeldBlock = ""
             if appendShadowmeld and ns.ShadowmeldSpellName then
-                shadowmeldBlock = "\n/cast " .. ns.ShadowmeldSpellName
+                shadowmeldBlock = "\n/cast [nostealth] " .. ns.ShadowmeldSpellName
             end
 
             local body = tooltipLine .. conjureBlock .. actionBlock .. shadowmeldBlock
