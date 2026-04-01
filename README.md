@@ -1,10 +1,10 @@
 # Connoisseur
 
-Creates macros to use the best food, water, potions, healthstones, soulstones, mana gems, or bandages available to you. Also automatically conjures the right items for low-level friends.
+Creates macros to use the best food, water, potions, healthstones, soulstones, mana gems, scrolls, or bandages available to you. Also automatically conjures the right items for low-level friends.
 
 ![Consumable-Connoisseur](https://github.com/user-attachments/assets/326eb93f-329f-4967-b750-909011a05b01)
 
-Whether you just leveled up, traded for a Healthstone from a new warlock, or just zoned into Tempest Keep  -- your buttons are always ready. 
+Whether you just leveled up, traded for a Healthstone from a new warlock, or just zoned into Tempest Keep -- your buttons are always ready.
 
 Connoisseur can even prioritize food that keeps you "Well Fed" if your buff drops off.
 
@@ -12,17 +12,21 @@ Connoisseur can even prioritize food that keeps you "Well Fed" if your buff drop
 
 ## Features
 
-🤖 **Automatic** : Macros update instantly when you loot items, level up, or change zones.
+🤖 Automatic : Macros update instantly when you loot items, level up, or change zones.
 
-🦺 **Safety First** : You can easily add items (like pet food) to the Ignore List directly from the minimap menu.
+🦺 Safety First : You can easily add items (like pet food) to the Ignore List directly from the minimap menu.
 
-🧠 **Zone Aware** : Prioritizes Battleground-specific consumables (like Arathi Basin Runecloth Bandages) when you are in the correct zone.
+🧠 Zone Aware : Prioritizes Battleground-specific consumables (like Arathi Basin Runecloth Bandages) when you are in the correct zone.
 
-💬 **Perfect Tooltips** : What You See Is What You Get. No more shoehorned macros that don't show the correct tooltips or item counts.
+💬 Perfect Tooltips : What You See Is What You Get. No more shoehorned macros that don't show the correct tooltips or item counts.
 
-⏩ **Optimized** : Light-weight, but also only updates when inventory changes or combat ends.
+⏩ Optimized : Light-weight, but also only updates when inventory changes or combat ends.
 
-🗺️ **Localized** : Works with all Classic WoW Locales (enUS, deDE, esES, esMX, frFR, koKR, ptBR, ruRU, zhCN, zhTW).
+📜 Fully Stocked : Full support for automatically prioritizing your best stat scrolls, elixirs, and potions as you adventure.
+
+🐾 Pet Friendly : Replaces outdated pet feeding addons (like Feed-O-Matic) by automatically managing your pet's diet in a single button.
+
+🗺️ Localized : Works with all Classic WoW Locales (enUS, deDE, esES, esMX, frFR, koKR, ptBR, ruRU, zhCN, zhTW).
 
 ## Automatically Conjour Relevant Items
 
@@ -32,7 +36,9 @@ And by simply targeting a lower-level player, when you Right-click on the macro,
 
 <img width="260" src="https://github.com/user-attachments/assets/4a4cd1b4-d227-4731-8988-36f505611883" />
 
-For Hunters, the Feed Pet macro works as an all-in-one Pet Call / Feed / Mend / Revive / Dismiss button.
+## The Ultimate Feed-O-Matic
+
+For Hunters, the Feed Pet macro works as a complete, all-in-one Pet Call / Feed / Mend / Revive / Dismiss button. It automatically finds the right food in your bags based on your pet's specific diet so you never have to micromanage their happiness again.
 
 <img width="260" src="https://github.com/user-attachments/assets/6ced7fae-f0bf-48f0-b317-b382e11a3bc1" />
 
