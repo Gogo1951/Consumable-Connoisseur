@@ -26,7 +26,7 @@ end
 --------------------------------------------------------------------------------
 
 ns.CURSEFORGE_URL = "https://www.curseforge.com/wow/addons/consumable-connoisseur"
-ns.GITHUB_URL = "https://github.com/Gogo1951/Consumable-Connoisseur"
+ns.GITHUB_URL = "https://github.com/Gogo1951/Connoisseur"
 ns.DISCORD_URL = "https://discord.gg/eh8hKq992Q"
 
 --------------------------------------------------------------------------------
