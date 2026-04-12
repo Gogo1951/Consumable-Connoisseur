@@ -4,6 +4,10 @@ Creates auto-updating macros for your best consumables, tracking buffs to keep y
 
 ![Consumable-Connoisseur](https://github.com/user-attachments/assets/326eb93f-329f-4967-b750-909011a05b01)
 
+## What It Does
+
+Connoisseur scans your bags every time something changes (loot, vendor purchase, level up, zone change) and rewrites a set of macros so they always use your best available consumable. It picks the highest-value item you can actually use right now, factoring in your level, profession skills, zone restrictions, and vendor sell price as a tiebreaker.
+
 ## Quick Start
 
 1. Install from [CurseForge](https://www.curseforge.com/wow/addons/consumable-connoisseur) or clone from [GitHub](https://github.com/Gogo1951/Consumable-Connoisseur).
@@ -14,10 +18,6 @@ Creates auto-updating macros for your best consumables, tracking buffs to keep y
 That's it. No configuration required for basic use.
 
 <img width="300" src="https://github.com/user-attachments/assets/c57060c0-4eee-44ab-af88-48e077d886cc" />
-
-## What It Does
-
-Connoisseur scans your bags every time something changes (loot, vendor purchase, level up, zone change) and rewrites a set of macros so they always use your best available consumable. It picks the highest-value item you can actually use right now, factoring in your level, profession skills, zone restrictions, and vendor sell price as a tiebreaker.
 
 ### Macros Created
 
