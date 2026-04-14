@@ -111,8 +111,6 @@ Connoisseur stores data in two scopes. Account-wide settings (`ConnoisseurDB`) h
 
 Please reach out if you would like to be involved with testing!
 
-## Report Issues & Get Involved
-
 ## Links
 
 - [CurseForge](https://www.curseforge.com/wow/addons/consumable-connoisseur)
