@@ -91,7 +91,7 @@ L["OPTIONS_SHADOWMELD_DRINKING_DESC"] = "Aggiunge Fondersi con l'Ombra alla tua 
 
 L["OPTIONS_COMMANDS_HEADER"] = "/Commands"
 L["OPTIONS_COMMANDS_DESC"] = "/foodie"
-L["OPTIONS_COMMANDS_DETAIL"] = "Abre l'interfaccia delle opzioni di Connoisseur."
+L["OPTIONS_COMMANDS_DETAIL"] = "Apre l'interfaccia delle opzioni di Connoisseur."
 
 L["OPTIONS_ENABLE_MACROS_HEADER"] = "Abilita Macro"
 L["OPTIONS_ENABLE_MACROS_DESC"] = "Scegli quali macro Connoisseur deve creare e mantenere. Disabilitare una macro la rimuoverà anche."
