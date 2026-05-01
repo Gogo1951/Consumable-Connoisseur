@@ -74,7 +74,7 @@ L["OPTIONS_SCROLL_SPIRIT"] = "Spirit"
 L["OPTIONS_SCROLL_STAMINA"] = "Stamina"
 L["OPTIONS_SCROLL_STRENGTH"] = "Strength"
 
-L["OPTIONS_PET_HEADER"] = "Pets Food Buffs"
+L["OPTIONS_PET_HEADER"] = "Pet Food Buffs"
 L["OPTIONS_USE_PET_BUFFS"] = "Use Pet Food Buffs"
 L["OPTIONS_USE_PET_BUFFS_DESC"] = 'Uses Pet Food, as part of your Food macro, when the "Well Fed" buff is missing from your pet.'
 L["OPTIONS_PET_BUFF_TYPES"] = "Include Pet Food Types in Check"
