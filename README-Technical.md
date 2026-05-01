@@ -6,7 +6,7 @@ This document combines architecture notes and contribution guidance for develope
 
 ## File Map
 
-```
+```text
 Consumable-Connoisseur/
 ├── Consumable-Connoisseur.toc    Load order and metadata
 ├── Core.lua                       Event dispatch, throttling, error handling
@@ -67,7 +67,7 @@ Every macro write is preceded by computing a state key that captures every input
 
 **Food mode:**
 
-```
+```text
 ITEMID(_C(_M:mid)?(_R:rid)?)?(_SM)?
 ```
 
@@ -79,7 +79,7 @@ ITEMID(_C(_M:mid)?(_R:rid)?)?(_SM)?
 
 **Scroll mode:**
 
-```
+```text
 SCROLLS:s1,s2,...
 ```
 
@@ -97,7 +97,7 @@ The Food macro has two modes that swap automatically based on what buffs the pla
 
 **Scroll mode** — active when (a) `useScrolls` is on, (b) at least one tracked scroll buff is missing, (c) the player has those scrolls in bags, and (d) the player is not targeting another friendly player. The body is just scrolls, in priority order:
 
-```
+```text
 #showtooltip
 /use [@player] item:SCROLL1
 /use [@player] item:SCROLL2
@@ -107,7 +107,7 @@ Bare `#showtooltip` resolves the action-bar icon to the first scroll. The user t
 
 **Food mode** — active in all other cases. Standard food-macro layout, the same as before scrolls existed:
 
-```
+```text
 #showtooltip item:FOODID
 /cast [btn:3] Ritual of Refreshment; [btn:2] Conjure Bread(Rank N);
 /stopmacro [btn:3][btn:2]
@@ -156,7 +156,7 @@ The Feed Pet macro is built separately by `UpdateFeedPetMacro()` because its con
 
 The compact form uses bracket conditional groups to stay well under 255 chars even in heavily-localized clients (German has the longest spell names):
 
-```
+```text
 /cast [mod:ctrl] Dismiss Pet; [mod:shift][@pet,dead] Revive Pet; [nopet] Call Pet; [btn:2][combat] Mend Pet; Feed Pet
 /stopmacro [mod][btn:2][nopet][@pet,dead][combat]
 /use item:FOODID
