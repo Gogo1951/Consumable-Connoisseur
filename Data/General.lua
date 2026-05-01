@@ -13,7 +13,6 @@ ns.Colors = {
     TEXT = "FFFFFF",
     SUCCESS = "33CC33",
     DISABLED = "CC3333",
-    SEP = "AAAAAA",
     MUTED = "808080"
 }
 
@@ -118,6 +117,17 @@ ns.SETTINGS_DEFAULTS = {
     petBuffTypes = {
         KiblersBits = true,
         SporelingSnacks = true
+    },
+    enabledMacros = {
+        ["Bandage"] = true,
+        ["Feed Pet"] = true,
+        ["Food"] = true,
+        ["Health Potion"] = true,
+        ["Healthstone"] = true,
+        ["Mana Gem"] = true,
+        ["Mana Potion"] = true,
+        ["Soulstone"] = true,
+        ["Water"] = true
     }
 }
 
@@ -126,13 +136,19 @@ ns.SETTINGS_DEFAULTS = {
 --------------------------------------------------------------------------------
 
 function ns.IsModeActive(mode)
-    if mode == "always" then return true end
-    if mode == "party" then return IsInGroup() end
-    if mode == "raid" then return IsInRaid() end
+    if mode == "always" then
+        return true
+    end
+    if mode == "party" then
+        return IsInGroup()
+    end
+    if mode == "raid" then
+        return IsInRaid()
+    end
     return true
 end
 
-ns.MODE_ORDER = { "always", "party", "raid" }
+ns.MODE_ORDER = {"always", "party", "raid"}
 
 --------------------------------------------------------------------------------
 -- Utility

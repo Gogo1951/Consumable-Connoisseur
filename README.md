@@ -25,7 +25,7 @@ That's it. No configuration required for basic use.
 
 | Macro Name | Category |
 |---|---|
-| `- Food` | Best food (or buff food / scroll / pet buff food when enabled) |
+| `- Food` | Best food (with optional buff food, scroll stacking, and pet buff food) |
 | `- Water` | Best drink |
 | `- Health Potion` | Best healing potion |
 | `- Mana Potion` | Best mana potion |
@@ -61,7 +61,16 @@ When enabled, the Food macro prefers items that grant the "Well Fed" buff, but o
 
 ### Scroll Buffs
 
-When enabled, the Food macro will use attribute scrolls (Agility, Intellect, Protection, Spirit, Stamina, Strength) before regular food when the corresponding scroll buff is missing. Scrolls are targeted at yourself, so they won't accidentally buff your current target. You can toggle individual scroll types on and off. Scrolls are skipped when a class buff (e.g. Arcane Intellect) already covers the same stat at equal or greater value.
+When enabled, the Food macro **stacks scroll uses on top of your food** — one tap of your `- Food` button can fire missing scrolls and start eating in a single press.
+
+How it works:
+
+- Each missing scroll buff (Agility, Intellect, Protection, Spirit, Stamina, Strength) adds its own `/use [@player] item:NNNNN` line to the Food macro, above the food line. Scrolls are off the global cooldown, so they all fire instantly without delaying your meal.
+- Scrolls always target you (`[@player]`), so they never accidentally buff your current target.
+- Scrolls are skipped when a class buff already covers the same stat at equal or greater value (e.g. Arcane Intellect blocks Scroll of Intellect).
+- You can toggle individual scroll types on and off, and restrict the feature to party or raid only.
+- **When you target another friendly player, the scroll lines drop out of the macro.** This keeps the macro reading cleanly as a conjure-for-friend button — Mages can right-click to give a friend bread without firing scrolls on themselves first.
+- Scroll firing order follows priority: Agility, Strength, Protection, Intellect, Spirit, Stamina. If your full scroll list would push the macro past WoW's 255-character limit, the lowest-priority scrolls drop out automatically.
 
 ### Pet Food Buffs
 

@@ -25,7 +25,7 @@ L["MSG_BUG_REPORT"] = "Sembra che tu abbia trovato un bug! %s (%s) non può esse
 L["MSG_NO_ITEM"] = "Nessun %s adatto trovato nelle tue borse."
 
 L["MENU_BUFF_FOOD"] = "Priorità Cibo con Buff"
-L["MENU_BUFF_FOOD_DESC"] = 'Dà priorità al cibo che fornisce il buff "Ben Nutrito", quando il buff è assente.'
+L["MENU_BUFF_FOOD_DESC"] = "Dà priorità al cibo che fornisce il buff \"Ben Nutrito\", quando il buff è assente."
 L["MENU_CLEAR_IGNORE"] = "Svuota Lista Ignorati"
 L["MENU_IGNORE"] = "Ignora"
 L["MENU_RESET"] = "Reimposta"
@@ -33,7 +33,7 @@ L["MENU_SCAN"] = "Forza Scansione"
 L["MENU_TITLE"] = "Consumabili"
 
 L["MENU_SCROLL_BUFFS"] = "Buff Pergamena"
-L["MENU_SCROLL_BUFFS_DESC"] = "Usa pergamene degli attributi come parte della tua macro Cibo quando il buff della pergamena è assente."
+L["MENU_SCROLL_BUFFS_DESC"] = "Aggiunge l'uso delle pergamene degli attributi mancanti nella tua macro Cibo, ignorando il tempo di recupero globale."
 L["MENU_OPTIONS_HINT"] = "Impostazioni aggiuntive in Opzioni > Addon > Connoisseur."
 
 L["PREFIX_HUNTER"] = "Attenzione Cacciatori"
@@ -66,10 +66,10 @@ L["MODE_RAID"] = "Solo in incursione"
 -- Options Panel
 L["OPTIONS_DESC"] = "Crea macro che si aggiornano automaticamente per i tuoi migliori consumabili, tracciando i buff per mantenerti al massimo delle prestazioni. Include un Feed-O-Matic tutto in uno per Cacciatori e un'evocazione intelligente con il clic destro per Maghi e Stregoni che si adatta al livello del tuo bersaglio."
 L["OPTIONS_BUFF_FOOD"] = "Priorità Cibo con Buff"
-L["OPTIONS_BUFF_FOOD_DESC"] = 'Dà priorità al cibo che fornisce il buff "Ben Nutrito", quando il buff è assente.'
+L["OPTIONS_BUFF_FOOD_DESC"] = "Dà priorità al cibo che fornisce il buff \"Ben Nutrito\", quando il buff è assente."
 L["OPTIONS_SCROLL_HEADER"] = "Buff Pergamena"
 L["OPTIONS_USE_SCROLLS"] = "Includi Buff Pergamena"
-L["OPTIONS_USE_SCROLLS_DESC"] = "Usa pergamene, quando il buff è assente, come parte della tua macro Cibo."
+L["OPTIONS_USE_SCROLLS_DESC"] = "Aggiunge l'uso delle pergamene degli attributi mancanti nella tua macro Cibo. Le pergamene ignorano il GCD, hanno te come bersaglio e vengono rimosse dalla macro quando selezioni un altro giocatore amico."
 L["OPTIONS_SCROLL_TYPES"] = "Includi Tipi di Pergamena nel Controllo"
 L["OPTIONS_SCROLL_AGILITY"] = "Agilità"
 L["OPTIONS_SCROLL_INTELLECT"] = "Intelletto"
@@ -80,7 +80,7 @@ L["OPTIONS_SCROLL_STRENGTH"] = "Forza"
 
 L["OPTIONS_PET_HEADER"] = "Buff Cibo Famiglio"
 L["OPTIONS_USE_PET_BUFFS"] = "Usa Buff Cibo Famiglio"
-L["OPTIONS_USE_PET_BUFFS_DESC"] = 'Usa Cibo per Famigli come parte della tua macro Cibo quando manca il buff "Ben Nutrito" sul tuo famiglio.'
+L["OPTIONS_USE_PET_BUFFS_DESC"] = "Usa Cibo per Famigli come parte della tua macro Cibo quando manca il buff \"Ben Nutrito\" sul tuo famiglio."
 L["OPTIONS_PET_BUFF_TYPES"] = "Includi Tipi di Cibo Famiglio nel Controllo"
 L["OPTIONS_PET_BUFF_KIBLERS"] = "Bocconcini di Kibler"
 L["OPTIONS_PET_BUFF_SPORELING"] = "Spuntini degli Sporeggiar"
@@ -91,7 +91,7 @@ L["OPTIONS_SHADOWMELD_DRINKING_DESC"] = "Aggiunge Fondersi con l'Ombra alla tua 
 
 L["OPTIONS_COMMANDS_HEADER"] = "/Commands"
 L["OPTIONS_COMMANDS_DESC"] = "/foodie"
-L["OPTIONS_COMMANDS_DETAIL"] = "Apre l'interfaccia delle opzioni di Connoisseur."
+L["OPTIONS_COMMANDS_DETAIL"] = "Abre l'interfaccia delle opzioni di Connoisseur."
 
 L["OPTIONS_ENABLE_MACROS_HEADER"] = "Abilita Macro"
 L["OPTIONS_ENABLE_MACROS_DESC"] = "Scegli quali macro Connoisseur deve creare e mantenere. Disabilitare una macro la rimuoverà anche."

@@ -4,7 +4,7 @@ local _, ns = ...
 -- State
 --------------------------------------------------------------------------------
 
-ns.ScrollOverrideID = nil
+ns.ScrollOverrideIDs = nil
 ns.PetBuffOverrideID = nil
 
 --------------------------------------------------------------------------------
@@ -89,8 +89,10 @@ local function FindBestScroll(scrollType, bagItemCounts)
     return nil, nil
 end
 
--- Returns the item ID of the first scroll that should be used, or nil.
-function ns.FindScrollOverride(bagItemCounts)
+-- Returns an ordered list of scroll item IDs the player should use, or nil
+-- if none apply. Order follows ns.SCROLL_CHECK_ORDER so the macro builder
+-- can use that priority when truncating to fit the 255-char macro limit.
+function ns.FindScrollOverrides(bagItemCounts)
     local charDB = ConnoisseurCharDB
     if not charDB or not charDB.settings or not charDB.settings.useScrolls then
         return nil
@@ -102,16 +104,19 @@ function ns.FindScrollOverride(bagItemCounts)
     local scrollTypes = charDB.settings.scrollTypes
     if not scrollTypes then return nil end
 
+    local results
+
     for _, scrollType in ipairs(ns.SCROLL_CHECK_ORDER) do
         if scrollTypes[scrollType] then
             local scrollItemID, scrollAmount = FindBestScroll(scrollType, bagItemCounts)
             if scrollItemID and not ns.HasScrollBuff(scrollType, scrollAmount) then
-                return scrollItemID
+                results = results or {}
+                results[#results + 1] = scrollItemID
             end
         end
     end
 
-    return nil
+    return results
 end
 
 --------------------------------------------------------------------------------

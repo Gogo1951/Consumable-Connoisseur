@@ -4,6 +4,15 @@ local GetColor = ns.GetColor
 local Config = ns.Config
 
 --------------------------------------------------------------------------------
+-- Constants
+--------------------------------------------------------------------------------
+
+-- WoW caps macro bodies at 255 characters. We use this when truncating
+-- the additive scroll block so we never write a body that would be
+-- silently rejected by the client.
+local MACRO_MAX_LENGTH = 255
+
+--------------------------------------------------------------------------------
 -- State
 --------------------------------------------------------------------------------
 
@@ -17,6 +26,21 @@ local conjuredGemItemIDBySpell = {
     [3552]  = 5513,
     [759]   = 5514,
 }
+
+--------------------------------------------------------------------------------
+-- Target Helpers
+--
+-- Single source of truth for "is the current target a friendly player." Used
+-- by both GetSmartSpell (for conjure rank downranking) and the scroll block
+-- builder (which drops scrolls so a Mage can right-click to conjure food
+-- for a friend without firing scrolls on themselves).
+--------------------------------------------------------------------------------
+
+local function HasFriendlyPlayerTarget()
+    return UnitExists("target")
+        and UnitIsFriend("player", "target")
+        and UnitIsPlayer("target")
+end
 
 --------------------------------------------------------------------------------
 -- Smart Spell Resolution
@@ -33,7 +57,7 @@ local function GetSmartSpell(spellList, ignoreTarget, checkUnique)
 
     local levelCap = UnitLevel("player")
 
-    if not ignoreTarget and UnitExists("target") and UnitIsFriend("player", "target") and UnitIsPlayer("target") then
+    if not ignoreTarget and HasFriendlyPlayerTarget() then
         local targetLevel = UnitLevel("target")
         if targetLevel > 0 then
             levelCap = targetLevel
@@ -139,11 +163,62 @@ local function WriteMacro(macroName, icon, body, stateKey, typeName)
     currentMacroState[typeName] = stateKey
 end
 
--- Builds the /run snippet that writes macro-fire context to ConnoisseurState.
--- The Core.lua UI_ERROR_MESSAGE handler reads lastID and lastTime to correlate
--- a zone-restriction error with the item that triggered it.
+-- Builds the line that records macro-fire context to ConnoisseurState via
+-- the global helper defined in Core.lua. The Core UI_ERROR_MESSAGE handler
+-- reads lastID and lastTime to correlate a zone-restriction error with the
+-- item that triggered it.
+--
+-- Using the global helper instead of an inline /run snippet keeps the macro
+-- body short — important for the Food macro when stacking scroll uses
+-- against the 255-character limit. The helper name is deliberately short
+-- but distinctive (Conn... prefix) to minimize collision risk with other
+-- addons while saving characters in every consumable macro.
 local function StateWriteLine(itemID)
-    return "/run ConnoisseurState.lastID=" .. itemID .. ";ConnoisseurState.lastTime=GetTime()\n"
+    return "/run ConnFire(" .. itemID .. ")\n"
+end
+
+--------------------------------------------------------------------------------
+-- Scroll Block (additive)
+--
+-- Returns a string of /use [@player] item:NNN lines, one per scroll, in
+-- ns.SCROLL_CHECK_ORDER priority. If the resulting body would exceed the
+-- 255-character macro limit, drops scrolls from the back of the list
+-- (lowest priority) until it fits. Also returns the list of IDs actually
+-- included, so the state encoding reflects only what was written.
+--
+-- baseBodyLength is the length of every other line in the macro body
+-- combined — tooltip, conjure block, state-write, action block, suffix.
+--------------------------------------------------------------------------------
+
+local function BuildScrollBlock(scrollList, baseBodyLength)
+    if not scrollList or #scrollList == 0 then
+        return "", nil
+    end
+
+    -- Build full block first, then trim from the back if too long.
+    local lines = {}
+    for _, scrollID in ipairs(scrollList) do
+        lines[#lines + 1] = "/use [@player] item:" .. scrollID
+    end
+
+    local block = table.concat(lines, "\n") .. "\n"
+    local includedIDs = { unpack(scrollList) }
+
+    while baseBodyLength + #block > MACRO_MAX_LENGTH and #lines > 0 do
+        lines[#lines] = nil
+        includedIDs[#includedIDs] = nil
+        if #lines == 0 then
+            block = ""
+            break
+        end
+        block = table.concat(lines, "\n") .. "\n"
+    end
+
+    if #includedIDs == 0 then
+        return "", nil
+    end
+
+    return block, includedIDs
 end
 
 --------------------------------------------------------------------------------
@@ -171,6 +246,11 @@ function ns.UpdateMacros(forced)
         ns.UnregisterDataRetry()
     end
 
+    -- Scrolls are dropped from the macro when targeting a friendly player so
+    -- the macro reads cleanly as a conjure-for-friend action (Mage food).
+    local friendlyPlayerTarget = HasFriendlyPlayerTarget()
+    local activeScrollIDs = (not friendlyPlayerTarget) and ns.ScrollOverrideIDs or nil
+
     for typeName, config in pairs(Config) do
         -- Feed Pet is handled separately below
         if typeName == "Feed Pet" then
@@ -180,20 +260,18 @@ function ns.UpdateMacros(forced)
         else
             local itemID = best[typeName] and best[typeName].id
 
-            -- Overrides: replace the Food macro item with buffs when missing
-            local scrollOverride = false
+            -- Pet buff override: replaces the Food slot item with pet food.
+            -- Scrolls are still allowed alongside (they target the player,
+            -- pet food targets the pet — no conflict).
             local petBuffOverride = false
 
-            if typeName == "Food" then
-                -- Pet buff takes priority, or scroll if no pet buff needed
-                if ns.PetBuffOverrideID then
-                    itemID = ns.PetBuffOverrideID
-                    petBuffOverride = true
-                elseif ns.ScrollOverrideID then
-                    itemID = ns.ScrollOverrideID
-                    scrollOverride = true
-                end
+            if typeName == "Food" and ns.PetBuffOverrideID then
+                itemID = ns.PetBuffOverrideID
+                petBuffOverride = true
             end
+
+            -- Scrolls only apply to the Food macro
+            local scrollIDsForThisMacro = (typeName == "Food") and activeScrollIDs or nil
 
             local rightClickSpellName, rightClickSpellID
             local middleClickSpellName, middleClickSpellID
@@ -216,9 +294,118 @@ function ns.UpdateMacros(forced)
 
             local appendShadowmeld = ShouldAppendShadowmeld(typeName)
 
+            ----------------------------------------------------------------
+            -- Build the conjure block first — its length feeds into the
+            -- scroll block builder, which uses it to enforce 255 chars.
+            ----------------------------------------------------------------
+
+            local actionBlock, icon
+
+            -- Conservative tooltip line used only for budget math — long
+            -- form (item:NNNNN) so BuildScrollBlock under-allocates rather
+            -- than over-allocates. The real tooltipLine is picked further
+            -- down once we know which scrolls survived truncation.
+            local budgetTooltipLine
+            local fallbackTooltipLine
+
+            if itemID then
+                budgetTooltipLine = "#showtooltip item:" .. itemID .. "\n"
+                fallbackTooltipLine = budgetTooltipLine
+
+                if petBuffOverride then
+                    -- Pet food buffs target the pet
+                    actionBlock = StateWriteLine(itemID) .. "/use [@pet] item:" .. itemID
+                else
+                    actionBlock = StateWriteLine(itemID) .. "/use item:" .. itemID
+                end
+
+                icon = ns.QUESTION_MARK_ICON
+            else
+                local message = string.format(L["MSG_NO_ITEM"], typeName)
+                budgetTooltipLine = "#showtooltip item:" .. config.defaultID .. "\n"
+                fallbackTooltipLine = budgetTooltipLine
+                actionBlock = string.format(
+                    "/run print('%s%s%s // %s%s')",
+                    GetColor("INFO"),
+                    L["BRAND"],
+                    GetColor("MUTED"),
+                    GetColor("TEXT"),
+                    message
+                )
+                icon = ns.QUESTION_MARK_ICON
+            end
+
+            local conjureBlock = ""
+            if rightClickSpellName or middleClickSpellName then
+                local castLine = ""
+                local stopConditions = ""
+
+                if middleClickSpellName then
+                    castLine = castLine .. "[btn:3] " .. middleClickSpellName .. "; "
+                    stopConditions = stopConditions .. "[btn:3]"
+                end
+                if rightClickSpellName then
+                    castLine = castLine .. "[btn:2] " .. rightClickSpellName .. "; "
+                    stopConditions = stopConditions .. "[btn:2]"
+                end
+
+                if castLine ~= "" then
+                    conjureBlock = "/cast " .. castLine .. "\n" .. "/stopmacro " .. stopConditions .. "\n"
+                end
+            end
+
+            local shadowmeldBlock = ""
+            if appendShadowmeld and ns.ShadowmeldSpellName then
+                shadowmeldBlock = "\n/cast [nostealth] " .. ns.ShadowmeldSpellName
+            end
+
+            ----------------------------------------------------------------
+            -- Scroll block: built last because it consumes whatever
+            -- character budget the rest of the macro left behind.
+            ----------------------------------------------------------------
+
+            local scrollBlock = ""
+            local appliedScrollIDs
+
+            if scrollIDsForThisMacro then
+                local baseLength = #budgetTooltipLine + #conjureBlock + #actionBlock + #shadowmeldBlock
+                scrollBlock, appliedScrollIDs = BuildScrollBlock(scrollIDsForThisMacro, baseLength)
+            end
+
+            ----------------------------------------------------------------
+            -- Tooltip line: now that we know which scrolls actually
+            -- survived truncation, pick the icon source. Bare
+            -- #showtooltip lets the action bar resolve the icon from the
+            -- first usable line in the body — for non-Mages with scrolls,
+            -- that's the scroll itself; for Mages, the conjure spell on
+            -- the line above the scroll. Either way, the bar shows
+            -- something contextually useful for the click that's about
+            -- to happen.
+            ----------------------------------------------------------------
+
+            local tooltipLine
+            if appliedScrollIDs and #appliedScrollIDs > 0 then
+                tooltipLine = "#showtooltip\n"
+            else
+                tooltipLine = fallbackTooltipLine
+            end
+
+            ----------------------------------------------------------------
+            -- State encoding — must reflect everything that affects the
+            -- written body so we know when to rewrite. Format:
+            --   ITEMID(_S:s1,s2,...)?(_C(_M:mid)?(_R:rid)?)?(_SM)?
+            -- The _S segment also implicitly captures the bare-vs-item
+            -- tooltip choice: bare #showtooltip is used iff scrolls
+            -- survived, and that's exactly when _S is present.
+            ----------------------------------------------------------------
+
             local stateParts = { itemID and tostring(itemID) or "none" }
-            if scrollOverride then
-                stateParts[#stateParts + 1] = "S:" .. tostring(ns.ScrollOverrideID)
+            if appliedScrollIDs then
+                local pieces = {}
+                for _, id in ipairs(appliedScrollIDs) do
+                    pieces[#pieces + 1] = tostring(id)
+                end
+                stateParts[#stateParts + 1] = "S:" .. table.concat(pieces, ",")
             end
             if rightClickSpellName or middleClickSpellName then
                 stateParts[#stateParts + 1] = "C"
@@ -235,62 +422,7 @@ function ns.UpdateMacros(forced)
             local stateID = table.concat(stateParts, "_")
 
             if currentMacroState[typeName] ~= stateID or forced then
-                local tooltipLine, actionBlock, icon
-
-                if itemID then
-                    tooltipLine = "#showtooltip item:" .. itemID .. "\n"
-
-                    if scrollOverride then
-                        -- Scrolls target the player to avoid buffing the current target
-                        actionBlock = StateWriteLine(itemID) .. "/use [@player] item:" .. itemID
-                    elseif petBuffOverride then
-                        -- Pet food buffs target the pet
-                        actionBlock = StateWriteLine(itemID) .. "/use [@pet] item:" .. itemID
-                    else
-                        actionBlock = StateWriteLine(itemID) .. "/use item:" .. itemID
-                    end
-
-                    icon = ns.QUESTION_MARK_ICON
-                else
-                    local message = string.format(L["MSG_NO_ITEM"], typeName)
-                    tooltipLine = "#showtooltip item:" .. config.defaultID .. "\n"
-                    actionBlock = string.format(
-                        "/run print('%s%s%s // %s%s')",
-                        GetColor("INFO"),
-                        L["BRAND"],
-                        GetColor("MUTED"),
-                        GetColor("TEXT"),
-                        message
-                    )
-                    icon = ns.QUESTION_MARK_ICON
-                end
-
-                local conjureBlock = ""
-                if rightClickSpellName or middleClickSpellName then
-                    local castLine = ""
-                    local stopConditions = ""
-
-                    if middleClickSpellName then
-                        castLine = castLine .. "[btn:3] " .. middleClickSpellName .. "; "
-                        stopConditions = stopConditions .. "[btn:3]"
-                    end
-                    if rightClickSpellName then
-                        castLine = castLine .. "[btn:2] " .. rightClickSpellName .. "; "
-                        stopConditions = stopConditions .. "[btn:2]"
-                    end
-
-                    if castLine ~= "" then
-                        conjureBlock = "/cast " .. castLine .. "\n" .. "/stopmacro " .. stopConditions .. "\n"
-                    end
-                end
-
-                local shadowmeldBlock = ""
-                if appendShadowmeld and ns.ShadowmeldSpellName then
-                    shadowmeldBlock = "\n/cast [nostealth] " .. ns.ShadowmeldSpellName
-                end
-
-                local body = tooltipLine .. conjureBlock .. actionBlock .. shadowmeldBlock
-
+                local body = tooltipLine .. conjureBlock .. scrollBlock .. actionBlock .. shadowmeldBlock
                 WriteMacro(config.macro, icon, body, stateID, typeName)
             end
         end
