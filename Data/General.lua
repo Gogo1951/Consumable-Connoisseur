@@ -13,6 +13,7 @@ ns.Colors = {
     TEXT = "FFFFFF",
     SUCCESS = "33CC33",
     DISABLED = "CC3333",
+    SEP = "AAAAAA",
     MUTED = "808080"
 }
 
