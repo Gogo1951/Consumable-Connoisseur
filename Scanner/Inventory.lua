@@ -160,7 +160,7 @@ function ns.ScanBags()
     end
 
     -- Overrides check happens before standard consumable scan
-    ns.ScrollOverrideID = ns.FindScrollOverride(itemCounts)
+    ns.ScrollOverrideIDs = ns.FindScrollOverrides(itemCounts)
     ns.PetBuffOverrideID = ns.FindPetBuffOverride(itemCounts)
 
     for id, hyperlink in pairs(slotItems) do

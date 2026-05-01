@@ -18,7 +18,6 @@ L["MACRO_MPOT"] = "- Mana Potion"
 L["MACRO_SS"] = "- Soulstone"
 L["MACRO_WATER"] = "- Water"
 
-L["ERR_ZONE"] = "You can't use that here."
 L["RANK"] = "Rank"
 
 L["MSG_BUG_REPORT"] = "Looks like you found a bug! %s (%s) can't be used in %s > %s (%s). Please report this so we can get it fixed. Thanks! https://discord.gg/eh8hKq992Q"
@@ -28,12 +27,9 @@ L["MENU_BUFF_FOOD"] = "Prioritize Buff Food"
 L["MENU_BUFF_FOOD_DESC"] = 'Prioritizes food that grants the "Well Fed" buff, when the buff is missing.'
 L["MENU_CLEAR_IGNORE"] = "Clear Ignore List"
 L["MENU_IGNORE"] = "Ignore"
-L["MENU_RESET"] = "Reset"
-L["MENU_SCAN"] = "Force Scan"
-L["MENU_TITLE"] = "Consumables"
 
 L["MENU_SCROLL_BUFFS"] = "Scroll Buffs"
-L["MENU_SCROLL_BUFFS_DESC"] = "Uses attribute scrolls as part of your Food macro when the scroll buff is missing."
+L["MENU_SCROLL_BUFFS_DESC"] = "Stacks missing attribute scroll uses into your Food macro, off the global cooldown."
 L["MENU_OPTIONS_HINT"] = "Additional settings can be found under Options > AddOns > Connoisseur."
 
 L["PREFIX_HUNTER"] = "Attention Hunters"
@@ -69,7 +65,7 @@ L["OPTIONS_BUFF_FOOD"] = "Prioritize Buff Food"
 L["OPTIONS_BUFF_FOOD_DESC"] = 'Prioritizes food that grants the "Well Fed" buff, when the buff is missing.'
 L["OPTIONS_SCROLL_HEADER"] = "Scroll Buffs"
 L["OPTIONS_USE_SCROLLS"] = "Include Scroll Buffs"
-L["OPTIONS_USE_SCROLLS_DESC"] = "Uses scrolls, when the scroll buff is missing, as part of your Food macro."
+L["OPTIONS_USE_SCROLLS_DESC"] = "Stacks missing attribute scroll uses into your Food macro. Scrolls are off the GCD, target you, and are dropped from the macro when you target another friendly player."
 L["OPTIONS_SCROLL_TYPES"] = "Include Scroll Types in Check"
 L["OPTIONS_SCROLL_AGILITY"] = "Agility"
 L["OPTIONS_SCROLL_INTELLECT"] = "Intellect"
@@ -78,7 +74,7 @@ L["OPTIONS_SCROLL_SPIRIT"] = "Spirit"
 L["OPTIONS_SCROLL_STAMINA"] = "Stamina"
 L["OPTIONS_SCROLL_STRENGTH"] = "Strength"
 
-L["OPTIONS_PET_HEADER"] = "Pets Food Buffs"
+L["OPTIONS_PET_HEADER"] = "Pet Food Buffs"
 L["OPTIONS_USE_PET_BUFFS"] = "Use Pet Food Buffs"
 L["OPTIONS_USE_PET_BUFFS_DESC"] = 'Uses Pet Food, as part of your Food macro, when the "Well Fed" buff is missing from your pet.'
 L["OPTIONS_PET_BUFF_TYPES"] = "Include Pet Food Types in Check"

@@ -204,8 +204,10 @@ if LDB then
         icon = "Interface\\Icons\\INV_Misc_Food_02",
         OnClick = function(self, button)
             if button == "RightButton" and ns.BestFoodID then
-                local ignoreList = ConnoisseurCharDB and ConnoisseurCharDB.ignoreList or {}
-                ignoreList[ns.BestFoodID] = true
+                if ConnoisseurCharDB then
+                    ConnoisseurCharDB.ignoreList = ConnoisseurCharDB.ignoreList or {}
+                    ConnoisseurCharDB.ignoreList[ns.BestFoodID] = true
+                end
                 if ns.UpdateMacros then
                     ns.UpdateMacros(true)
                 end
@@ -218,8 +220,10 @@ if LDB then
                     ns.ToggleBuffFood()
                 end
             elseif button == "MiddleButton" then
-                local ignoreList = ConnoisseurCharDB and ConnoisseurCharDB.ignoreList or {}
-                wipe(ignoreList)
+                if ConnoisseurCharDB then
+                    ConnoisseurCharDB.ignoreList = ConnoisseurCharDB.ignoreList or {}
+                    wipe(ConnoisseurCharDB.ignoreList)
+                end
                 if ns.UpdateMacros then
                     ns.UpdateMacros(true)
                 end

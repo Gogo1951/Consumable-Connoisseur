@@ -7,6 +7,18 @@ local GetColor = ns.GetColor
 -- we can correlate a zone-restriction error back to its triggering item.
 ConnoisseurState = ConnoisseurState or {}
 
+-- Tiny helper exposed as a global so macro bodies can record the firing
+-- item with `/run ConnFire(itemID)` instead of inlining a longer
+-- snippet. That savings matters when stacking scroll uses against the
+-- 255-character macro body limit.
+--
+-- Name choice: 8 characters, distinctive "Conn" prefix to avoid collisions
+-- with two-letter or generic globals other addons might define.
+function ConnFire(itemID)
+    ConnoisseurState.lastID = itemID
+    ConnoisseurState.lastTime = GetTime()
+end
+
 --------------------------------------------------------------------------------
 -- State
 --------------------------------------------------------------------------------
@@ -422,8 +434,9 @@ frame:SetScript("OnEvent", function(self, event, ...)
         end
 
         -- Zone-restriction reporting. The macro's /run snippet writes
-        -- lastID and lastTime to ConnoisseurState. If we see ERR_ITEM_WRONG_ZONE
-        -- within one second of a macro firing, we know which item to blame.
+        -- lastID and lastTime via ConnFire(). If we see
+        -- ERR_ITEM_WRONG_ZONE within one second of a macro firing, we
+        -- know which item to blame.
         if ConnoisseurState.lastTime and (GetTime() - ConnoisseurState.lastTime) < 1.0 then
             if msg == ERR_ITEM_WRONG_ZONE then
                 local mapID = C_Map.GetBestMapForUnit("player") or "0"
