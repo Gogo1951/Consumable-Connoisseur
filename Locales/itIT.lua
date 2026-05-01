@@ -1,8 +1,6 @@
 local addonName, ns = ...
 local L = LibStub("AceLocale-3.0"):NewLocale("Connoisseur", "itIT")
-if not L then
-    return
-end
+if not L then return end
 
 -- [[ ITALIAN (itIT) ]] --
 L["BRAND"] = "Connoisseur"
@@ -28,12 +26,9 @@ L["MENU_BUFF_FOOD"] = "Priorità Cibo con Buff"
 L["MENU_BUFF_FOOD_DESC"] = "Dà priorità al cibo che fornisce il buff \"Ben Nutrito\", quando il buff è assente."
 L["MENU_CLEAR_IGNORE"] = "Svuota Lista Ignorati"
 L["MENU_IGNORE"] = "Ignora"
-L["MENU_RESET"] = "Reimposta"
-L["MENU_SCAN"] = "Forza Scansione"
-L["MENU_TITLE"] = "Consumabili"
 
 L["MENU_SCROLL_BUFFS"] = "Buff Pergamena"
-L["MENU_SCROLL_BUFFS_DESC"] = "Aggiunge l'uso delle pergamene degli attributi mancanti nella tua macro Cibo, ignorando il tempo di recupero globale."
+L["MENU_SCROLL_BUFFS_DESC"] = "Trasforma la tua macro Cibo in un applicatore di pergamene quando ti mancano i buff delle pergamene."
 L["MENU_OPTIONS_HINT"] = "Impostazioni aggiuntive in Opzioni > Addon > Connoisseur."
 
 L["PREFIX_HUNTER"] = "Attenzione Cacciatori"
@@ -69,7 +64,7 @@ L["OPTIONS_BUFF_FOOD"] = "Priorità Cibo con Buff"
 L["OPTIONS_BUFF_FOOD_DESC"] = "Dà priorità al cibo che fornisce il buff \"Ben Nutrito\", quando il buff è assente."
 L["OPTIONS_SCROLL_HEADER"] = "Buff Pergamena"
 L["OPTIONS_USE_SCROLLS"] = "Includi Buff Pergamena"
-L["OPTIONS_USE_SCROLLS_DESC"] = "Aggiunge l'uso delle pergamene degli attributi mancanti nella tua macro Cibo. Le pergamene ignorano il GCD, hanno te come bersaglio e vengono rimosse dalla macro quando selezioni un altro giocatore amico."
+L["OPTIONS_USE_SCROLLS_DESC"] = "Trasforma la tua macro Cibo in un applicatore di pergamene dedicato ogni volta che ti mancano i buff delle pergamene. Tocca una volta per applicare le pergamene; tocca di nuovo per mangiare. Le pergamene ignorano il GCD, hanno te come bersaglio e la macro ritorna al cibo nel momento in cui selezioni un altro giocatore amico."
 L["OPTIONS_SCROLL_TYPES"] = "Includi Tipi di Pergamena nel Controllo"
 L["OPTIONS_SCROLL_AGILITY"] = "Agilità"
 L["OPTIONS_SCROLL_INTELLECT"] = "Intelletto"

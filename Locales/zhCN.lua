@@ -1,3 +1,4 @@
+local addonName, ns = ...
 local L = LibStub("AceLocale-3.0"):NewLocale("Connoisseur", "zhCN")
 if not L then return end
 
@@ -25,12 +26,9 @@ L["MENU_BUFF_FOOD"] = "优先增益食物"
 L["MENU_BUFF_FOOD_DESC"] = "当缺少 \"进食充分\" BUFF时，优先使用提供该BUFF的食物。"
 L["MENU_CLEAR_IGNORE"] = "清除忽略列表"
 L["MENU_IGNORE"] = "忽略"
-L["MENU_RESET"] = "重置"
-L["MENU_SCAN"] = "强制扫描"
-L["MENU_TITLE"] = "消耗品"
 
 L["MENU_SCROLL_BUFFS"] = "卷轴增益"
-L["MENU_SCROLL_BUFFS_DESC"] = "将缺少的属性卷轴使用加入到你的食物宏中，不占用公共冷却时间（GCD）。"
+L["MENU_SCROLL_BUFFS_DESC"] = "当你缺少卷轴增益时，将你的食物宏转变为卷轴施放器。"
 L["MENU_OPTIONS_HINT"] = "在 选项 > 插件 > Connoisseur 中有更多选项可用。"
 
 L["PREFIX_HUNTER"] = "猎人请注意"
@@ -66,7 +64,7 @@ L["OPTIONS_BUFF_FOOD"] = "优先增益食物"
 L["OPTIONS_BUFF_FOOD_DESC"] = "当缺少 \"进食充分\" BUFF时，优先使用提供该BUFF的食物。"
 L["OPTIONS_SCROLL_HEADER"] = "卷轴增益"
 L["OPTIONS_USE_SCROLLS"] = "包含卷轴增益"
-L["OPTIONS_USE_SCROLLS_DESC"] = "将缺少的属性卷轴使用加入到你的食物宏中。卷轴不占用GCD，以你为目标，并且当你的目标是其他友方玩家时会从宏中移除。"
+L["OPTIONS_USE_SCROLLS_DESC"] = "只要你缺少卷轴增益，就会将你的食物宏转变为专用的卷轴施放器。按一次施放卷轴；再按一次进食。卷轴不占用GCD，以你为目标，并且当你的目标是其他友方玩家时，宏会立刻还原为食物。"
 L["OPTIONS_SCROLL_TYPES"] = "在检查中包含卷轴类型"
 L["OPTIONS_SCROLL_AGILITY"] = "敏捷"
 L["OPTIONS_SCROLL_INTELLECT"] = "智力"

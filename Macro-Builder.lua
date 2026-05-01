@@ -4,15 +4,6 @@ local GetColor = ns.GetColor
 local Config = ns.Config
 
 --------------------------------------------------------------------------------
--- Constants
---------------------------------------------------------------------------------
-
--- WoW caps macro bodies at 255 characters. We use this when truncating
--- the additive scroll block so we never write a body that would be
--- silently rejected by the client.
-local MACRO_MAX_LENGTH = 255
-
---------------------------------------------------------------------------------
 -- State
 --------------------------------------------------------------------------------
 
@@ -178,47 +169,29 @@ local function StateWriteLine(itemID)
 end
 
 --------------------------------------------------------------------------------
--- Scroll Block (additive)
+-- Scroll-Only Macro Body
 --
--- Returns a string of /use [@player] item:NNN lines, one per scroll, in
--- ns.SCROLL_CHECK_ORDER priority. If the resulting body would exceed the
--- 255-character macro limit, drops scrolls from the back of the list
--- (lowest priority) until it fits. Also returns the list of IDs actually
--- included, so the state encoding reflects only what was written.
+-- When the player has missing scroll buffs and is not targeting a friendly
+-- player, the Food macro becomes a dedicated scroll-fire macro. The body
+-- is just `#showtooltip` plus one /use [@player] item:NNN line per scroll
+-- in ns.SCROLL_CHECK_ORDER priority. No food, no conjure, no state-write —
+-- the user taps once to apply scrolls; the next tap (with all scrolls
+-- applied) sees the macro flip back to its normal food form.
 --
--- baseBodyLength is the length of every other line in the macro body
--- combined — tooltip, conjure block, state-write, action block, suffix.
+-- Bare `#showtooltip` lets the action bar resolve the icon from the first
+-- usable line — the first scroll — which is exactly what the user should
+-- see when the button is about to fire scrolls.
+--
+-- All scrolls fit comfortably under WoW's 255-char macro limit: 14 chars
+-- for the tooltip line + at most 6 scrolls × ~25 chars ≈ 164 chars.
 --------------------------------------------------------------------------------
 
-local function BuildScrollBlock(scrollList, baseBodyLength)
-    if not scrollList or #scrollList == 0 then
-        return "", nil
-    end
-
-    -- Build full block first, then trim from the back if too long.
-    local lines = {}
+local function BuildScrollOnlyBody(scrollList)
+    local lines = { "#showtooltip" }
     for _, scrollID in ipairs(scrollList) do
         lines[#lines + 1] = "/use [@player] item:" .. scrollID
     end
-
-    local block = table.concat(lines, "\n") .. "\n"
-    local includedIDs = { unpack(scrollList) }
-
-    while baseBodyLength + #block > MACRO_MAX_LENGTH and #lines > 0 do
-        lines[#lines] = nil
-        includedIDs[#includedIDs] = nil
-        if #lines == 0 then
-            block = ""
-            break
-        end
-        block = table.concat(lines, "\n") .. "\n"
-    end
-
-    if #includedIDs == 0 then
-        return "", nil
-    end
-
-    return block, includedIDs
+    return table.concat(lines, "\n") .. "\n"
 end
 
 --------------------------------------------------------------------------------
@@ -270,8 +243,31 @@ function ns.UpdateMacros(forced)
                 petBuffOverride = true
             end
 
-            -- Scrolls only apply to the Food macro
+            -- Scrolls only apply to the Food macro. When active and not
+            -- targeting a friendly player, the Food macro becomes a
+            -- dedicated scroll-fire macro — no food, no conjure block —
+            -- so the user taps once to apply scrolls, then the macro
+            -- naturally flips back to food mode for the next press.
             local scrollIDsForThisMacro = (typeName == "Food") and activeScrollIDs or nil
+            local scrollMode = scrollIDsForThisMacro and #scrollIDsForThisMacro > 0
+
+            if scrollMode then
+                ------------------------------------------------------------
+                -- Scroll mode: scrolls only, nothing else.
+                -- State key prefixed with "SCROLLS:" so it can never
+                -- collide with the standard ITEMID-prefixed key, which
+                -- guarantees a rewrite happens at every transition into
+                -- and out of scroll mode (target-change, scroll-applied,
+                -- bag scan removing the last scroll item, etc).
+                ------------------------------------------------------------
+
+                local body = BuildScrollOnlyBody(scrollIDsForThisMacro)
+                local stateID = "SCROLLS:" .. table.concat(scrollIDsForThisMacro, ",")
+
+                if currentMacroState[typeName] ~= stateID or forced then
+                    WriteMacro(config.macro, ns.QUESTION_MARK_ICON, body, stateID, typeName)
+                end
+            else
 
             local rightClickSpellName, rightClickSpellID
             local middleClickSpellName, middleClickSpellID
@@ -295,22 +291,13 @@ function ns.UpdateMacros(forced)
             local appendShadowmeld = ShouldAppendShadowmeld(typeName)
 
             ----------------------------------------------------------------
-            -- Build the conjure block first — its length feeds into the
-            -- scroll block builder, which uses it to enforce 255 chars.
+            -- Standard macro body: tooltip + conjure + action [+ shadowmeld]
             ----------------------------------------------------------------
 
-            local actionBlock, icon
-
-            -- Conservative tooltip line used only for budget math — long
-            -- form (item:NNNNN) so BuildScrollBlock under-allocates rather
-            -- than over-allocates. The real tooltipLine is picked further
-            -- down once we know which scrolls survived truncation.
-            local budgetTooltipLine
-            local fallbackTooltipLine
+            local tooltipLine, actionBlock, icon
 
             if itemID then
-                budgetTooltipLine = "#showtooltip item:" .. itemID .. "\n"
-                fallbackTooltipLine = budgetTooltipLine
+                tooltipLine = "#showtooltip item:" .. itemID .. "\n"
 
                 if petBuffOverride then
                     -- Pet food buffs target the pet
@@ -322,8 +309,7 @@ function ns.UpdateMacros(forced)
                 icon = ns.QUESTION_MARK_ICON
             else
                 local message = string.format(L["MSG_NO_ITEM"], typeName)
-                budgetTooltipLine = "#showtooltip item:" .. config.defaultID .. "\n"
-                fallbackTooltipLine = budgetTooltipLine
+                tooltipLine = "#showtooltip item:" .. config.defaultID .. "\n"
                 actionBlock = string.format(
                     "/run print('%s%s%s // %s%s')",
                     GetColor("INFO"),
@@ -360,53 +346,15 @@ function ns.UpdateMacros(forced)
             end
 
             ----------------------------------------------------------------
-            -- Scroll block: built last because it consumes whatever
-            -- character budget the rest of the macro left behind.
-            ----------------------------------------------------------------
-
-            local scrollBlock = ""
-            local appliedScrollIDs
-
-            if scrollIDsForThisMacro then
-                local baseLength = #budgetTooltipLine + #conjureBlock + #actionBlock + #shadowmeldBlock
-                scrollBlock, appliedScrollIDs = BuildScrollBlock(scrollIDsForThisMacro, baseLength)
-            end
-
-            ----------------------------------------------------------------
-            -- Tooltip line: now that we know which scrolls actually
-            -- survived truncation, pick the icon source. Bare
-            -- #showtooltip lets the action bar resolve the icon from the
-            -- first usable line in the body — for non-Mages with scrolls,
-            -- that's the scroll itself; for Mages, the conjure spell on
-            -- the line above the scroll. Either way, the bar shows
-            -- something contextually useful for the click that's about
-            -- to happen.
-            ----------------------------------------------------------------
-
-            local tooltipLine
-            if appliedScrollIDs and #appliedScrollIDs > 0 then
-                tooltipLine = "#showtooltip\n"
-            else
-                tooltipLine = fallbackTooltipLine
-            end
-
-            ----------------------------------------------------------------
-            -- State encoding — must reflect everything that affects the
-            -- written body so we know when to rewrite. Format:
-            --   ITEMID(_S:s1,s2,...)?(_C(_M:mid)?(_R:rid)?)?(_SM)?
-            -- The _S segment also implicitly captures the bare-vs-item
-            -- tooltip choice: bare #showtooltip is used iff scrolls
-            -- survived, and that's exactly when _S is present.
+            -- State encoding — captures every input that affects the
+            -- written body. Format:
+            --   ITEMID(_C(_M:mid)?(_R:rid)?)?(_SM)?
+            -- Scroll mode uses a "SCROLLS:..." prefix instead, so the
+            -- two key spaces never collide and a transition between
+            -- modes always triggers a rewrite.
             ----------------------------------------------------------------
 
             local stateParts = { itemID and tostring(itemID) or "none" }
-            if appliedScrollIDs then
-                local pieces = {}
-                for _, id in ipairs(appliedScrollIDs) do
-                    pieces[#pieces + 1] = tostring(id)
-                end
-                stateParts[#stateParts + 1] = "S:" .. table.concat(pieces, ",")
-            end
             if rightClickSpellName or middleClickSpellName then
                 stateParts[#stateParts + 1] = "C"
                 if middleClickSpellName then
@@ -422,9 +370,11 @@ function ns.UpdateMacros(forced)
             local stateID = table.concat(stateParts, "_")
 
             if currentMacroState[typeName] ~= stateID or forced then
-                local body = tooltipLine .. conjureBlock .. scrollBlock .. actionBlock .. shadowmeldBlock
+                local body = tooltipLine .. conjureBlock .. actionBlock .. shadowmeldBlock
                 WriteMacro(config.macro, icon, body, stateID, typeName)
             end
+
+            end -- if scrollMode
         end
     end
 

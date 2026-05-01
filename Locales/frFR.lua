@@ -1,3 +1,4 @@
+local addonName, ns = ...
 local L = LibStub("AceLocale-3.0"):NewLocale("Connoisseur", "frFR")
 if not L then return end
 
@@ -25,12 +26,9 @@ L["MENU_BUFF_FOOD"] = "Priorité : Bien nourri"
 L["MENU_BUFF_FOOD_DESC"] = "Priorise la nourriture conférant l'amélioration \"Bien nourri\" si elle est absente."
 L["MENU_CLEAR_IGNORE"] = "Vider la liste d'exclusion"
 L["MENU_IGNORE"] = "Ignorer"
-L["MENU_RESET"] = "Réinitialiser"
-L["MENU_SCAN"] = "Forcer le scan"
-L["MENU_TITLE"] = "Consommables"
 
 L["MENU_SCROLL_BUFFS"] = "Améliorations de parchemins"
-L["MENU_SCROLL_BUFFS_DESC"] = "Cumule les utilisations de parchemins de caractéristiques manquants dans votre macro Nourriture, hors du temps de recharge global."
+L["MENU_SCROLL_BUFFS_DESC"] = "Transforme votre macro Nourriture en applicateur de parchemins lorsqu'il vous manque des améliorations de parchemins."
 L["MENU_OPTIONS_HINT"] = "Options supplémentaires disponibles dans Options > AddOns > Connoisseur."
 
 L["PREFIX_HUNTER"] = "Attention Chasseurs"
@@ -66,7 +64,7 @@ L["OPTIONS_BUFF_FOOD"] = "Priorité : Bien nourri"
 L["OPTIONS_BUFF_FOOD_DESC"] = "Priorise la nourriture conférant l'amélioration \"Bien nourri\" si elle est absente."
 L["OPTIONS_SCROLL_HEADER"] = "Améliorations de parchemins"
 L["OPTIONS_USE_SCROLLS"] = "Inclure les parchemins"
-L["OPTIONS_USE_SCROLLS_DESC"] = "Cumule les utilisations de parchemins de caractéristiques manquants dans votre macro Nourriture. Les parchemins sont hors du GCD, vous ciblent et sont ignorés par la macro lorsque vous ciblez un autre joueur amical."
+L["OPTIONS_USE_SCROLLS_DESC"] = "Transforme votre macro Nourriture en applicateur de parchemins dédié lorsqu'il vous manque des améliorations de parchemins. Appuyez une fois pour appliquer les parchemins ; appuyez à nouveau pour manger. Les parchemins sont hors du GCD, vous ciblent, et la macro redevient de la nourriture dès que vous ciblez un autre joueur amical."
 L["OPTIONS_SCROLL_TYPES"] = "Types de parchemins à vérifier"
 L["OPTIONS_SCROLL_AGILITY"] = "Agilité"
 L["OPTIONS_SCROLL_INTELLECT"] = "Intelligence"

@@ -63,18 +63,27 @@ Macro edits via `EditMacro` are silently dropped during combat lockdown. Any upd
 
 ### State Encoding
 
-Every macro write is preceded by computing a state key that captures every input that affects the body:
+Every macro write is preceded by computing a state key that captures every input that affects the body. The Food macro uses one of two disjoint key namespaces:
+
+**Food mode:**
 
 ```
-ITEMID(_S:scroll1,scroll2,...)?(_C(_M:mid)?(_R:rid)?)?(_SM)?
+ITEMID(_C(_M:mid)?(_R:rid)?)?(_SM)?
 ```
 
 - `ITEMID` — primary item slotted into the macro (or `none`).
-- `_S:...` — comma-separated scroll item IDs included in the additive scroll block (Food macro only, in priority order, after 255-char truncation).
 - `_C` — conjure block present.
 - `_M:mid` — middle-click spell ID (Ritual of Refreshment / Ritual of Souls).
 - `_R:rid` — right-click spell ID (current rank).
 - `_SM` — Shadowmeld suffix appended (Night Elf Water macro).
+
+**Scroll mode:**
+
+```
+SCROLLS:s1,s2,...
+```
+
+The `SCROLLS:` prefix can never collide with an `ITEMID`-prefixed key (item IDs are numeric, no colon), which means a transition between scroll mode and food mode always changes the key and always triggers a rewrite. Within scroll mode, a different ordered list of scroll IDs is also a different key, so adding or losing a scroll buff still causes a rewrite.
 
 If the key matches `currentMacroState[typeName]`, the macro is byte-for-byte identical to what's already written and we skip the `EditMacro` call. This is what makes `BAG_UPDATE_DELAYED` storms cheap.
 
@@ -82,39 +91,52 @@ If the key matches `currentMacroState[typeName]`, the macro is byte-for-byte ide
 
 ## Macro Composition Details
 
-### Food Macro Layout (Mage with scrolls active)
+### Food Macro: Two Modes
+
+The Food macro has two modes that swap automatically based on what buffs the player needs and what target is selected.
+
+**Scroll mode** — active when (a) `useScrolls` is on, (b) at least one tracked scroll buff is missing, (c) the player has those scrolls in bags, and (d) the player is not targeting another friendly player. The body is just scrolls, in priority order:
 
 ```
 #showtooltip
-/cast [btn:3] Ritual of Refreshment; [btn:2] Conjure Bread(Rank N);
-/stopmacro [btn:3][btn:2]
 /use [@player] item:SCROLL1
 /use [@player] item:SCROLL2
+```
+
+Bare `#showtooltip` resolves the action-bar icon to the first scroll. The user taps once to fire all missing scrolls. After the next bag/buff scan picks up the new auras, scroll mode exits and the macro flips to food mode for the next press.
+
+**Food mode** — active in all other cases. Standard food-macro layout, the same as before scrolls existed:
+
+```
+#showtooltip item:FOODID
+/cast [btn:3] Ritual of Refreshment; [btn:2] Conjure Bread(Rank N);
+/stopmacro [btn:3][btn:2]
 /run ConnFire(FOODID)
 /use item:FOODID
 ```
 
-Bare `#showtooltip` lets the action bar resolve the icon from the first usable line in the body. For Mages with the conjure block, that's the conjure spell — visually cuing right-click to conjure. For non-Mages, no conjure block, so it resolves to the first scroll. When no scrolls are stacked into the body (e.g. all buffs covered, or targeting a friendly player), the tooltip switches to explicit `#showtooltip item:FOODID` so the bar shows the food.
+The two modes never coexist in the same body. The split keeps each macro readable and predictable: scroll mode is purely for buffing yourself; food mode is purely for eating (and conjure-for-friend on right-click).
+
+**Why targeting a friendly player flips to food mode.** Mages right-click their Food macro to conjure bread for a friend. If scroll mode were active, the right-click would hit `/use [@player] item:SCROLL1` first and fire scrolls on the *Mage*, not give bread to the friend. Dropping scroll mode the moment a friendly player is targeted keeps the conjure-for-friend interaction clean. The PLAYER_TARGET_CHANGED event re-runs the macro update, the state key flips between `SCROLLS:...` and `ITEMID_C_M:..._R:...` namespaces, and the body rewrites.
 
 The conjure block uses `/stopmacro` to short-circuit: a right-click conjures bread and stops, never reaching the scroll or food lines. A left-click skips the conjure block entirely and runs everything below it.
 
 ### The 255-Character Limit
 
-WoW silently truncates macro bodies at 255 characters. With a Mage Food macro carrying conjure handlers, a state-write line, the food itself, and up to six scrolls, this is tight.
+WoW silently truncates macro bodies at 255 characters. Both Food modes fit comfortably:
 
-Two tactics handle it:
+- **Scroll mode**: `#showtooltip\n` (14 chars) plus at most 6 scrolls × ~25 chars each ≈ 164 chars total. No truncation logic needed.
+- **Food mode**: identical to the pre-scrolls macro shape, so no new pressure on the limit. The `ConnFire(itemID)` global helper in Core.lua keeps the state-write line short — `/run ConnFire(NNN)` (~19 chars) versus an inlined `/run ConnoisseurState.lastID=NNN;ConnoisseurState.lastTime=GetTime()` (~65 chars) — which matters most for non-English locales where conjure spell names get long.
 
-1. **`ConnFire(itemID)` global helper** in Core.lua. The state-write line collapses from `/run ConnoisseurState.lastID=NNN;ConnoisseurState.lastTime=GetTime()` (~65 chars) to `/run ConnFire(NNN)` (~19 chars). Saves around 45 chars per macro. The 8-char name is short enough to matter and distinctive enough (Conn… prefix) to keep global-collision risk negligible.
+The 8-char `ConnFire` name is short enough to be useful and distinctive enough (the `Conn…` prefix) to keep global-collision risk negligible against the addon ecosystem.
 
-2. **Greedy truncation** in `BuildScrollBlock()`. The builder receives the length of every other line in the body, then trims scrolls from the **back** of the priority-ordered list until the total fits 255. The Food macro therefore degrades gracefully: a non-Mage with all six scroll types fits comfortably; a Mage at level 70 with a long conjure spell name and all six scrolls drops the lowest-priority ones (Stamina, then Spirit) first.
-
-`ns.SCROLL_CHECK_ORDER` (defined in `Data/Scrolls.lua`) is the priority list: Agility, Strength, Protection, Intellect, Spirit, Stamina. Adjusting that order changes both the check sequence and which scrolls survive truncation.
+`ns.SCROLL_CHECK_ORDER` (defined in `Data/Scrolls.lua`) is the priority list: Agility, Strength, Protection, Intellect, Spirit, Stamina. Scroll mode fires scrolls in this order on a single press.
 
 ### Friendly-Player Target Handling
 
-When the player has another friendly player targeted, `HasFriendlyPlayerTarget()` returns true and the scroll block is skipped entirely. This keeps the Food macro readable as a conjure-for-friend button — a Mage can right-click their `- Food` macro while targeting a guildie to hand them bread, without firing six scrolls on themselves first.
+When the player has another friendly player targeted, `HasFriendlyPlayerTarget()` returns true and scroll mode is suppressed — the Food macro stays in food mode regardless of buff state. This keeps the conjure-for-friend interaction clean (a Mage can right-click `- Food` while targeting a guildie to give them bread, without firing scrolls on themselves first).
 
-The macro update loop registers `PLAYER_TARGET_CHANGED` so the rebuild fires (under the 0.5s throttle) the moment the target changes. Because the state encoding includes scroll IDs, swapping in or out of a friendly-player target naturally diffs the state key and triggers a rewrite.
+The macro update loop registers `PLAYER_TARGET_CHANGED` so the rebuild fires (under the 0.5s throttle) the moment the target changes. Because the state key namespaces are disjoint (`SCROLLS:...` vs `ITEMID_C_M:..._R:...`), entering or leaving a friendly-player target always triggers a rewrite.
 
 The same `HasFriendlyPlayerTarget()` helper is used by `GetSmartSpell()` for Mage/Warlock conjure rank downranking — when targeting a lower-level friend, the conjure rank caps at their level.
 
@@ -122,7 +144,7 @@ The same `HasFriendlyPlayerTarget()` helper is used by `GetSmartSpell()` for Mag
 
 `ns.PetBuffOverrideID` substitutes the Food slot's *itemID* with Kibler's Bits or Sporeling Snacks when the player's pet lacks the food buff and the player has the items in bags. This is intentionally a substitution rather than an additive line: only one `Well Fed` buff exists, and the player can only consume one item per macro press.
 
-Pet buff override coexists fine with scrolls — pet food targets the pet (`/use [@pet]`), scrolls target the player. Both lines can sit in the same macro body.
+Pet buff override is part of food mode only — when scroll mode is active, the macro fires only scrolls. The user taps once for scrolls, then on the next press scroll mode exits and pet food (or normal food) takes over.
 
 ### Mana Gem Uniqueness
 
@@ -183,7 +205,7 @@ Be conservative with macro string lengths. Macro names cap at 16 characters. The
 - **Querying `GetItemInfo` cold**: returns nil on first call. Use the retry path in `Item-Data.lua`, don't loop until it succeeds.
 - **Forgetting state encoding**: if you add a new input that affects the macro body, add it to the state key. Otherwise the body won't rewrite when that input changes.
 - **Hardcoding spell names**: always resolve via `GetSpellInfo(spellID)`. Names vary across locales and patch revisions.
-- **Stacking too many lines in Food**: anything you add to the Food macro body shrinks the budget for scrolls. If your addition is conditional, account for both the worst-case length and how it interacts with `BuildScrollBlock`.
+- **Stacking too many lines in Food**: food mode and scroll mode each have their own budget. Food mode keeps the same shape it had pre-scrolls, so additions there should walk the worst-case 255-char check on a deDE Mage at max level. Scroll mode is short and won't approach the limit, but anything you add there should still be measured.
 
 ---
 

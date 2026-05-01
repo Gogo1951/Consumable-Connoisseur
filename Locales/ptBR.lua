@@ -1,3 +1,4 @@
+local addonName, ns = ...
 local L = LibStub("AceLocale-3.0"):NewLocale("Connoisseur", "ptBR")
 if not L then return end
 
@@ -25,12 +26,9 @@ L["MENU_BUFF_FOOD"] = "Priorizar Comida com Buff"
 L["MENU_BUFF_FOOD_DESC"] = "Prioriza comida que concede o buff \"Bem Alimentado\", quando o buff estiver faltando."
 L["MENU_CLEAR_IGNORE"] = "Limpar Lista de Ignorados"
 L["MENU_IGNORE"] = "Ignorar"
-L["MENU_RESET"] = "Redefinir"
-L["MENU_SCAN"] = "Forçar Varredura"
-L["MENU_TITLE"] = "Consumíveis"
 
 L["MENU_SCROLL_BUFFS"] = "Buffs de Pergaminho"
-L["MENU_SCROLL_BUFFS_DESC"] = "Acumula os usos de pergaminhos de atributos que faltam na sua macro de Comida, fora da recarga global."
+L["MENU_SCROLL_BUFFS_DESC"] = "Transforma sua macro de Comida em um aplicador de pergaminhos quando faltarem buffs de pergaminhos."
 L["MENU_OPTIONS_HINT"] = "Configurações adicionais podem ser encontradas em Opções > AddOns > Connoisseur."
 
 L["PREFIX_HUNTER"] = "Atenção Caçadores"
@@ -66,7 +64,7 @@ L["OPTIONS_BUFF_FOOD"] = "Priorizar Comida com Buff"
 L["OPTIONS_BUFF_FOOD_DESC"] = "Prioriza comida que concede o buff \"Bem Alimentado\", quando o buff estiver faltando."
 L["OPTIONS_SCROLL_HEADER"] = "Buffs de Pergaminho"
 L["OPTIONS_USE_SCROLLS"] = "Incluir Buffs de Pergaminho"
-L["OPTIONS_USE_SCROLLS_DESC"] = "Acumula os usos de pergaminhos de atributos que faltam na sua macro de Comida. Os pergaminhos não ativam o GCD, têm você como alvo e são removidos da macro quando você seleciona outro jogador amigável."
+L["OPTIONS_USE_SCROLLS_DESC"] = "Transforma sua macro de Comida em um aplicador de pergaminhos dedicado sempre que faltarem buffs de pergaminhos. Toque uma vez para aplicar os pergaminhos; toque novamente para comer. Os pergaminhos não ativam o GCD, têm você como alvo e a macro volta para a comida no momento em que você seleciona outro jogador amigável."
 L["OPTIONS_SCROLL_TYPES"] = "Incluir Tipos de Pergaminho na Verificação"
 L["OPTIONS_SCROLL_AGILITY"] = "Agilidade"
 L["OPTIONS_SCROLL_INTELLECT"] = "Intelecto"

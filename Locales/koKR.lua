@@ -1,3 +1,4 @@
+local addonName, ns = ...
 local L = LibStub("AceLocale-3.0"):NewLocale("Connoisseur", "koKR")
 if not L then return end
 
@@ -18,19 +19,16 @@ L["MACRO_WATER"] = "- 물"
 L["ERR_ZONE"] = "여기선 사용할 수 없습니다."
 L["RANK"] = "레벨"
 
-L["MSG_BUG_REPORT"] = "버그를 발견한 것 같습니다! %s (%s) 아이템은 %s > %s (%s)에서 사용할 수 없습니다. 수정할 수 있도록 제보해 주세요. 감사합니다! https://discord.gg/eh8hKq992Q"
+L["MSG_BUG_REPORT"] = "버그를 발견한 것 같습니다! %s (%s) 아이템은 %s > %s (%s)에서 사용할 수 뒷수 없습니다. 수정할 수 있도록 제보해 주세요. 감사합니다! https://discord.gg/eh8hKq992Q"
 L["MSG_NO_ITEM"] = "가방에 적합한 %s(이)가 없습니다."
 
 L["MENU_BUFF_FOOD"] = "버프 음식 우선"
 L["MENU_BUFF_FOOD_DESC"] = "\"포만감\" 버프가 없을 때 해당 버프를 주는 음식을 우선 사용합니다."
 L["MENU_CLEAR_IGNORE"] = "차단 목록 초기화"
 L["MENU_IGNORE"] = "차단"
-L["MENU_RESET"] = "초기화"
-L["MENU_SCAN"] = "강제 스캔"
-L["MENU_TITLE"] = "소모품"
 
 L["MENU_SCROLL_BUFFS"] = "두루마리 버프"
-L["MENU_SCROLL_BUFFS_DESC"] = "음식 매크로에 누락된 능력치 두루마리 사용을 추가하며, 전역 재사용 대기시간(GCD)의 영향을 받지 않습니다."
+L["MENU_SCROLL_BUFFS_DESC"] = "두루마리 버프가 없을 때 음식 매크로를 두루마리 적용기로 전환합니다."
 L["MENU_OPTIONS_HINT"] = "설정 > 애드온 > Connoisseur에서 추가 옵션을 사용할 수 있습니다."
 
 L["PREFIX_HUNTER"] = "사냥꾼 주의"
@@ -66,7 +64,7 @@ L["OPTIONS_BUFF_FOOD"] = "버프 음식 우선"
 L["OPTIONS_BUFF_FOOD_DESC"] = "\"포만감\" 버프가 없을 때 해당 버프를 주는 음식을 우선 사용합니다."
 L["OPTIONS_SCROLL_HEADER"] = "두루마리 버프"
 L["OPTIONS_USE_SCROLLS"] = "두루마리 버프 포함"
-L["OPTIONS_USE_SCROLLS_DESC"] = "음식 매크로에 누락된 능력치 두루마리 사용을 추가합니다. 두루마리는 전역 재사용 대기시간(GCD)의 영향을 받지 않고 자신을 대상으로 하며, 다른 우호적인 플레이어를 대상으로 지정하면 매크로에서 제외됩니다."
+L["OPTIONS_USE_SCROLLS_DESC"] = "두루마리 버프가 없을 때마다 음식 매크로를 전용 두루마리 적용기로 전환합니다. 한 번 누르면 두루마리를 적용하고, 다시 누르면 음식을 먹습니다. 두루마리는 전역 재사용 대기시간(GCD)의 영향을 받지 않고 자신을 대상으로 하며, 다른 우호적인 플레이어를 대상으로 지정하는 순간 매크로가 음식으로 되돌아갑니다."
 L["OPTIONS_SCROLL_TYPES"] = "확인할 두루마리 유형 포함"
 L["OPTIONS_SCROLL_AGILITY"] = "민첩성"
 L["OPTIONS_SCROLL_INTELLECT"] = "지능"
