@@ -1,8 +1,6 @@
 local addonName, ns = ...
 local L = LibStub("AceLocale-3.0"):NewLocale("Connoisseur", "enUS", true)
-if not L then
-    return
-end
+if not L then return end
 
 -- [[ DEFAULT ENGLISH (enUS) ]] --
 L["BRAND"] = "Connoisseur"
@@ -29,7 +27,7 @@ L["MENU_CLEAR_IGNORE"] = "Clear Ignore List"
 L["MENU_IGNORE"] = "Ignore"
 
 L["MENU_SCROLL_BUFFS"] = "Scroll Buffs"
-L["MENU_SCROLL_BUFFS_DESC"] = "Stacks missing attribute scroll uses into your Food macro, off the global cooldown."
+L["MENU_SCROLL_BUFFS_DESC"] = "Turns your Food macro into a scroll-applier when you're missing scroll buffs."
 L["MENU_OPTIONS_HINT"] = "Additional settings can be found under Options > AddOns > Connoisseur."
 
 L["PREFIX_HUNTER"] = "Attention Hunters"
@@ -65,7 +63,7 @@ L["OPTIONS_BUFF_FOOD"] = "Prioritize Buff Food"
 L["OPTIONS_BUFF_FOOD_DESC"] = 'Prioritizes food that grants the "Well Fed" buff, when the buff is missing.'
 L["OPTIONS_SCROLL_HEADER"] = "Scroll Buffs"
 L["OPTIONS_USE_SCROLLS"] = "Include Scroll Buffs"
-L["OPTIONS_USE_SCROLLS_DESC"] = "Stacks missing attribute scroll uses into your Food macro. Scrolls are off the GCD, target you, and are dropped from the macro when you target another friendly player."
+L["OPTIONS_USE_SCROLLS_DESC"] = "Turns your Food macro into a dedicated scroll-applier whenever you're missing scroll buffs. Tap once to apply scrolls; tap again to eat. Scrolls are off the GCD, target you, and the macro reverts to food the moment you target another friendly player."
 L["OPTIONS_SCROLL_TYPES"] = "Include Scroll Types in Check"
 L["OPTIONS_SCROLL_AGILITY"] = "Agility"
 L["OPTIONS_SCROLL_INTELLECT"] = "Intellect"
@@ -74,7 +72,7 @@ L["OPTIONS_SCROLL_SPIRIT"] = "Spirit"
 L["OPTIONS_SCROLL_STAMINA"] = "Stamina"
 L["OPTIONS_SCROLL_STRENGTH"] = "Strength"
 
-L["OPTIONS_PET_HEADER"] = "Pet Food Buffs"
+L["OPTIONS_PET_HEADER"] = "Pets Food Buffs"
 L["OPTIONS_USE_PET_BUFFS"] = "Use Pet Food Buffs"
 L["OPTIONS_USE_PET_BUFFS_DESC"] = 'Uses Pet Food, as part of your Food macro, when the "Well Fed" buff is missing from your pet.'
 L["OPTIONS_PET_BUFF_TYPES"] = "Include Pet Food Types in Check"

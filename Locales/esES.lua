@@ -1,3 +1,5 @@
+local addonName, ns = ...
+
 -- [[ SPANISH (esES + esMX) ]] --
 local strings = {
     ["BRAND"] = "Connoisseur",
@@ -23,12 +25,9 @@ local strings = {
     ["MENU_BUFF_FOOD_DESC"] = "Prioriza la comida que otorga el beneficio \"Bien alimentado\" cuando te falta.",
     ["MENU_CLEAR_IGNORE"] = "Borrar lista de ignorados",
     ["MENU_IGNORE"] = "Ignorar",
-    ["MENU_RESET"] = "Reiniciar",
-    ["MENU_SCAN"] = "Forzar escaneo",
-    ["MENU_TITLE"] = "Consumibles",
 
     ["MENU_SCROLL_BUFFS"] = "Beneficios de pergaminos",
-    ["MENU_SCROLL_BUFFS_DESC"] = "Acumula los usos de pergaminos de atributos que faltan en tu macro de Comida, fuera del tiempo de reutilización global.",
+    ["MENU_SCROLL_BUFFS_DESC"] = "Convierte tu macro de Comida en un aplicador de pergaminos cuando te faltan beneficios de pergaminos.",
     ["MENU_OPTIONS_HINT"] = "Opciones adicionales disponibles en Opciones > Accesorios > Connoisseur.",
 
     ["PREFIX_HUNTER"] = "Atención Cazadores",
@@ -64,7 +63,7 @@ local strings = {
     ["OPTIONS_BUFF_FOOD_DESC"] = "Prioriza la comida que otorga el beneficio \"Bien alimentado\" cuando te falta.",
     ["OPTIONS_SCROLL_HEADER"] = "Beneficios de pergaminos",
     ["OPTIONS_USE_SCROLLS"] = "Incluir beneficios de pergaminos",
-    ["OPTIONS_USE_SCROLLS_DESC"] = "Acumula los usos de pergaminos de atributos que faltan en tu macro de Comida. Los pergaminos no activan el GCD, te tienen como objetivo y se omiten de la macro cuando seleccionas a otro jugador amistoso.",
+    ["OPTIONS_USE_SCROLLS_DESC"] = "Convierte tu macro de Comida en un aplicador de pergaminos dedicado siempre que te falten beneficios de pergaminos. Toca una vez para aplicar pergaminos; toca de nuevo para comer. Los pergaminos no activan el GCD, te tienen como objetivo y la macro vuelve a ser de comida en el momento en que seleccionas a otro jugador amistoso.",
     ["OPTIONS_SCROLL_TYPES"] = "Incluir tipos de pergaminos en la comprobación",
     ["OPTIONS_SCROLL_AGILITY"] = "Agilidad",
     ["OPTIONS_SCROLL_INTELLECT"] = "Intelecto",

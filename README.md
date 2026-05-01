@@ -61,20 +61,21 @@ When enabled, the Food macro prefers items that grant the "Well Fed" buff, but o
 
 ### Scroll Buffs
 
-When enabled, the Food macro **stacks scroll uses on top of your food** — one tap of your `- Food` button can fire missing scrolls and start eating in a single press.
+When enabled, your `- Food` macro doubles as a scroll-buff button. Whenever you're missing scroll buffs, the macro turns into a dedicated scroll-applier — one tap fires every missing scroll on you, off the global cooldown. After scrolls are applied, the macro flips back to its normal food form for your next press.
 
 How it works:
 
-- Each missing scroll buff (Agility, Intellect, Protection, Spirit, Stamina, Strength) adds its own `/use [@player] item:NNNNN` line to the Food macro, above the food line. Scrolls are off the global cooldown, so they all fire instantly without delaying your meal.
+- The macro icon shows the first missing scroll when scrolls are needed, and your best food otherwise. So you can always tell at a glance whether your next press will buff or feed you.
+- Scroll mode and food mode never coexist in the same macro body. Tap once to apply scrolls; tap again to eat.
 - Scrolls always target you (`[@player]`), so they never accidentally buff your current target.
 - Scrolls are skipped when a class buff already covers the same stat at equal or greater value (e.g. Arcane Intellect blocks Scroll of Intellect).
 - You can toggle individual scroll types on and off, and restrict the feature to party or raid only.
-- **When you target another friendly player, the scroll lines drop out of the macro.** This keeps the macro reading cleanly as a conjure-for-friend button — Mages can right-click to give a friend bread without firing scrolls on themselves first.
-- Scroll firing order follows priority: Agility, Strength, Protection, Intellect, Spirit, Stamina. If your full scroll list would push the macro past WoW's 255-character limit, the lowest-priority scrolls drop out automatically.
+- **When you target another friendly player, the macro reverts to food mode immediately.** This keeps the macro safe for Mages right-clicking to conjure food for a friend — no scrolls fire on you while you're targeting them.
+- Scroll firing order follows priority: Agility, Strength, Protection, Intellect, Spirit, Stamina.
 
 ### Pet Food Buffs
 
-When enabled, the Food macro will use Kibler's Bits or Sporeling Snacks on your pet when its "Well Fed" buff is missing. Requires level 55+. Can be restricted to party or raid.
+When enabled, your Food macro will use Kibler's Bits or Sporeling Snacks on your pet when its "Well Fed" buff is missing. Requires level 55+. Can be restricted to party or raid. Pet food only fires in food mode — if you also have missing scroll buffs, scrolls go first; pet food (and your own food) come on the next press.
 
 ### Ignore List
 

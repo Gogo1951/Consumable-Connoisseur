@@ -1,3 +1,4 @@
+local addonName, ns = ...
 local L = LibStub("AceLocale-3.0"):NewLocale("Connoisseur", "deDE")
 if not L then return end
 
@@ -25,12 +26,9 @@ L["MENU_BUFF_FOOD"] = "Buff-Essen bevorzugen"
 L["MENU_BUFF_FOOD_DESC"] = "Bevorzugt Essen, das den \"Satt\"-Buff gewährt, wenn der Buff fehlt."
 L["MENU_CLEAR_IGNORE"] = "Ignorierliste löschen"
 L["MENU_IGNORE"] = "Ignorieren"
-L["MENU_RESET"] = "Zurücksetzen"
-L["MENU_SCAN"] = "Scan erzwingen"
-L["MENU_TITLE"] = "Verbrauchsgüter"
 
 L["MENU_SCROLL_BUFFS"] = "Schriftrollen-Buffs"
-L["MENU_SCROLL_BUFFS_DESC"] = "Fügt fehlende Attributsschriftrollen in dein Essen-Makro ein, unabhängig von der globalen Abklingzeit."
+L["MENU_SCROLL_BUFFS_DESC"] = "Verwandelt dein Essen-Makro in einen Schriftrollen-Anwender, wenn dir Schriftrollen-Buffs fehlen."
 L["MENU_OPTIONS_HINT"] = "Weitere Optionen verfügbar unter Optionen > AddOns > Connoisseur."
 
 L["PREFIX_HUNTER"] = "Achtung Jäger"
@@ -66,7 +64,7 @@ L["OPTIONS_BUFF_FOOD"] = "Buff-Essen bevorzugen"
 L["OPTIONS_BUFF_FOOD_DESC"] = "Bevorzugt Essen, das den \"Satt\"-Buff gewährt, wenn der Buff fehlt."
 L["OPTIONS_SCROLL_HEADER"] = "Schriftrollen-Buffs"
 L["OPTIONS_USE_SCROLLS"] = "Schriftrollen-Buffs einschließen"
-L["OPTIONS_USE_SCROLLS_DESC"] = "Fügt fehlende Attributsschriftrollen in dein Essen-Makro ein. Schriftrollen unterliegen nicht dem GCD, zielen auf dich ab und werden aus dem Makro entfernt, wenn du einen anderen befreundeten Spieler anvisierst."
+L["OPTIONS_USE_SCROLLS_DESC"] = "Verwandelt dein Essen-Makro in einen dedizierten Schriftrollen-Anwender, wann immer dir Schriftrollen-Buffs fehlen. Einmal tippen, um Schriftrollen anzuwenden; nochmal tippen, um zu essen. Schriftrollen unterliegen nicht dem GCD, zielen auf dich ab und das Makro wechselt sofort wieder zu Essen, wenn du einen anderen befreundeten Spieler anvisierst."
 L["OPTIONS_SCROLL_TYPES"] = "Schriftrollentypen in Prüfung einschließen"
 L["OPTIONS_SCROLL_AGILITY"] = "Beweglichkeit"
 L["OPTIONS_SCROLL_INTELLECT"] = "Intelligenz"

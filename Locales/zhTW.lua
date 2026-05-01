@@ -1,3 +1,4 @@
+local addonName, ns = ...
 local L = LibStub("AceLocale-3.0"):NewLocale("Connoisseur", "zhTW")
 if not L then return end
 
@@ -25,12 +26,9 @@ L["MENU_BUFF_FOOD"] = "優先使用增益食物"
 L["MENU_BUFF_FOOD_DESC"] = "當缺少 \"進食充分\" 增益時，優先使用會給予該增益的食物。"
 L["MENU_CLEAR_IGNORE"] = "清除忽略清單"
 L["MENU_IGNORE"] = "忽略"
-L["MENU_RESET"] = "重置"
-L["MENU_SCAN"] = "強制掃描"
-L["MENU_TITLE"] = "消耗品"
 
 L["MENU_SCROLL_BUFFS"] = "卷軸增益"
-L["MENU_SCROLL_BUFFS_DESC"] = "將缺少的屬性卷軸使用加入到你的食物巨集中，不佔用公共冷卻時間（GCD）。"
+L["MENU_SCROLL_BUFFS_DESC"] = "當你缺少卷軸增益時，將你的食物巨集轉換為卷軸施放器。"
 L["MENU_OPTIONS_HINT"] = "在 選項 > 插件 > Connoisseur 中有更多選項可用。"
 
 L["PREFIX_HUNTER"] = "獵人注意"
@@ -66,7 +64,7 @@ L["OPTIONS_BUFF_FOOD"] = "優先使用增益食物"
 L["OPTIONS_BUFF_FOOD_DESC"] = "當缺少 \"進食充分\" 增益時，優先使用會給予該增益的食物。"
 L["OPTIONS_SCROLL_HEADER"] = "卷軸增益"
 L["OPTIONS_USE_SCROLLS"] = "包含卷軸增益"
-L["OPTIONS_USE_SCROLLS_DESC"] = "將缺少的屬性卷軸使用加入到你的食物巨集中。卷軸不佔用GCD，以你為目標，並且當你的目標是其他友方玩家時會從巨集中移除。"
+L["OPTIONS_USE_SCROLLS_DESC"] = "只要你缺少卷軸增益，就會將你的食物巨集轉換為專用的卷軸施放器。按一次施放卷軸；再按一次進食。卷軸不佔用GCD，以你為目標，並且當你的目標是其他友方玩家時，巨集會立刻還原為食物。"
 L["OPTIONS_SCROLL_TYPES"] = "在檢查中包含卷軸類型"
 L["OPTIONS_SCROLL_AGILITY"] = "敏捷"
 L["OPTIONS_SCROLL_INTELLECT"] = "智力"
