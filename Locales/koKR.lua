@@ -19,7 +19,7 @@ L["MACRO_WATER"] = "- 물"
 L["ERR_ZONE"] = "여기선 사용할 수 없습니다."
 L["RANK"] = "레벨"
 
-L["MSG_BUG_REPORT"] = "버그를 발견한 것 같습니다! %s (%s) 아이템은 %s > %s (%s)에서 사용할 수 뒷수 없습니다. 수정할 수 있도록 제보해 주세요. 감사합니다! https://discord.gg/eh8hKq992Q"
+L["MSG_BUG_REPORT"] = "버그를 발견한 것 같습니다! %s (%s) 아이템은 %s > %s (%s)에서 사용할 수 없습니다. 수정할 수 있도록 제보해 주세요. 감사합니다! https://discord.gg/eh8hKq992Q"
 L["MSG_NO_ITEM"] = "가방에 적합한 %s(이)가 없습니다."
 
 L["MENU_BUFF_FOOD"] = "버프 음식 우선"
